@@ -4,8 +4,13 @@ import {
   assertCapacity,
   checkDuplicate,
   createRegistration,
+  filterRegistrations,
   getRegistrationCount,
+  getRegistrationDetail,
+  getRegistrations,
+  updateRegistrationStatus,
 } from './registrations.service'
+import type { AdminRegistration } from '@/types/app.types'
 
 const mockFrom = vi.fn()
 const mockRpc = vi.fn()
@@ -23,6 +28,58 @@ function createInsertBuilder(result: { data: unknown; error: { message: string }
     select: vi.fn().mockReturnThis(),
     single: vi.fn().mockResolvedValue(result),
   }
+}
+
+function createSelectBuilder(result: { data: unknown; error: { message: string } | null }) {
+  const order = vi.fn().mockResolvedValue(result)
+  const eq = vi.fn().mockReturnValue({
+    maybeSingle: vi.fn().mockResolvedValue(result),
+    single: vi.fn().mockResolvedValue(result),
+    select: vi.fn().mockReturnThis(),
+  })
+
+  return {
+    select: vi.fn().mockReturnValue({
+      order,
+      eq,
+      maybeSingle: vi.fn().mockResolvedValue(result),
+      single: vi.fn().mockResolvedValue(result),
+    }),
+    update: vi.fn().mockReturnValue({
+      eq: vi.fn().mockReturnValue({
+        select: vi.fn().mockReturnValue({
+          single: vi.fn().mockResolvedValue(result),
+        }),
+      }),
+    }),
+  }
+}
+
+const sampleRow = {
+  id: 'reg-1',
+  code: 'KG-2026-00001',
+  child_name: 'Aarav',
+  age: 9,
+  parent_name: 'Neha',
+  email: 'neha@example.com',
+  phone: '9999999999',
+  status: 'confirmed',
+  created_at: '2026-04-01T10:00:00.000Z',
+  registration_games: [{ game_id: 'game-1', status: 'confirmed', games: { name: 'Sack Race' } }],
+}
+
+const sampleAdminRegistration: AdminRegistration = {
+  id: 'reg-1',
+  code: 'KG-2026-00001',
+  childName: 'Aarav',
+  age: 9,
+  parentName: 'Neha',
+  email: 'neha@example.com',
+  phone: '9999999999',
+  status: 'confirmed',
+  createdAt: '2026-04-01T10:00:00.000Z',
+  gameNames: ['Sack Race'],
+  gameIds: ['game-1'],
 }
 
 describe('registrations.service', () => {
@@ -193,6 +250,94 @@ describe('registrations.service', () => {
         gameIds: ['game-1'],
       }),
     ).rejects.toThrow('Registration failed')
+  })
+
+  it('filterRegistrations applies search, game, and status filters', () => {
+    const registrations = [
+      sampleAdminRegistration,
+      {
+        ...sampleAdminRegistration,
+        id: 'reg-2',
+        childName: 'Riya',
+        email: 'riya@example.com',
+        status: 'waitlisted' as const,
+        gameIds: ['game-2'],
+      },
+    ]
+
+    expect(filterRegistrations(registrations, { search: 'aarav' })).toHaveLength(1)
+    expect(filterRegistrations(registrations, { gameId: 'game-2' })).toHaveLength(1)
+    expect(filterRegistrations(registrations, { status: 'waitlisted' })).toHaveLength(1)
+  })
+
+  it('getRegistrations maps joined game names', async () => {
+    mockFrom.mockReturnValue(createSelectBuilder({ data: [sampleRow], error: null }))
+
+    await expect(getRegistrations()).resolves.toEqual([sampleAdminRegistration])
+  })
+
+  it('getRegistrations maps array game relations and handles query errors', async () => {
+    mockFrom.mockReturnValue(
+      createSelectBuilder({
+        data: [
+          {
+            ...sampleRow,
+            registration_games: [
+              { game_id: 'game-1', status: 'confirmed', games: [{ name: 'Relay Race' }] },
+            ],
+          },
+        ],
+        error: null,
+      }),
+    )
+
+    await expect(getRegistrations()).resolves.toEqual([
+      { ...sampleAdminRegistration, gameNames: ['Relay Race'] },
+    ])
+
+    mockFrom.mockReturnValue(createSelectBuilder({ data: null, error: { message: 'list failed' } }))
+    await expect(getRegistrations()).rejects.toBeInstanceOf(RegistrationError)
+  })
+
+  it('getRegistrationDetail returns null when row is missing', async () => {
+    mockFrom.mockReturnValue(createSelectBuilder({ data: null, error: null }))
+
+    await expect(getRegistrationDetail('missing')).resolves.toBeNull()
+  })
+
+  it('getRegistrationDetail throws on query failure', async () => {
+    mockFrom.mockReturnValue(
+      createSelectBuilder({ data: null, error: { message: 'detail failed' } }),
+    )
+
+    await expect(getRegistrationDetail('reg-1')).rejects.toBeInstanceOf(RegistrationError)
+  })
+
+  it('updateRegistrationStatus updates and maps registration', async () => {
+    mockFrom.mockReturnValue(
+      createSelectBuilder({
+        data: { ...sampleRow, status: 'cancelled' },
+        error: null,
+      }),
+    )
+
+    await expect(updateRegistrationStatus('reg-1', 'cancelled')).resolves.toEqual({
+      ...sampleAdminRegistration,
+      status: 'cancelled',
+    })
+  })
+
+  it('updateRegistrationStatus throws when update fails', async () => {
+    mockFrom.mockReturnValue(
+      createSelectBuilder({
+        data: null,
+        error: { message: 'update failed' },
+      }),
+    )
+
+    await expect(updateRegistrationStatus('reg-1', 'cancelled')).rejects.toBeInstanceOf(
+      RegistrationError,
+    )
   })
 
   it('createRegistration throws RegistrationError when game links fail', async () => {

@@ -1,6 +1,7 @@
 import { NavLink, Outlet } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { useSignOut } from '@/hooks/useAuth'
+import { useRegistrationCount } from '@/hooks/useRegistration'
 
 const navLinkStyle = ({ isActive }: { isActive: boolean }) => ({
   display: 'block',
@@ -14,6 +15,7 @@ const navLinkStyle = ({ isActive }: { isActive: boolean }) => ({
 
 export function AdminLayout() {
   const signOut = useSignOut()
+  const { data: registrationCount = 0 } = useRegistrationCount()
 
   return (
     <div style={{ display: 'grid', gridTemplateColumns: '240px 1fr', minHeight: '100vh' }}>
@@ -30,7 +32,7 @@ export function AdminLayout() {
             Dashboard
           </NavLink>
           <NavLink to="/admin/registrations" style={navLinkStyle}>
-            Registrations
+            Registrations ({registrationCount})
           </NavLink>
         </nav>
       </aside>

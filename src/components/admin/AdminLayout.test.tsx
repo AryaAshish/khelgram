@@ -11,6 +11,10 @@ vi.mock('@/hooks/useAuth', () => ({
   useSignOut: () => mockUseSignOut(),
 }))
 
+vi.mock('@/hooks/useRegistration', () => ({
+  useRegistrationCount: () => ({ data: 7 }),
+}))
+
 describe('AdminLayout', () => {
   beforeEach(() => {
     mockUseSignOut.mockReturnValue({
@@ -52,7 +56,7 @@ describe('AdminLayout', () => {
     )
 
     expect(screen.getByText('Dashboard content')).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Registrations' })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: 'Registrations (7)' })).toHaveAttribute(
       'href',
       '/admin/registrations',
     )

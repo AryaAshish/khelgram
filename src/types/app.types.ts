@@ -50,3 +50,25 @@ export type RegistrationResult = {
   id: string
   code: string
 }
+
+export type RegistrationStatus = 'confirmed' | 'cancelled' | 'waitlisted'
+
+export type AdminRegistration = {
+  id: string
+  code: string
+  childName: string
+  age: number
+  parentName: string
+  email: string
+  phone: string
+  status: RegistrationStatus
+  createdAt: string
+  gameNames: string[]
+  gameIds: string[]
+}
+
+export type RegistrationFilters = {
+  search?: string
+  gameId?: string
+  status?: RegistrationStatus | ''
+}

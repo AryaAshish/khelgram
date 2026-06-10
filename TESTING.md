@@ -100,3 +100,13 @@ Before committing any phase:
 - [x] Unit tests: auth service, useAuth, RequireAuth, LoginPage, AdminLayout
 - [x] Playwright: `/admin` redirects to login without session
 - [x] `npm run typecheck`, `lint`, `test:coverage`, `build` all pass
+
+## Phase 6 checklist
+
+- [x] `registrations.service.ts` extended with list, detail, status update, filter helper
+- [x] `useAdminRegistrations`, `useExportRegistrations` hooks
+- [x] Admin registrations table with search/filter and `.xlsx` export (SheetJS)
+- [x] Registration detail page with status updates
+- [x] Sidebar registrations count badge
+- [x] Unit tests for service, hooks, and admin pages
+- [x] `npm run typecheck`, `lint`, `test:coverage`, `build` all pass
