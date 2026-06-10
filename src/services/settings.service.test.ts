@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { getSetting, getSettingsBySection, updateSetting } from './settings.service'
+import { getAllSettings, getSetting, getSettingsBySection, updateSetting } from './settings.service'
 import { SettingsError } from '@/lib/errors'
 
 const mockFrom = vi.fn()
@@ -11,10 +11,18 @@ vi.mock('@/lib/supabase', () => ({
 }))
 
 function createQueryBuilder(result: { data: unknown; error: { message: string } | null }) {
+  const order = vi.fn().mockImplementation(() => {
+    const orderedResult = Promise.resolve(result) as Promise<typeof result> & {
+      order?: typeof order
+    }
+    orderedResult.order = order
+    return orderedResult
+  })
+
   const builder = {
     select: vi.fn().mockReturnThis(),
     eq: vi.fn().mockReturnThis(),
-    order: vi.fn().mockResolvedValue(result),
+    order,
     maybeSingle: vi.fn().mockResolvedValue(result),
     upsert: vi.fn().mockReturnThis(),
     single: vi.fn().mockResolvedValue(result),
@@ -64,6 +72,28 @@ describe('settings.service', () => {
     mockFrom.mockReturnValue(builder)
 
     await expect(getSetting('missing')).resolves.toBeNull()
+  })
+
+  it('getAllSettings returns all mapped settings', async () => {
+    const builder = createQueryBuilder({
+      data: [{ key: 'site_name', value: 'Khelgram Foundation', section: 'header' }],
+      error: null,
+    })
+    mockFrom.mockReturnValue(builder)
+
+    await expect(getAllSettings()).resolves.toEqual([
+      { key: 'site_name', value: 'Khelgram Foundation', section: 'header' },
+    ])
+  })
+
+  it('getAllSettings throws SettingsError on failure', async () => {
+    const builder = createQueryBuilder({
+      data: null,
+      error: { message: 'all settings failed' },
+    })
+    mockFrom.mockReturnValue(builder)
+
+    await expect(getAllSettings()).rejects.toBeInstanceOf(SettingsError)
   })
 
   it('getSetting returns mapped setting when found', async () => {

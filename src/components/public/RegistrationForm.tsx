@@ -6,6 +6,8 @@ import type { RegistrationInput } from '@/types/app.types'
 
 export type RegistrationFormProps = {
   eventOptions: string[]
+  isPreRegistration?: boolean
+  isSubmitting?: boolean
   onSubmit: (input: RegistrationInput) => void
 }
 
@@ -52,6 +54,11 @@ export class RegistrationForm extends Component<RegistrationFormProps, Registrat
       <section className="registration-section" id="register" style={{ padding: '4rem 0' }}>
         <div className="container-custom">
           <h2 style={{ fontSize: '2rem', marginBottom: '1rem' }}>Register Your Child</h2>
+          {this.props.isPreRegistration ? (
+            <p style={{ marginBottom: '1rem', color: '#059669', fontWeight: 600 }}>
+              Pre-registration open — we&apos;ll confirm dates by email
+            </p>
+          ) : null}
           <form
             onSubmit={this.handleSubmit}
             aria-label="Registration form"
@@ -117,7 +124,9 @@ export class RegistrationForm extends Component<RegistrationFormProps, Registrat
                 </label>
               ))}
             </fieldset>
-            <Button type="submit">Submit Registration</Button>
+            <Button type="submit" disabled={this.props.isSubmitting}>
+              {this.props.isSubmitting ? 'Submitting...' : 'Submit Registration'}
+            </Button>
           </form>
         </div>
       </section>

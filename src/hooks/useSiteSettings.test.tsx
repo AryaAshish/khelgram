@@ -2,10 +2,16 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { renderHook, waitFor } from '@testing-library/react'
 import type { ReactNode } from 'react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { useSettingsBySection, useSiteSetting, useUpdateSetting } from './useSiteSettings'
+import {
+  useAllSettings,
+  useSettingsBySection,
+  useSiteSetting,
+  useUpdateSetting,
+} from './useSiteSettings'
 import * as settingsService from '@/services/settings.service'
 
 vi.mock('@/services/settings.service', () => ({
+  getAllSettings: vi.fn(),
   getSetting: vi.fn(),
   getSettingsBySection: vi.fn(),
   updateSetting: vi.fn(),
@@ -23,6 +29,7 @@ function createWrapper() {
 
 describe('useSiteSetting', () => {
   beforeEach(() => {
+    vi.mocked(settingsService.getAllSettings).mockReset()
     vi.mocked(settingsService.getSetting).mockReset()
   })
 
@@ -51,6 +58,24 @@ describe('useSiteSetting', () => {
     expect(result.current.value).toBe('Fallback')
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
     expect(result.current.value).toBe('Fallback')
+  })
+})
+
+describe('useAllSettings', () => {
+  it('returns merged settings map with DB values', async () => {
+    vi.mocked(settingsService.getAllSettings).mockResolvedValue([
+      { key: 'site_name', value: 'Custom Name', section: 'header' },
+      { key: 'hero_title', value: 'Custom Hero Title', section: 'hero' },
+    ])
+
+    const { result } = renderHook(() => useAllSettings(), {
+      wrapper: createWrapper(),
+    })
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true))
+    expect(result.current.settingsMap.site_name).toBe('Custom Name')
+    expect(result.current.settingsMap.hero_title).toBe('Custom Hero Title')
+    expect(result.current.settingsMap.footer_description).toBeTruthy()
   })
 })
 

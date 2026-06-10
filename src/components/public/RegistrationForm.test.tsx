@@ -28,6 +28,22 @@ describe('RegistrationForm', () => {
     })
   })
 
+  it('shows pre-registration notice and submitting state', () => {
+    render(
+      <RegistrationForm
+        eventOptions={['Sack Race']}
+        isPreRegistration
+        isSubmitting
+        onSubmit={vi.fn()}
+      />,
+    )
+
+    expect(
+      screen.getByText("Pre-registration open — we'll confirm dates by email"),
+    ).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Submitting...' })).toBeDisabled()
+  })
+
   it('removes event when checkbox is unchecked', async () => {
     const user = userEvent.setup()
     const onSubmit = vi.fn()

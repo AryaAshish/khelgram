@@ -4,6 +4,24 @@ import { describe, expect, it, vi } from 'vitest'
 import { HeroSection } from './HeroSection'
 
 describe('HeroSection', () => {
+  it('renders registration counter when provided', () => {
+    render(
+      <HeroSection
+        title="Festival Title"
+        subtitle="Festival Subtitle"
+        primaryCta="Register"
+        secondaryCta="Explore"
+        eventDateLabel="Date"
+        eventDate="March 20, 2026"
+        registrationCount={42}
+        onPrimaryClick={vi.fn()}
+        onSecondaryClick={vi.fn()}
+      />,
+    )
+
+    expect(screen.getByText('42 children registered so far')).toBeInTheDocument()
+  })
+
   it('renders content and handles CTA clicks', async () => {
     const user = userEvent.setup()
     const onPrimaryClick = vi.fn()

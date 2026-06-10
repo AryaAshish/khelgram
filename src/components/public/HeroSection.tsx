@@ -7,6 +7,7 @@ export type HeroSectionProps = {
   secondaryCta: string
   eventDateLabel: string
   eventDate: string
+  registrationCount?: number
   onPrimaryClick: () => void
   onSecondaryClick: () => void
 }
@@ -18,6 +19,7 @@ export function HeroSection({
   secondaryCta,
   eventDateLabel,
   eventDate,
+  registrationCount,
   onPrimaryClick,
   onSecondaryClick,
 }: HeroSectionProps) {
@@ -38,6 +40,11 @@ export function HeroSection({
         <p style={{ marginBottom: '1.5rem', fontWeight: 700 }}>
           {eventDateLabel}: {eventDate}
         </p>
+        {registrationCount !== undefined ? (
+          <p style={{ marginBottom: '1.5rem', color: '#059669', fontWeight: 700 }}>
+            {registrationCount} children registered so far
+          </p>
+        ) : null}
         <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
           <Button onClick={onPrimaryClick}>{primaryCta}</Button>
           <Button variant="outline" onClick={onSecondaryClick}>

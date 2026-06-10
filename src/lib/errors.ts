@@ -11,3 +11,10 @@ export class SettingsError extends AppError {
     this.name = 'SettingsError'
   }
 }
+
+export class RegistrationError extends AppError {
+  constructor(message: string) {
+    super(message)
+    this.name = 'RegistrationError'
+  }
+}

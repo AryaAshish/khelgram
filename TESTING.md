@@ -67,3 +67,24 @@ Before committing any phase:
 - [x] UI primitives: Button, Card, Input, Label
 - [x] Component tests for every public section
 - [x] `npm run test:coverage` passes at 95%+ thresholds
+
+## Phase 3 checklist
+
+- [x] Migration `0002_games_gallery_impact_stats.sql` applied
+- [x] `games.service`, `gallery.service`, `impactStats.service` with unit tests
+- [x] `useGames`, `useGallery`, `useImpactStats`, `useAllSettings` hooks with fixture fallbacks
+- [x] `SectionSkeleton` and `SectionErrorBoundary` for loading/error states
+- [x] `HomePage` wired to Supabase data via hooks
+- [x] `npm run typecheck`, `lint`, `test:coverage`, `build` all pass
+
+## Phase 4 checklist
+
+- [x] Migration `0003_registrations.sql` applied (registrations, registration_games, RPCs, triggers)
+- [x] `registrations.service.ts` — createRegistration, getRegistrationCount, checkDuplicate, assertCapacity
+- [x] `useRegistration.ts` — useCreateRegistration, useRegistrationCount (30s refetch)
+- [x] Zod validation in `registration.schema.ts` (validated in hook)
+- [x] Registration form wired to mutation; hero shows live counter
+- [x] Pre-registration mode: TBA date, countdown hidden, form notice
+- [x] RLS: anon insert only; count/duplicate via security definer RPCs
+- [x] Unit tests: service + hook; component/page tests updated
+- [x] `npm run typecheck`, `lint`, `test:coverage`, `build` all pass

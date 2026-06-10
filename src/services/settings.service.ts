@@ -30,6 +30,20 @@ export async function getSettingsBySection(section: string): Promise<SiteSetting
   return (data ?? []).map(mapSiteSetting)
 }
 
+export async function getAllSettings(): Promise<SiteSetting[]> {
+  const { data, error } = await supabase
+    .from('site_settings')
+    .select('key, value, section')
+    .order('section')
+    .order('key')
+
+  if (error) {
+    throw new SettingsError(error.message)
+  }
+
+  return (data ?? []).map(mapSiteSetting)
+}
+
 export async function getSetting(key: string): Promise<SiteSetting | null> {
   const { data, error } = await supabase
     .from('site_settings')
