@@ -88,3 +88,15 @@ Before committing any phase:
 - [x] RLS: anon insert only; count/duplicate via security definer RPCs
 - [x] Unit tests: service + hook; component/page tests updated
 - [x] `npm run typecheck`, `lint`, `test:coverage`, `build` all pass
+
+## Phase 5 checklist
+
+- [x] Migration `0004_admin_roles.sql` applied
+- [x] `auth.service.ts` — signIn, signOut, getSession, getAdminRole
+- [x] `useAuth.ts` — useSession, useAdminRole, useSignIn, useSignOut
+- [x] `LoginPage`, `AdminLayout`, `RequireAuth`, `ForbiddenPage`
+- [x] Lazy-loaded `/admin/*` routes with dashboard and registrations shell
+- [x] Wrong password mapped to "Invalid email or password"
+- [x] Unit tests: auth service, useAuth, RequireAuth, LoginPage, AdminLayout
+- [x] Playwright: `/admin` redirects to login without session
+- [x] `npm run typecheck`, `lint`, `test:coverage`, `build` all pass
