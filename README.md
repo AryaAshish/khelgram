@@ -33,11 +33,13 @@ npm run typecheck
 npm run lint
 npm run test:coverage
 npm run build
-npm run e2e
+npm run e2e:install   # once, installs Playwright browser
+npm run verify:phase -- 6
 ```
 
-Pre-commit hooks run typecheck, coverage, and build automatically.
+Pre-commit hooks run typecheck, coverage, and build automatically. Phase completion uses `verify:phase` (unit + RLS + E2E).
 
 ## Phases
 
-See [TESTING.md](./TESTING.md) for per-phase checklists.
+- [TESTING.md](./TESTING.md) — per-phase deliverable checklists
+- [docs/AUTOMATED_TESTING.md](./docs/AUTOMATED_TESTING.md) — how manual checks map to automation

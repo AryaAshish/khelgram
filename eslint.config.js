@@ -55,4 +55,11 @@ export default defineConfig([
       'no-restricted-imports': 'off',
     },
   },
+  {
+    files: ['e2e/**/*.{ts,tsx}'],
+    rules: {
+      'react-hooks/rules-of-hooks': 'off',
+      'react-refresh/only-export-components': 'off',
+    },
+  },
 ])

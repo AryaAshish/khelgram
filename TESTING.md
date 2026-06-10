@@ -22,19 +22,30 @@ Every commit runs:
 
 ## Agent pre-commit checklist
 
-Before committing any phase:
+Before committing any phase, run:
 
-- [ ] `npm run typecheck` — zero errors
-- [ ] `npm run lint` — zero warnings
-- [ ] `npm run test:coverage` — all thresholds green
-- [ ] `npm run build` — clean build
-- [ ] Open `http://localhost:5173` — verify acceptance criteria visually
-- [ ] Browser console — zero errors
-- [ ] Mobile viewport (375px) — no broken layouts
-- [ ] No `supabase` import outside `services/` (ESLint enforces)
-- [ ] Loading and error states render correctly
-- [ ] New RLS policies tested in Supabase SQL editor (when applicable)
-- [ ] Update this file with phase checklist results
+```bash
+npm run verify:phase -- <N>
+```
+
+That command automates the checklist below. See [docs/AUTOMATED_TESTING.md](./docs/AUTOMATED_TESTING.md) for details.
+
+| Check                       | Automated command / spec             |
+| --------------------------- | ------------------------------------ |
+| `typecheck`                 | `verify:phase`                       |
+| `lint`                      | `verify:phase`                       |
+| `test:coverage` (95%+)      | `verify:phase`                       |
+| `build`                     | `verify:phase`                       |
+| Homepage renders            | `e2e/phases/phase2-sections.spec.ts` |
+| Browser console zero errors | `e2e/fixtures.ts`                    |
+| Mobile 375px layout         | `e2e/phases/mobile-health.spec.ts`   |
+| Supabase layer enforcement  | ESLint in `verify:phase` lint step   |
+| RLS policies                | `npm run verify:rls` (phases 1–6)    |
+| Phase acceptance flows      | `e2e/phases/phaseN-*.spec.ts`        |
+
+Pre-commit hooks (Husky) run `typecheck`, `test:coverage`, and `build` only. Run `verify:phase` before each phase commit.
+
+For phases 7–11, enable E2E with `RUN_PHASE7_E2E=1` (etc.) after implementing the phase.
 
 ## Phase 0 checklist
 

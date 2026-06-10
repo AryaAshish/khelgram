@@ -14,7 +14,11 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "e2e": "playwright test",
+    "e2e:smoke": "playwright test e2e/phases/phase2-sections.spec.ts e2e/phases/mobile-health.spec.ts",
+    "e2e:phases": "playwright test e2e/phases",
     "e2e:install": "playwright install chromium",
+    "verify:rls": "node scripts/verify-rls.mjs",
+    "verify:phase": "node scripts/verify-phase.mjs",
     "preview": "vite preview",
     "prepare": "husky"
   },
