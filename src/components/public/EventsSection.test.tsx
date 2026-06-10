@@ -6,6 +6,7 @@ describe('EventsSection', () => {
   it('renders all games', () => {
     render(
       <EventsSection
+        title="Festival Events"
         games={[
           {
             id: 'one',

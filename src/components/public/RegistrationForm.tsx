@@ -5,7 +5,10 @@ import { Label } from '@/components/ui/label'
 import type { RegistrationInput } from '@/types/app.types'
 
 export type RegistrationFormProps = {
+  title: string
   eventOptions: string[]
+  preRegistrationMessage: string
+  submitLabel: string
   isPreRegistration?: boolean
   isSubmitting?: boolean
   onSubmit: (input: RegistrationInput) => void
@@ -53,10 +56,10 @@ export class RegistrationForm extends Component<RegistrationFormProps, Registrat
     return (
       <section className="registration-section" id="register" style={{ padding: '4rem 0' }}>
         <div className="container-custom">
-          <h2 style={{ fontSize: '2rem', marginBottom: '1rem' }}>Register Your Child</h2>
+          <h2 style={{ fontSize: '2rem', marginBottom: '1rem' }}>{this.props.title}</h2>
           {this.props.isPreRegistration ? (
             <p style={{ marginBottom: '1rem', color: '#059669', fontWeight: 600 }}>
-              Pre-registration open — we&apos;ll confirm dates by email
+              {this.props.preRegistrationMessage}
             </p>
           ) : null}
           <form
@@ -125,7 +128,7 @@ export class RegistrationForm extends Component<RegistrationFormProps, Registrat
               ))}
             </fieldset>
             <Button type="submit" disabled={this.props.isSubmitting}>
-              {this.props.isSubmitting ? 'Submitting...' : 'Submit Registration'}
+              {this.props.isSubmitting ? 'Submitting...' : this.props.submitLabel}
             </Button>
           </form>
         </div>

@@ -6,6 +6,7 @@ describe('GallerySection', () => {
   it('renders image items', () => {
     render(
       <GallerySection
+        title="Gallery"
         images={[{ id: 'image-1', url: 'https://example.com/test.jpg', alt: 'Sample' }]}
       />,
     )

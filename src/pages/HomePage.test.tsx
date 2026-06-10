@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { aboutContent, countdownTarget } from '@/fixtures/homePageFixtures'
 import { HomePage } from './HomePage'
 
 const mockUseGames = vi.fn()
@@ -74,9 +75,17 @@ function setDefaultHookMocks() {
       hero_secondary_cta: 'Explore Events',
       hero_event_date_label: 'Festival Date',
       hero_event_date: 'March 20, 2026',
+      countdown_title: 'Countdown to Festival Day',
+      about_title: 'About Khelgram Foundation',
+      events_title: 'Festival Events',
+      gallery_title: 'Gallery',
+      register_title: 'Register Your Child',
+      register_submit_label: 'Submit Registration',
       footer_description: 'Footer description',
       footer_copyright: 'Footer copyright',
     },
+    aboutContent,
+    countdownTarget,
   })
 }
 
@@ -110,6 +119,28 @@ describe('HomePage', () => {
     expect(screen.getByLabelText('Festival Events loading')).toBeInTheDocument()
     expect(screen.getByLabelText('About Khelgram Foundation loading')).toBeInTheDocument()
     expect(screen.getByLabelText('Gallery loading')).toBeInTheDocument()
+  })
+
+  it('uses custom section titles on loading skeletons', () => {
+    setDefaultHookMocks()
+    mockUseAllSettings.mockReturnValue({
+      settingsMap: {
+        about_title: 'Custom About',
+        events_title: 'Custom Events',
+        gallery_title: 'Custom Gallery',
+      },
+      aboutContent,
+      countdownTarget,
+    })
+    mockUseGames.mockReturnValue({ games: [], isLoading: true })
+    mockUseGallery.mockReturnValue({ images: [], isLoading: true })
+    mockUseImpactStats.mockReturnValue({ impactStats: [], isLoading: true })
+
+    render(<HomePage />)
+
+    expect(screen.getByLabelText('Custom About loading')).toBeInTheDocument()
+    expect(screen.getByLabelText('Custom Events loading')).toBeInTheDocument()
+    expect(screen.getByLabelText('Custom Gallery loading')).toBeInTheDocument()
   })
 
   it('renders all main sections', () => {
@@ -153,7 +184,11 @@ describe('HomePage', () => {
 
   it('uses fixture fallback settings when map values are missing', () => {
     setDefaultHookMocks()
-    mockUseAllSettings.mockReturnValue({ settingsMap: {} })
+    mockUseAllSettings.mockReturnValue({
+      settingsMap: {},
+      aboutContent,
+      countdownTarget,
+    })
 
     render(<HomePage />)
 
@@ -173,7 +208,11 @@ describe('HomePage', () => {
     mockUseAllSettings.mockReturnValue({
       settingsMap: {
         event_status: 'pre_registration',
+        countdown_tba_text: 'To Be Announced',
+        register_pre_message: "Pre-registration open — we'll confirm dates by email",
       },
+      aboutContent,
+      countdownTarget,
     })
 
     render(<HomePage />)
@@ -182,6 +221,21 @@ describe('HomePage', () => {
     expect(
       screen.getByText("Pre-registration open — we'll confirm dates by email"),
     ).toBeInTheDocument()
+  })
+
+  it('falls back to default TBA text during pre-registration', () => {
+    setDefaultHookMocks()
+    mockUseAllSettings.mockReturnValue({
+      settingsMap: {
+        event_status: 'pre_registration',
+      },
+      aboutContent,
+      countdownTarget: null,
+    })
+
+    render(<HomePage />)
+
+    expect(screen.getAllByText('To Be Announced').length).toBeGreaterThan(0)
   })
 
   it('submits registration through create mutation', async () => {
@@ -211,6 +265,43 @@ describe('HomePage', () => {
       phone: '9999999999',
       selectedEvents: ['Sack Race'],
     })
+  })
+
+  it('renders custom section titles from settings map', () => {
+    setDefaultHookMocks()
+    mockUseAllSettings.mockReturnValue({
+      settingsMap: {
+        site_name: 'Khelgram Foundation',
+        hero_title: 'Custom Hero',
+        countdown_title: 'Custom Countdown',
+        about_title: 'Custom About',
+        events_title: 'Custom Events',
+        gallery_title: 'Custom Gallery',
+        register_title: 'Custom Register',
+        contact_title: 'Custom Contact',
+        hero_primary_cta: 'Join',
+        hero_secondary_cta: 'Learn',
+        hero_event_date_label: 'Date',
+        hero_event_date: 'Soon',
+        event_status: 'registration_open',
+        event_date: '2026-04-22',
+        register_submit_label: 'Send',
+        footer_description: 'Custom footer',
+        footer_copyright: 'Custom copyright',
+      },
+      aboutContent,
+      countdownTarget,
+    })
+
+    render(<HomePage />)
+
+    expect(screen.getByText('Custom Countdown')).toBeInTheDocument()
+    expect(screen.getByText('Custom About')).toBeInTheDocument()
+    expect(screen.getByText('Custom Events')).toBeInTheDocument()
+    expect(screen.getByText('Custom Gallery')).toBeInTheDocument()
+    expect(screen.getByText('Custom Register')).toBeInTheDocument()
+    expect(screen.getByText('Custom Contact')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Send' })).toBeInTheDocument()
   })
 
   it('shows registration counter in hero', () => {

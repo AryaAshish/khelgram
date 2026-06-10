@@ -6,6 +6,7 @@ describe('AboutSection', () => {
   it('renders mission and stats', () => {
     render(
       <AboutSection
+        title="About Khelgram Foundation"
         content={{ mission: 'Mission text', vision: 'Vision text', values: ['Value One'] }}
         impactStats={[{ id: 'one', value: '100+', label: 'Kids' }]}
       />,

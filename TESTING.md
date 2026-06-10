@@ -121,3 +121,14 @@ For phases 7–11, enable E2E with `RUN_PHASE7_E2E=1` (etc.) after implementing 
 - [x] Sidebar registrations count badge
 - [x] Unit tests for service, hooks, and admin pages
 - [x] `npm run typecheck`, `lint`, `test:coverage`, `build` all pass
+
+## Phase 7 checklist
+
+- [x] Migration `0005_content_settings_seed.sql` applied
+- [x] `upsertSetting`, `updateSectionSettings` in settings service
+- [x] `useUpdateSectionSettings` with optimistic update + rollback
+- [x] Admin `ContentPage` with tabs per section (Hero, Countdown, About, Events, Gallery, Register, Contact, Footer)
+- [x] Public `HomePage` reads all section strings from settings with fallbacks
+- [x] Unit tests: service, hooks, ContentPage, contentSections
+- [x] E2E spec ready: `RUN_PHASE7_E2E=1 npm run verify:phase -- 7`
+- [x] `npm run typecheck`, `lint`, `test:coverage`, `build` all pass

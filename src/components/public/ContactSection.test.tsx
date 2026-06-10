@@ -4,7 +4,14 @@ import { ContactSection } from './ContactSection'
 
 describe('ContactSection', () => {
   it('renders contact details', () => {
-    render(<ContactSection address="Address" phone="+91 12345 67890" email="hello@example.com" />)
+    render(
+      <ContactSection
+        title="Contact"
+        address="Address"
+        phone="+91 12345 67890"
+        email="hello@example.com"
+      />,
+    )
 
     expect(screen.getByText('Address')).toBeInTheDocument()
     expect(screen.getByText('+91 12345 67890')).toBeInTheDocument()

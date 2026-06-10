@@ -58,6 +58,14 @@ export async function getSetting(key: string): Promise<SiteSetting | null> {
   return data ? mapSiteSetting(data) : null
 }
 
+export async function upsertSetting(
+  key: string,
+  value: string,
+  section: string,
+): Promise<SiteSetting> {
+  return updateSetting(key, value, section)
+}
+
 export async function updateSetting(
   key: string,
   value: string,
@@ -74,4 +82,12 @@ export async function updateSetting(
   }
 
   return mapSiteSetting(data)
+}
+
+export async function updateSectionSettings(
+  settings: Array<{ key: string; value: string; section: string }>,
+): Promise<SiteSetting[]> {
+  return Promise.all(
+    settings.map((setting) => updateSetting(setting.key, setting.value, setting.section)),
+  )
 }

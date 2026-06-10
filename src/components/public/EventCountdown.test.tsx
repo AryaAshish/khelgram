@@ -33,6 +33,11 @@ describe('EventCountdown', () => {
     expect(screen.getByText('02')).toBeInTheDocument()
   })
 
+  it('unmounts safely when interval was never started', () => {
+    const instance = new EventCountdown({ targetDate: '2026-03-20T09:00:00+05:30' })
+    expect(() => instance.componentWillUnmount()).not.toThrow()
+  })
+
   it('clears interval on unmount', () => {
     const clearSpy = vi.spyOn(window, 'clearInterval')
     const { unmount } = render(<EventCountdown targetDate="2026-03-20T09:00:00+05:30" />)

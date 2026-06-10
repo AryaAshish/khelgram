@@ -21,6 +21,9 @@ const RegistrationDetailPage = lazy(() =>
     default: module.RegistrationDetailPage,
   })),
 )
+const ContentPage = lazy(() =>
+  import('@/pages/admin/ContentPage').then((module) => ({ default: module.ContentPage })),
+)
 
 function AdminFallback() {
   return (
@@ -58,6 +61,14 @@ export default function App() {
               element={
                 <Suspense fallback={<AdminFallback />}>
                   <RegistrationsPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/admin/content"
+              element={
+                <Suspense fallback={<AdminFallback />}>
+                  <ContentPage />
                 </Suspense>
               }
             />

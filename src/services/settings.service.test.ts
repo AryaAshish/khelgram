@@ -1,5 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { getAllSettings, getSetting, getSettingsBySection, updateSetting } from './settings.service'
+import {
+  getAllSettings,
+  getSetting,
+  getSettingsBySection,
+  updateSectionSettings,
+  updateSetting,
+  upsertSetting,
+} from './settings.service'
 import { SettingsError } from '@/lib/errors'
 
 const mockFrom = vi.fn()
@@ -74,6 +81,13 @@ describe('settings.service', () => {
     await expect(getSetting('missing')).resolves.toBeNull()
   })
 
+  it('getAllSettings returns empty array when data is null', async () => {
+    const builder = createQueryBuilder({ data: null, error: null })
+    mockFrom.mockReturnValue(builder)
+
+    await expect(getAllSettings()).resolves.toEqual([])
+  })
+
   it('getAllSettings returns all mapped settings', async () => {
     const builder = createQueryBuilder({
       data: [{ key: 'site_name', value: 'Khelgram Foundation', section: 'header' }],
@@ -130,6 +144,35 @@ describe('settings.service', () => {
     const setting = await updateSetting('site_name', 'Updated', 'header')
 
     expect(setting).toEqual({ key: 'site_name', value: 'Updated', section: 'header' })
+  })
+
+  it('upsertSetting delegates to updateSetting', async () => {
+    const builder = createQueryBuilder({
+      data: { key: 'hero_title', value: 'Updated Hero', section: 'hero' },
+      error: null,
+    })
+    mockFrom.mockReturnValue(builder)
+
+    await expect(upsertSetting('hero_title', 'Updated Hero', 'hero')).resolves.toEqual({
+      key: 'hero_title',
+      value: 'Updated Hero',
+      section: 'hero',
+    })
+  })
+
+  it('updateSectionSettings upserts each field', async () => {
+    const builder = createQueryBuilder({
+      data: { key: 'hero_title', value: 'Updated Hero', section: 'hero' },
+      error: null,
+    })
+    mockFrom.mockReturnValue(builder)
+
+    const results = await updateSectionSettings([
+      { key: 'hero_title', value: 'Updated Hero', section: 'hero' },
+      { key: 'hero_subtitle', value: 'Updated subtitle', section: 'hero' },
+    ])
+
+    expect(results).toHaveLength(2)
   })
 
   it('updateSetting throws SettingsError on failure', async () => {

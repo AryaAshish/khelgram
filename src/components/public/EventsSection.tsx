@@ -2,14 +2,15 @@ import { Card } from '@/components/ui/card'
 import type { Game } from '@/types/app.types'
 
 export type EventsSectionProps = {
+  title: string
   games: Game[]
 }
 
-export function EventsSection({ games }: EventsSectionProps) {
+export function EventsSection({ title, games }: EventsSectionProps) {
   return (
     <section className="events-section" id="events" style={{ padding: '4rem 0' }}>
       <div className="container-custom">
-        <h2 style={{ fontSize: '2rem', marginBottom: '1rem' }}>Festival Events</h2>
+        <h2 style={{ fontSize: '2rem', marginBottom: '1rem' }}>{title}</h2>
         <div
           style={{
             display: 'grid',

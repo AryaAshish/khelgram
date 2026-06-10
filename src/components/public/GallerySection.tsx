@@ -1,14 +1,15 @@
 import type { GalleryImage } from '@/types/app.types'
 
 export type GallerySectionProps = {
+  title: string
   images: GalleryImage[]
 }
 
-export function GallerySection({ images }: GallerySectionProps) {
+export function GallerySection({ title, images }: GallerySectionProps) {
   return (
     <section className="gallery-section" id="gallery" style={{ padding: '4rem 0' }}>
       <div className="container-custom">
-        <h2 style={{ fontSize: '2rem', marginBottom: '1rem' }}>Gallery</h2>
+        <h2 style={{ fontSize: '2rem', marginBottom: '1rem' }}>{title}</h2>
         <div
           style={{
             display: 'grid',

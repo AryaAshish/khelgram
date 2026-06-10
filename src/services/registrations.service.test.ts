@@ -299,6 +299,30 @@ describe('registrations.service', () => {
     await expect(getRegistrations()).rejects.toBeInstanceOf(RegistrationError)
   })
 
+  it('getRegistrations maps missing game relations as unknown', async () => {
+    mockFrom.mockReturnValue(
+      createSelectBuilder({
+        data: [
+          {
+            ...sampleRow,
+            registration_games: [{ game_id: 'game-1', status: 'confirmed', games: null }],
+          },
+        ],
+        error: null,
+      }),
+    )
+
+    await expect(getRegistrations()).resolves.toEqual([
+      { ...sampleAdminRegistration, gameNames: ['Unknown game'] },
+    ])
+  })
+
+  it('getRegistrationDetail returns mapped registration when found', async () => {
+    mockFrom.mockReturnValue(createSelectBuilder({ data: sampleRow, error: null }))
+
+    await expect(getRegistrationDetail('reg-1')).resolves.toEqual(sampleAdminRegistration)
+  })
+
   it('getRegistrationDetail returns null when row is missing', async () => {
     mockFrom.mockReturnValue(createSelectBuilder({ data: null, error: null }))
 

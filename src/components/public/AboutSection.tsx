@@ -1,15 +1,16 @@
 import type { AboutContent, ImpactStat } from '@/types/app.types'
 
 export type AboutSectionProps = {
+  title: string
   content: AboutContent
   impactStats: ImpactStat[]
 }
 
-export function AboutSection({ content, impactStats }: AboutSectionProps) {
+export function AboutSection({ title, content, impactStats }: AboutSectionProps) {
   return (
     <section className="about-section" id="about" style={{ padding: '4rem 0' }}>
       <div className="container-custom">
-        <h2 style={{ fontSize: '2rem', marginBottom: '1rem' }}>About Khelgram Foundation</h2>
+        <h2 style={{ fontSize: '2rem', marginBottom: '1rem' }}>{title}</h2>
         <p style={{ marginBottom: '0.75rem' }}>
           <strong>Mission:</strong> {content.mission}
         </p>

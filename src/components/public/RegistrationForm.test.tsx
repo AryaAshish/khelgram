@@ -3,12 +3,18 @@ import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import { RegistrationForm } from './RegistrationForm'
 
+const defaultProps = {
+  title: 'Register Your Child',
+  preRegistrationMessage: "Pre-registration open — we'll confirm dates by email",
+  submitLabel: 'Submit Registration',
+}
+
 describe('RegistrationForm', () => {
   it('submits registration payload', async () => {
     const user = userEvent.setup()
     const onSubmit = vi.fn()
 
-    render(<RegistrationForm eventOptions={['Sack Race']} onSubmit={onSubmit} />)
+    render(<RegistrationForm {...defaultProps} eventOptions={['Sack Race']} onSubmit={onSubmit} />)
 
     await user.type(screen.getByLabelText('Child Name'), 'Aarav')
     await user.type(screen.getByLabelText('Age'), '9')
@@ -31,6 +37,7 @@ describe('RegistrationForm', () => {
   it('shows pre-registration notice and submitting state', () => {
     render(
       <RegistrationForm
+        {...defaultProps}
         eventOptions={['Sack Race']}
         isPreRegistration
         isSubmitting
@@ -48,7 +55,13 @@ describe('RegistrationForm', () => {
     const user = userEvent.setup()
     const onSubmit = vi.fn()
 
-    render(<RegistrationForm eventOptions={['Sack Race', 'Relay Race']} onSubmit={onSubmit} />)
+    render(
+      <RegistrationForm
+        {...defaultProps}
+        eventOptions={['Sack Race', 'Relay Race']}
+        onSubmit={onSubmit}
+      />,
+    )
 
     const sackRace = screen.getByLabelText('Sack Race')
     const relayRace = screen.getByLabelText('Relay Race')
