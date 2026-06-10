@@ -58,3 +58,12 @@ Before committing any phase:
 - [x] RLS: public read for anon on `site_settings`
 - [x] Unit tests: service + hook + page (100% coverage on included files)
 - [x] Verified SQL: `select key, value from site_settings where key = 'site_name'`
+
+## Phase 2 checklist
+
+- [x] All public sections as pure components (Hero, Countdown, About, Events, Gallery, Register, Contact, Footer)
+- [x] `homePageFixtures.ts` with static data
+- [x] `HomePage` composes sections with fixtures only (no hooks)
+- [x] UI primitives: Button, Card, Input, Label
+- [x] Component tests for every public section
+- [x] `npm run test:coverage` passes at 95%+ thresholds
