@@ -51,7 +51,31 @@ function ContentSectionEditor({
       {section.fields.map((field) => (
         <div key={field.key}>
           <Label htmlFor={field.key}>{field.label}</Label>
-          {field.multiline ? (
+          {field.type === 'select' ? (
+            <select
+              id={field.key}
+              value={draftValues[field.key] ?? ''}
+              onChange={(event) =>
+                setDraftValues((previous) => ({
+                  ...previous,
+                  [field.key]: event.target.value,
+                }))
+              }
+              style={{
+                width: '100%',
+                padding: '0.5rem',
+                borderRadius: '0.5rem',
+                border: '1px solid #d1d5db',
+                marginTop: '0.25rem',
+              }}
+            >
+              {(field.options ?? []).map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          ) : field.multiline ? (
             <textarea
               id={field.key}
               value={draftValues[field.key] ?? ''}

@@ -12,6 +12,7 @@ describe('contentSections', () => {
       'register',
       'contact',
       'footer',
+      'site',
     ])
     expect(contentSections[0]?.fields.some((field) => field.key === 'hero_title')).toBe(true)
   })

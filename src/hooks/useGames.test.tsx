@@ -28,6 +28,7 @@ describe('useGames', () => {
         description: 'Hop',
         ageGroup: 'Ages 6-10',
         startTime: '10:00 AM',
+        status: 'active',
       },
     ])
 

@@ -156,3 +156,16 @@ For phases 7–11, enable E2E with `RUN_PHASE7_E2E=1` (etc.) after implementing 
 - [x] Unit tests for services, hooks, components, and admin pages
 - [x] E2E spec ready: `RUN_PHASE9_E2E=1 npm run verify:phase -- 9`
 - [x] `npm run typecheck`, `lint`, `test:coverage`, `build` all pass
+
+## Phase 10 checklist
+
+- [x] Migration `0008_games_management.sql` applied (pre_registration_allowed, waitlist count trigger)
+- [x] `games.service.ts` extended — upsert, delete, open/close, getGameWithCapacity
+- [x] `useAdminGames` hooks + admin `GamesPage` (CRUD, capacity, manual registration)
+- [x] Event status machine in Content CMS Site tab
+- [x] `EventCard` with capacity bar and status badges; `PreRegBanner` on homepage
+- [x] Waitlist flow in registration (no hard block when full)
+- [x] `promoteFromWaitlist` in admin registrations
+- [x] Unit tests for services, hooks, components, admin pages
+- [x] E2E spec ready: `RUN_PHASE10_E2E=1 npm run verify:phase -- 10`
+- [x] `npm run typecheck`, `lint`, `test:coverage`, `build` all pass

@@ -325,8 +325,8 @@ describe('HomePage', () => {
 
     expect(screen.getByText('To Be Announced')).toBeInTheDocument()
     expect(
-      screen.getByText("Pre-registration open — we'll confirm dates by email"),
-    ).toBeInTheDocument()
+      screen.getAllByText("Pre-registration open — we'll confirm dates by email"),
+    ).toHaveLength(2)
   })
 
   it('falls back to default TBA text during pre-registration', () => {

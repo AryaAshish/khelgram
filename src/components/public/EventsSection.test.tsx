@@ -14,6 +14,7 @@ describe('EventsSection', () => {
             description: 'Description',
             ageGroup: 'Ages 6-10',
             startTime: '10:00 AM',
+            status: 'active',
           },
         ]}
       />,

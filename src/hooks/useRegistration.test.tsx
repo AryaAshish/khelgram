@@ -21,7 +21,7 @@ vi.mock('@/services/games.service', () => ({
 
 vi.mock('@/services/registrations.service', () => ({
   checkDuplicate: vi.fn(),
-  assertCapacity: vi.fn(),
+  resolveGameRegistrationStatuses: vi.fn(),
   createRegistration: vi.fn(),
   getRegistrationCount: vi.fn(),
 }))
@@ -55,6 +55,7 @@ describe('useRegistration', () => {
         description: 'Hop',
         ageGroup: 'Ages 6-10',
         startTime: '10:00 AM',
+        status: 'active',
         capacity: 10,
         registeredCount: 0,
       },
@@ -63,6 +64,10 @@ describe('useRegistration', () => {
     vi.mocked(registrationsService.createRegistration).mockResolvedValue({
       id: 'reg-1',
       code: 'KG-2026-12345',
+      status: 'confirmed',
+    })
+    vi.mocked(registrationsService.resolveGameRegistrationStatuses).mockReturnValue({
+      'game-1': 'confirmed',
     })
     vi.mocked(registrationsService.getRegistrationCount).mockResolvedValue(5)
   })
@@ -79,6 +84,11 @@ describe('useRegistration', () => {
     await result.current.mutateAsync(validInput)
 
     expect(registrationsService.createRegistration).toHaveBeenCalled()
+    expect(registrationsService.createRegistration).toHaveBeenCalledWith(
+      expect.objectContaining({
+        gameStatuses: { 'game-1': 'confirmed' },
+      }),
+    )
     expect(toast.success).toHaveBeenCalledWith(
       'Registration confirmed! Your code is KG-2026-12345.',
     )
@@ -128,13 +138,68 @@ describe('useRegistration', () => {
     expect(toast.error).toHaveBeenCalledWith('Registration failed. Please try again.')
   })
 
-  it('useCreateRegistration blocks when capacity assertion fails', async () => {
-    vi.mocked(registrationsService.assertCapacity).mockImplementation(() => {
-      throw new RegistrationError('Sack Race is full. Please choose another event.')
+  it('useCreateRegistration waitlists when game is full', async () => {
+    vi.mocked(registrationsService.resolveGameRegistrationStatuses).mockReturnValue({
+      'game-1': 'waitlisted',
+    })
+    vi.mocked(registrationsService.createRegistration).mockResolvedValue({
+      id: 'reg-1',
+      code: 'KG-2026-12345',
+      status: 'waitlisted',
     })
     const { result } = renderHook(() => useCreateRegistration(), { wrapper: createWrapper() })
 
+    await result.current.mutateAsync(validInput)
+    expect(toast.success).toHaveBeenCalledWith(
+      "You're on the waitlist. We'll contact you if a spot opens. Your code is KG-2026-12345.",
+    )
+  })
+
+  it('useCreateRegistration blocks when event registration is closed', async () => {
+    const { result } = renderHook(() => useCreateRegistration('registration_closed'), {
+      wrapper: createWrapper(),
+    })
+
     await expect(result.current.mutateAsync(validInput)).rejects.toBeInstanceOf(RegistrationError)
-    expect(toast.error).toHaveBeenCalledWith('Sack Race is full. Please choose another event.')
+    expect(toast.error).toHaveBeenCalledWith('Registration is currently closed.')
+    expect(registrationsService.createRegistration).not.toHaveBeenCalled()
+  })
+
+  it('useCreateRegistration uses fallback game name in duplicate error', async () => {
+    vi.mocked(gamesService.getGames).mockResolvedValue([
+      {
+        id: 'game-1',
+        name: 'Sack Race',
+        description: 'Hop',
+        ageGroup: 'Ages 6-10',
+        startTime: '10:00 AM',
+        status: 'active',
+      },
+    ])
+    vi.mocked(registrationsService.checkDuplicate).mockResolvedValue(true)
+    const { result } = renderHook(() => useCreateRegistration(), { wrapper: createWrapper() })
+
+    await expect(result.current.mutateAsync(validInput)).rejects.toBeInstanceOf(RegistrationError)
+    expect(toast.error).toHaveBeenCalledWith('You are already registered for Sack Race.')
+  })
+
+  it('useCreateRegistration supports pre-registration filtering by game flag', async () => {
+    vi.mocked(gamesService.getGames).mockResolvedValue([
+      {
+        id: 'game-1',
+        name: 'Sack Race',
+        description: 'Hop',
+        ageGroup: 'Ages 6-10',
+        startTime: '10:00 AM',
+        status: 'active',
+        preRegistrationAllowed: false,
+      },
+    ])
+    const { result } = renderHook(() => useCreateRegistration('pre_registration'), {
+      wrapper: createWrapper(),
+    })
+
+    await expect(result.current.mutateAsync(validInput)).rejects.toBeInstanceOf(RegistrationError)
+    expect(toast.error).toHaveBeenCalled()
   })
 })

@@ -4,6 +4,7 @@ import { ContactSection } from '@/components/public/ContactSection'
 import { ContributorsGrid } from '@/components/public/ContributorsGrid'
 import { CountdownSection } from '@/components/public/CountdownSection'
 import { EventsSection } from '@/components/public/EventsSection'
+import { PreRegBanner } from '@/components/public/PreRegBanner'
 import { FAQAccordion } from '@/components/public/FAQAccordion'
 import { GallerySection } from '@/components/public/GallerySection'
 import { HeroSection } from '@/components/public/HeroSection'
@@ -39,9 +40,8 @@ export function HomePage() {
   const { items: faqItems, isLoading: faqLoading } = useFaq()
   const { settingsMap, aboutContent, countdownTarget } = useAllSettings()
   const { data: registrationCount } = useRegistrationCount()
-  const createRegistration = useCreateRegistration()
-
   const eventStatus = settingsMap.event_status ?? 'registration_open'
+  const createRegistration = useCreateRegistration(eventStatus)
   const isPreRegistration = eventStatus === 'pre_registration'
   const eventDate = isPreRegistration
     ? (settingsMap.countdown_tba_text ?? 'To Be Announced')
@@ -64,6 +64,14 @@ export function HomePage() {
   return (
     <div className="homepage">
       <SiteHeader siteName={settingsMap.site_name ?? 'Khelgram Foundation'} />
+      {isPreRegistration ? (
+        <PreRegBanner
+          message={
+            settingsMap.register_pre_message ??
+            "Pre-registration open — we'll confirm dates by email"
+          }
+        />
+      ) : null}
       <main>
         <SectionErrorBoundary title="Hero">
           <HeroSection

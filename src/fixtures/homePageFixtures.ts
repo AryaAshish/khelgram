@@ -17,6 +17,8 @@ export const games: Game[] = [
     description: 'Hop your way to the finish line with speed, balance, and a big smile.',
     ageGroup: 'Ages 6-10',
     startTime: '10:00 AM',
+    status: 'active',
+    preRegistrationAllowed: true,
   },
   {
     id: 'tug-of-war',
@@ -24,6 +26,8 @@ export const games: Game[] = [
     description: 'Team up with friends and pull together to win this classic strength challenge.',
     ageGroup: 'Ages 8-14',
     startTime: '11:00 AM',
+    status: 'active',
+    preRegistrationAllowed: true,
   },
   {
     id: 'sprint-50m',
@@ -31,6 +35,8 @@ export const games: Game[] = [
     description: 'A quick burst of speed where every second counts on the track.',
     ageGroup: 'Ages 6-14',
     startTime: '12:00 PM',
+    status: 'active',
+    preRegistrationAllowed: true,
   },
   {
     id: 'relay-race',
@@ -38,6 +44,8 @@ export const games: Game[] = [
     description: 'Pass the baton, cheer your team, and race to victory together.',
     ageGroup: 'Ages 8-14',
     startTime: '1:00 PM',
+    status: 'active',
+    preRegistrationAllowed: true,
   },
   {
     id: 'musical-chairs',
@@ -45,6 +53,8 @@ export const games: Game[] = [
     description: 'A fun and fast-paced game of rhythm, reflexes, and laughter.',
     ageGroup: 'Ages 5-12',
     startTime: '2:00 PM',
+    status: 'active',
+    preRegistrationAllowed: true,
   },
 ]
 

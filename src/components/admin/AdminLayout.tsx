@@ -34,6 +34,9 @@ export function AdminLayout() {
           <NavLink to="/admin/registrations" style={navLinkStyle}>
             Registrations ({registrationCount})
           </NavLink>
+          <NavLink to="/admin/games" style={navLinkStyle}>
+            Games
+          </NavLink>
           <NavLink to="/admin/content" style={navLinkStyle}>
             Content
           </NavLink>

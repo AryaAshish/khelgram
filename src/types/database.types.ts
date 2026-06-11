@@ -32,6 +32,7 @@ export type Database = {
           icon: string | null
           id: string
           name: string
+          pre_registration_allowed: boolean
           registered_count: number
           slug: string
           start_time: string
@@ -45,6 +46,7 @@ export type Database = {
           icon?: string | null
           id: string
           name: string
+          pre_registration_allowed?: boolean
           registered_count?: number
           slug: string
           start_time: string
@@ -58,6 +60,7 @@ export type Database = {
           icon?: string | null
           id?: string
           name?: string
+          pre_registration_allowed?: boolean
           registered_count?: number
           slug?: string
           start_time?: string

@@ -1,7 +1,11 @@
 import { Link, useParams } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
-import { useRegistrationDetail, useUpdateRegistrationStatus } from '@/hooks/useAdminRegistrations'
+import {
+  usePromoteFromWaitlist,
+  useRegistrationDetail,
+  useUpdateRegistrationStatus,
+} from '@/hooks/useAdminRegistrations'
 import type { RegistrationStatus } from '@/types/app.types'
 
 const statusOptions: RegistrationStatus[] = ['confirmed', 'waitlisted', 'cancelled']
@@ -10,6 +14,7 @@ export function RegistrationDetailPage() {
   const { id = '' } = useParams()
   const { data: registration, isLoading } = useRegistrationDetail(id)
   const updateStatus = useUpdateRegistrationStatus()
+  const promoteFromWaitlist = usePromoteFromWaitlist()
 
   if (isLoading) {
     return <p>Loading registration details...</p>
@@ -87,6 +92,21 @@ export function RegistrationDetailPage() {
           ))}
         </select>
       </div>
+
+      {registration.status === 'waitlisted' && registration.gameIds[0] ? (
+        <Button
+          style={{ marginTop: '1rem', marginRight: '0.5rem' }}
+          onClick={() =>
+            promoteFromWaitlist.mutate({
+              registrationId: registration.id,
+              gameId: registration.gameIds[0]!,
+            })
+          }
+          disabled={promoteFromWaitlist.isPending}
+        >
+          {promoteFromWaitlist.isPending ? 'Promoting...' : 'Promote from waitlist'}
+        </Button>
+      ) : null}
 
       <Button
         variant="outline"

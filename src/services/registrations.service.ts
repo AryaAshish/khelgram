@@ -1,4 +1,9 @@
 import { RegistrationError } from '@/lib/errors'
+import {
+  getOverallRegistrationStatus,
+  resolveGameRegistrationStatuses as resolveStatuses,
+} from '@/lib/gameRegistration.logic'
+import * as gamesService from '@/services/games.service'
 import { supabase } from '@/lib/supabase'
 import type {
   AdminRegistration,
@@ -9,8 +14,11 @@ import type {
   RegistrationStatus,
 } from '@/types/app.types'
 
+type GameRegistrationStatus = 'confirmed' | 'waitlisted'
+
 type CreateRegistrationPayload = RegistrationInput & {
   gameIds: string[]
+  gameStatuses: Record<string, GameRegistrationStatus>
 }
 
 type RegistrationGameRow = {
@@ -180,23 +188,27 @@ export async function updateRegistrationStatus(
   return mapAdminRegistration(data as RegistrationRow)
 }
 
-export function assertCapacity(games: Game[], gameIds: string[]): void {
-  for (const gameId of gameIds) {
-    const game = games.find((entry) => entry.id === gameId)
-    if (!game) {
-      throw mapRegistrationError('One or more selected events are no longer available.')
-    }
-
-    if (game.capacity !== undefined && (game.registeredCount ?? 0) >= game.capacity) {
-      throw mapRegistrationError(`${game.name} is full. Please choose another event.`)
-    }
+export function resolveGameRegistrationStatuses(
+  games: Game[],
+  gameIds: string[],
+): Record<string, GameRegistrationStatus> {
+  try {
+    return resolveStatuses(games, gameIds)
+  } catch (error) {
+    throw mapRegistrationError(error instanceof Error ? error.message : 'Registration failed')
   }
+}
+
+/** @deprecated Use resolveGameRegistrationStatuses — full games now waitlist instead of blocking. */
+export function assertCapacity(games: Game[], gameIds: string[]): void {
+  resolveGameRegistrationStatuses(games, gameIds)
 }
 
 export async function createRegistration(
   payload: CreateRegistrationPayload,
 ): Promise<RegistrationResult> {
   const age = Number(payload.age)
+  const overallStatus = getOverallRegistrationStatus(payload.gameStatuses)
 
   const { data: registration, error: registrationError } = await supabase
     .from('registrations')
@@ -206,8 +218,9 @@ export async function createRegistration(
       parent_name: payload.parentName,
       email: payload.email.trim().toLowerCase(),
       phone: payload.phone,
+      status: overallStatus,
     })
-    .select('id, code')
+    .select('id, code, status')
     .single()
 
   if (registrationError || !registration) {
@@ -217,7 +230,7 @@ export async function createRegistration(
   const registrationGames = payload.gameIds.map((gameId) => ({
     registration_id: registration.id,
     game_id: gameId,
-    status: 'confirmed',
+    status: payload.gameStatuses[gameId] ?? 'confirmed',
   }))
 
   const { error: gamesError } = await supabase.from('registration_games').insert(registrationGames)
@@ -229,5 +242,46 @@ export async function createRegistration(
   return {
     id: registration.id,
     code: registration.code,
+    status: registration.status as RegistrationStatus,
   }
+}
+
+export async function promoteFromWaitlist(
+  registrationId: string,
+  gameId: string,
+): Promise<AdminRegistration> {
+  const game = await gamesService.getGameWithCapacity(gameId)
+
+  if (!game) {
+    throw mapRegistrationError('Game not found')
+  }
+
+  if (game.capacity !== undefined && (game.registeredCount ?? 0) >= game.capacity) {
+    throw mapRegistrationError(`${game.name} is still at capacity.`)
+  }
+
+  const { error: gameUpdateError } = await supabase
+    .from('registration_games')
+    .update({ status: 'confirmed' })
+    .eq('registration_id', registrationId)
+    .eq('game_id', gameId)
+    .eq('status', 'waitlisted')
+
+  if (gameUpdateError) {
+    throw mapRegistrationError(gameUpdateError.message)
+  }
+
+  const { data: waitlistedGames, error: waitlistError } = await supabase
+    .from('registration_games')
+    .select('status')
+    .eq('registration_id', registrationId)
+    .eq('status', 'waitlisted')
+
+  if (waitlistError) {
+    throw mapRegistrationError(waitlistError.message)
+  }
+
+  const nextRegistrationStatus = (waitlistedGames?.length ?? 0) > 0 ? 'waitlisted' : 'confirmed'
+
+  return updateRegistrationStatus(registrationId, nextRegistrationStatus)
 }

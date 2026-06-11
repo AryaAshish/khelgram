@@ -3,11 +3,15 @@ import { renderHook, waitFor } from '@testing-library/react'
 import type { ReactNode } from 'react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { toast } from 'sonner'
+import { RegistrationError } from '@/lib/errors'
 import {
   useAdminRegistrations,
+  useAdminCreateRegistration,
+  usePromoteFromWaitlist,
   useRegistrationDetail,
   useUpdateRegistrationStatus,
 } from './useAdminRegistrations'
+import * as gamesService from '@/services/games.service'
 import * as registrationsService from '@/services/registrations.service'
 
 vi.mock('sonner', () => ({
@@ -18,11 +22,18 @@ vi.mock('@/services/registrations.service', () => ({
   getRegistrations: vi.fn(),
   getRegistrationDetail: vi.fn(),
   updateRegistrationStatus: vi.fn(),
+  createRegistration: vi.fn(),
+  resolveGameRegistrationStatuses: vi.fn(),
+  promoteFromWaitlist: vi.fn(),
   filterRegistrations: vi.fn((registrations, filters) =>
     registrations.filter((registration: { childName: string }) =>
       filters.search ? registration.childName.includes(filters.search) : true,
     ),
   ),
+}))
+
+vi.mock('@/services/games.service', () => ({
+  getAllGames: vi.fn(),
 }))
 
 const sampleRegistration = {
@@ -57,6 +68,28 @@ describe('useAdminRegistrations', () => {
     vi.mocked(registrationsService.updateRegistrationStatus).mockResolvedValue({
       ...sampleRegistration,
       status: 'waitlisted',
+    })
+    vi.mocked(gamesService.getAllGames).mockResolvedValue([
+      {
+        id: 'game-1',
+        name: 'Sack Race',
+        description: 'Hop',
+        ageGroup: 'Ages 6-10',
+        startTime: '10:00 AM',
+        status: 'active',
+      },
+    ])
+    vi.mocked(registrationsService.resolveGameRegistrationStatuses).mockReturnValue({
+      'game-1': 'confirmed',
+    })
+    vi.mocked(registrationsService.createRegistration).mockResolvedValue({
+      id: 'reg-2',
+      code: 'KG-2026-00002',
+      status: 'confirmed',
+    })
+    vi.mocked(registrationsService.promoteFromWaitlist).mockResolvedValue({
+      ...sampleRegistration,
+      status: 'confirmed',
     })
   })
 
@@ -102,5 +135,136 @@ describe('useAdminRegistrations', () => {
       'waitlisted',
     )
     expect(toast.success).toHaveBeenCalled()
+  })
+
+  it('creates admin registration with resolved game statuses', async () => {
+    const { result } = renderHook(() => useAdminCreateRegistration(), {
+      wrapper: createWrapper(),
+    })
+
+    await result.current.mutateAsync({
+      childName: 'Riya',
+      age: '8',
+      parentName: 'Anita',
+      email: 'anita@example.com',
+      phone: '8888888888',
+      selectedEvents: ['Sack Race'],
+    })
+
+    expect(registrationsService.createRegistration).toHaveBeenCalledWith(
+      expect.objectContaining({
+        gameIds: ['game-1'],
+        gameStatuses: { 'game-1': 'confirmed' },
+      }),
+    )
+    expect(toast.success).toHaveBeenCalledWith('Registration KG-2026-00002 created (confirmed).')
+  })
+
+  it('promotes waitlisted registration', async () => {
+    const { result } = renderHook(() => usePromoteFromWaitlist(), {
+      wrapper: createWrapper(),
+    })
+
+    await result.current.mutateAsync({ registrationId: 'reg-1', gameId: 'game-1' })
+
+    expect(registrationsService.promoteFromWaitlist).toHaveBeenCalledWith('reg-1', 'game-1')
+    expect(toast.success).toHaveBeenCalledWith('Promoted KG-2026-00001 to confirmed.')
+  })
+
+  it('shows validation error toast for invalid admin registration input', async () => {
+    const { result } = renderHook(() => useAdminCreateRegistration(), {
+      wrapper: createWrapper(),
+    })
+
+    await expect(
+      result.current.mutateAsync({
+        childName: '',
+        age: '',
+        parentName: '',
+        email: 'bad-email',
+        phone: '',
+        selectedEvents: [],
+      }),
+    ).rejects.toThrow()
+
+    expect(toast.error).toHaveBeenCalled()
+    expect(registrationsService.createRegistration).not.toHaveBeenCalled()
+  })
+
+  it('shows fallback error toast when promote fails unexpectedly', async () => {
+    vi.mocked(registrationsService.promoteFromWaitlist).mockRejectedValueOnce(new Error('boom'))
+
+    const { result } = renderHook(() => usePromoteFromWaitlist(), {
+      wrapper: createWrapper(),
+    })
+
+    await expect(
+      result.current.mutateAsync({ registrationId: 'reg-1', gameId: 'game-1' }),
+    ).rejects.toThrow('boom')
+    expect(toast.error).toHaveBeenCalledWith('Unable to promote registration.')
+  })
+
+  it('shows not-available error when selected event is missing for admin create', async () => {
+    const { result } = renderHook(() => useAdminCreateRegistration(), {
+      wrapper: createWrapper(),
+    })
+
+    await expect(
+      result.current.mutateAsync({
+        childName: 'Riya',
+        age: '8',
+        parentName: 'Anita',
+        email: 'anita@example.com',
+        phone: '8888888888',
+        selectedEvents: ['Unknown Event'],
+      }),
+    ).rejects.toThrow('Event "Unknown Event" is not available.')
+
+    expect(toast.error).toHaveBeenCalledWith('Event "Unknown Event" is not available.')
+  })
+
+  it('shows registration-specific error when promote fails with RegistrationError', async () => {
+    vi.mocked(registrationsService.promoteFromWaitlist).mockRejectedValueOnce(
+      new RegistrationError('Sack Race is still at capacity.'),
+    )
+
+    const { result } = renderHook(() => usePromoteFromWaitlist(), {
+      wrapper: createWrapper(),
+    })
+
+    await expect(
+      result.current.mutateAsync({ registrationId: 'reg-1', gameId: 'game-1' }),
+    ).rejects.toThrow('Sack Race is still at capacity.')
+    expect(toast.error).toHaveBeenCalledWith('Sack Race is still at capacity.')
+  })
+
+  it('shows generic error toast when admin create fails unexpectedly', async () => {
+    vi.mocked(registrationsService.createRegistration).mockRejectedValueOnce(new Error('boom'))
+
+    const { result } = renderHook(() => useAdminCreateRegistration(), {
+      wrapper: createWrapper(),
+    })
+
+    await expect(
+      result.current.mutateAsync({
+        childName: 'Riya',
+        age: '8',
+        parentName: 'Anita',
+        email: 'anita@example.com',
+        phone: '8888888888',
+        selectedEvents: ['Sack Race'],
+      }),
+    ).rejects.toThrow('boom')
+
+    expect(toast.error).toHaveBeenCalledWith('Unable to create registration.')
+  })
+
+  it('does not fetch registration detail when id is empty', async () => {
+    const { result } = renderHook(() => useRegistrationDetail(''), {
+      wrapper: createWrapper(),
+    })
+
+    await waitFor(() => expect(result.current.fetchStatus).toBe('idle'))
+    expect(registrationsService.getRegistrationDetail).not.toHaveBeenCalled()
   })
 })

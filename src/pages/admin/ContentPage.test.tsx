@@ -124,6 +124,31 @@ describe('ContentPage', () => {
     sectionsSpy.mockRestore()
   })
 
+  it('saves site event status from select field', async () => {
+    const user = userEvent.setup()
+    mockMutateAsync.mockResolvedValue([])
+    mockUseAllSettings.mockReturnValue({
+      settingsMap: {
+        ...mockSettingsMap,
+        event_status: 'registration_open',
+        event_date: '2026-04-22',
+      },
+      isSuccess: true,
+    })
+
+    render(<ContentPage />, { wrapper: createWrapper() })
+
+    await user.click(screen.getByRole('tab', { name: 'Site' }))
+    await user.selectOptions(screen.getByLabelText('Event status'), 'pre_registration')
+    await user.click(screen.getByRole('button', { name: 'Save site settings' }))
+
+    expect(mockMutateAsync).toHaveBeenCalledWith(
+      expect.arrayContaining([
+        expect.objectContaining({ key: 'event_status', value: 'pre_registration' }),
+      ]),
+    )
+  })
+
   it('shows saving state while section update is pending', () => {
     mockUseUpdateSectionSettings.mockReturnValue({
       mutateAsync: mockMutateAsync,

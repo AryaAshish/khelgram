@@ -4,6 +4,8 @@ export type SiteSetting = {
   section: string
 }
 
+export type GameStatus = 'active' | 'closed'
+
 export type Game = {
   id: string
   slug?: string
@@ -12,9 +14,23 @@ export type Game = {
   icon?: string
   ageGroup: string
   startTime: string
-  status?: string
+  status: GameStatus
   capacity?: number
   registeredCount?: number
+  preRegistrationAllowed?: boolean
+}
+
+export type GameInput = {
+  id?: string
+  slug?: string
+  name: string
+  description: string
+  icon?: string
+  ageGroup: string
+  startTime: string
+  status?: GameStatus
+  capacity?: number
+  preRegistrationAllowed?: boolean
 }
 
 export type GalleryImage = {
@@ -112,6 +128,7 @@ export type RegistrationInput = {
 export type RegistrationResult = {
   id: string
   code: string
+  status: RegistrationStatus
 }
 
 export type RegistrationStatus = 'confirmed' | 'cancelled' | 'waitlisted'

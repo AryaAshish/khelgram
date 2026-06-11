@@ -1,8 +1,15 @@
+export type ContentFieldOption = {
+  value: string
+  label: string
+}
+
 export type ContentField = {
   key: string
   label: string
   section: string
   multiline?: boolean
+  type?: 'text' | 'select'
+  options?: ContentFieldOption[]
 }
 
 export type ContentSection = {
@@ -105,6 +112,28 @@ export const contentSections: ContentSection[] = [
     fields: [
       { key: 'footer_description', label: 'Description', section: 'footer', multiline: true },
       { key: 'footer_copyright', label: 'Copyright', section: 'footer' },
+    ],
+  },
+  {
+    id: 'site',
+    label: 'Site',
+    saveLabel: 'Save site settings',
+    successMessage: 'Site settings saved',
+    fields: [
+      {
+        key: 'event_status',
+        label: 'Event status',
+        section: 'site',
+        type: 'select',
+        options: [
+          { value: 'draft', label: 'Draft' },
+          { value: 'pre_registration', label: 'Pre-registration' },
+          { value: 'registration_open', label: 'Registration open' },
+          { value: 'registration_closed', label: 'Registration closed' },
+          { value: 'completed', label: 'Completed' },
+        ],
+      },
+      { key: 'event_date', label: 'Event date (ISO)', section: 'site' },
     ],
   },
 ]

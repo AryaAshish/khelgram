@@ -1,4 +1,4 @@
-import { Card } from '@/components/ui/card'
+import { EventCard } from '@/components/public/EventCard'
 import type { Game } from '@/types/app.types'
 
 export type EventsSectionProps = {
@@ -19,13 +19,7 @@ export function EventsSection({ title, games }: EventsSectionProps) {
           }}
         >
           {games.map((game) => (
-            <Card key={game.id} style={{ padding: '1rem' }}>
-              <h3 style={{ marginTop: 0 }}>{game.name}</h3>
-              <p>{game.description}</p>
-              <p style={{ marginBottom: 0, color: '#4b5563' }}>
-                {game.ageGroup} • {game.startTime}
-              </p>
-            </Card>
+            <EventCard key={game.id} game={game} />
           ))}
         </div>
       </div>

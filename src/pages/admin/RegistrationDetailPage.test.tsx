@@ -14,6 +14,10 @@ vi.mock('@/hooks/useAdminRegistrations', () => ({
     mutate: mockMutate,
     isPending: false,
   }),
+  usePromoteFromWaitlist: () => ({
+    mutate: mockMutate,
+    isPending: false,
+  }),
 }))
 
 const sampleDetail = {
@@ -85,5 +89,26 @@ describe('RegistrationDetailPage', () => {
 
     await user.click(screen.getByRole('button', { name: 'Refresh Status' }))
     expect(mockMutate).toHaveBeenCalledWith({ id: 'reg-1', status: 'confirmed' })
+  })
+
+  it('shows promote button for waitlisted registrations', async () => {
+    const user = userEvent.setup()
+    mockUseRegistrationDetail.mockReturnValue({
+      data: { ...sampleDetail, status: 'waitlisted' as const },
+      isLoading: false,
+    })
+
+    render(
+      <MemoryRouter initialEntries={['/admin/registrations/reg-1']}>
+        <Routes>
+          <Route path="/admin/registrations/:id" element={<RegistrationDetailPage />} />
+        </Routes>
+      </MemoryRouter>,
+    )
+
+    const button = screen.getByRole('button', { name: 'Promote from waitlist' })
+    expect(button).toBeInTheDocument()
+    await user.click(button)
+    expect(mockMutate).toHaveBeenCalledWith({ registrationId: 'reg-1', gameId: 'game-1' })
   })
 })

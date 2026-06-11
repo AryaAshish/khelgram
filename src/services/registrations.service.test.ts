@@ -8,18 +8,25 @@ import {
   getRegistrationCount,
   getRegistrationDetail,
   getRegistrations,
+  promoteFromWaitlist,
+  resolveGameRegistrationStatuses,
   updateRegistrationStatus,
 } from './registrations.service'
 import type { AdminRegistration } from '@/types/app.types'
 
 const mockFrom = vi.fn()
 const mockRpc = vi.fn()
+const mockGetGameWithCapacity = vi.fn()
 
 vi.mock('@/lib/supabase', () => ({
   supabase: {
     from: (...args: unknown[]) => mockFrom(...args),
     rpc: (...args: unknown[]) => mockRpc(...args),
   },
+}))
+
+vi.mock('@/services/games.service', () => ({
+  getGameWithCapacity: (...args: unknown[]) => mockGetGameWithCapacity(...args),
 }))
 
 function createInsertBuilder(result: { data: unknown; error: { message: string } | null }) {
@@ -35,7 +42,8 @@ function createSelectBuilder(result: { data: unknown; error: { message: string }
   const eq = vi.fn().mockReturnValue({
     maybeSingle: vi.fn().mockResolvedValue(result),
     single: vi.fn().mockResolvedValue(result),
-    select: vi.fn().mockReturnThis(),
+    select: vi.fn().mockResolvedValue({ data: [], error: null }),
+    eq: vi.fn().mockReturnThis(),
   })
 
   return {
@@ -50,6 +58,7 @@ function createSelectBuilder(result: { data: unknown; error: { message: string }
         select: vi.fn().mockReturnValue({
           single: vi.fn().mockResolvedValue(result),
         }),
+        eq: vi.fn().mockReturnThis(),
       }),
     }),
   }
@@ -140,6 +149,7 @@ describe('registrations.service', () => {
             description: 'Hop',
             ageGroup: 'Ages 6-10',
             startTime: '10:00 AM',
+            status: 'active',
             registeredCount: 99,
           },
         ],
@@ -148,9 +158,9 @@ describe('registrations.service', () => {
     ).not.toThrow()
   })
 
-  it('assertCapacity throws when game is full', () => {
-    expect(() =>
-      assertCapacity(
+  it('resolveGameRegistrationStatuses returns waitlisted when game is full', () => {
+    expect(
+      resolveGameRegistrationStatuses(
         [
           {
             id: 'game-1',
@@ -158,13 +168,14 @@ describe('registrations.service', () => {
             description: 'Hop',
             ageGroup: 'Ages 6-10',
             startTime: '10:00 AM',
+            status: 'active',
             capacity: 1,
             registeredCount: 1,
           },
         ],
         ['game-1'],
       ),
-    ).toThrow(RegistrationError)
+    ).toEqual({ 'game-1': 'waitlisted' })
   })
 
   it('assertCapacity throws when game is missing', () => {
@@ -173,7 +184,7 @@ describe('registrations.service', () => {
 
   it('createRegistration inserts registration and games', async () => {
     const registrationBuilder = createInsertBuilder({
-      data: { id: 'reg-1', code: 'KG-2026-12345' },
+      data: { id: 'reg-1', code: 'KG-2026-12345', status: 'confirmed' },
       error: null,
     })
     const gamesBuilder = {
@@ -198,9 +209,10 @@ describe('registrations.service', () => {
       phone: '9999999999',
       selectedEvents: ['Sack Race'],
       gameIds: ['game-1'],
+      gameStatuses: { 'game-1': 'confirmed' },
     })
 
-    expect(result).toEqual({ id: 'reg-1', code: 'KG-2026-12345' })
+    expect(result).toEqual({ id: 'reg-1', code: 'KG-2026-12345', status: 'confirmed' })
     expect(registrationBuilder.insert).toHaveBeenCalledWith(
       expect.objectContaining({
         child_name: 'Aarav',
@@ -228,6 +240,7 @@ describe('registrations.service', () => {
         phone: '9999999999',
         selectedEvents: ['Sack Race'],
         gameIds: ['game-1'],
+        gameStatuses: { 'game-1': 'confirmed' },
       }),
     ).rejects.toBeInstanceOf(RegistrationError)
   })
@@ -248,6 +261,7 @@ describe('registrations.service', () => {
         phone: '9999999999',
         selectedEvents: ['Sack Race'],
         gameIds: ['game-1'],
+        gameStatuses: { 'game-1': 'confirmed' },
       }),
     ).rejects.toThrow('Registration failed')
   })
@@ -366,7 +380,7 @@ describe('registrations.service', () => {
 
   it('createRegistration throws RegistrationError when game links fail', async () => {
     const registrationBuilder = createInsertBuilder({
-      data: { id: 'reg-1', code: 'KG-2026-12345' },
+      data: { id: 'reg-1', code: 'KG-2026-12345', status: 'confirmed' },
       error: null,
     })
     const gamesBuilder = {
@@ -389,7 +403,158 @@ describe('registrations.service', () => {
         phone: '9999999999',
         selectedEvents: ['Sack Race'],
         gameIds: ['game-1'],
+        gameStatuses: { 'game-1': 'confirmed' },
       }),
     ).rejects.toBeInstanceOf(RegistrationError)
+  })
+
+  it('promoteFromWaitlist confirms registration when no waitlisted games remain', async () => {
+    mockGetGameWithCapacity.mockResolvedValue({
+      id: 'game-1',
+      name: 'Sack Race',
+      description: 'Hop',
+      ageGroup: 'Ages 6-10',
+      startTime: '10:00 AM',
+      status: 'active',
+      capacity: 3,
+      registeredCount: 1,
+    })
+    const registrationGamesBuilder = {
+      update: vi.fn().mockReturnThis(),
+      select: vi.fn().mockReturnValue({
+        eq: vi.fn().mockReturnValue({
+          eq: vi.fn().mockResolvedValue({ data: [], error: null }),
+        }),
+      }),
+      eq: vi.fn().mockReturnThis(),
+    }
+    const registrationsBuilder = createSelectBuilder({
+      data: { ...sampleRow, status: 'confirmed' },
+      error: null,
+    })
+
+    mockFrom.mockImplementation((table: string) => {
+      if (table === 'registration_games') return registrationGamesBuilder
+      if (table === 'registrations') return registrationsBuilder
+      throw new Error(`Unexpected table ${table}`)
+    })
+
+    await expect(promoteFromWaitlist('reg-1', 'game-1')).resolves.toEqual({
+      ...sampleAdminRegistration,
+      status: 'confirmed',
+    })
+  })
+
+  it('promoteFromWaitlist errors when game is still full', async () => {
+    mockGetGameWithCapacity.mockResolvedValue({
+      id: 'game-1',
+      name: 'Sack Race',
+      description: 'Hop',
+      ageGroup: 'Ages 6-10',
+      startTime: '10:00 AM',
+      status: 'active',
+      capacity: 2,
+      registeredCount: 2,
+    })
+
+    await expect(promoteFromWaitlist('reg-1', 'game-1')).rejects.toBeInstanceOf(RegistrationError)
+  })
+
+  it('promoteFromWaitlist errors when game is missing', async () => {
+    mockGetGameWithCapacity.mockResolvedValue(null)
+
+    await expect(promoteFromWaitlist('reg-1', 'game-1')).rejects.toThrow('Game not found')
+  })
+
+  it('promoteFromWaitlist errors when registration game update fails', async () => {
+    mockGetGameWithCapacity.mockResolvedValue({
+      id: 'game-1',
+      name: 'Sack Race',
+      description: 'Hop',
+      ageGroup: 'Ages 6-10',
+      startTime: '10:00 AM',
+      status: 'active',
+      capacity: 3,
+      registeredCount: 1,
+    })
+    const registrationGamesBuilder = {
+      update: vi.fn().mockReturnThis(),
+      eq: vi.fn().mockReturnThis(),
+    }
+    registrationGamesBuilder.eq.mockReturnValueOnce(registrationGamesBuilder)
+    registrationGamesBuilder.eq.mockReturnValueOnce(registrationGamesBuilder)
+    registrationGamesBuilder.eq.mockResolvedValueOnce({
+      error: { message: 'update failed' },
+    })
+    mockFrom.mockReturnValue(registrationGamesBuilder)
+
+    await expect(promoteFromWaitlist('reg-1', 'game-1')).rejects.toThrow('update failed')
+  })
+
+  it('promoteFromWaitlist errors when waitlist query fails', async () => {
+    mockGetGameWithCapacity.mockResolvedValue({
+      id: 'game-1',
+      name: 'Sack Race',
+      description: 'Hop',
+      ageGroup: 'Ages 6-10',
+      startTime: '10:00 AM',
+      status: 'active',
+      capacity: 3,
+      registeredCount: 1,
+    })
+    const registrationGamesBuilder = {
+      update: vi.fn().mockReturnThis(),
+      select: vi.fn().mockReturnValue({
+        eq: vi.fn().mockReturnValue({
+          eq: vi.fn().mockResolvedValue({ data: null, error: { message: 'waitlist failed' } }),
+        }),
+      }),
+      eq: vi.fn().mockReturnThis(),
+    }
+    registrationGamesBuilder.eq.mockReturnValueOnce(registrationGamesBuilder)
+    registrationGamesBuilder.eq.mockReturnValueOnce(registrationGamesBuilder)
+    registrationGamesBuilder.eq.mockResolvedValueOnce({ error: null })
+    mockFrom.mockReturnValue(registrationGamesBuilder)
+
+    await expect(promoteFromWaitlist('reg-1', 'game-1')).rejects.toThrow('waitlist failed')
+  })
+
+  it('promoteFromWaitlist keeps waitlisted status when other games remain waitlisted', async () => {
+    mockGetGameWithCapacity.mockResolvedValue({
+      id: 'game-1',
+      name: 'Sack Race',
+      description: 'Hop',
+      ageGroup: 'Ages 6-10',
+      startTime: '10:00 AM',
+      status: 'active',
+      capacity: 3,
+      registeredCount: 1,
+    })
+    const registrationGamesBuilder = {
+      update: vi.fn().mockReturnThis(),
+      select: vi.fn().mockReturnValue({
+        eq: vi.fn().mockReturnValue({
+          eq: vi.fn().mockResolvedValue({ data: [{ status: 'waitlisted' }], error: null }),
+        }),
+      }),
+      eq: vi.fn().mockReturnThis(),
+    }
+    registrationGamesBuilder.eq.mockReturnValueOnce(registrationGamesBuilder)
+    registrationGamesBuilder.eq.mockReturnValueOnce(registrationGamesBuilder)
+    registrationGamesBuilder.eq.mockResolvedValueOnce({ error: null })
+    const registrationsBuilder = createSelectBuilder({
+      data: { ...sampleRow, status: 'waitlisted' },
+      error: null,
+    })
+    mockFrom.mockImplementation((table: string) => {
+      if (table === 'registration_games') return registrationGamesBuilder
+      if (table === 'registrations') return registrationsBuilder
+      throw new Error(`Unexpected table ${table}`)
+    })
+
+    await expect(promoteFromWaitlist('reg-1', 'game-1')).resolves.toEqual({
+      ...sampleAdminRegistration,
+      status: 'waitlisted',
+    })
   })
 })
