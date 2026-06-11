@@ -25,3 +25,10 @@ export class AuthError extends AppError {
     this.name = 'AuthError'
   }
 }
+
+export class MediaError extends AppError {
+  constructor(message: string) {
+    super(message)
+    this.name = 'MediaError'
+  }
+}

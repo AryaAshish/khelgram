@@ -6,6 +6,7 @@ import { RegistrationsPage } from './RegistrationsPage'
 
 const mockExportMutate = vi.fn()
 const mockUseAdminRegistrations = vi.fn()
+const mockExportState = { isPending: false }
 
 vi.mock('@/hooks/useAdminRegistrations', () => ({
   useAdminRegistrations: () => mockUseAdminRegistrations(),
@@ -14,7 +15,7 @@ vi.mock('@/hooks/useAdminRegistrations', () => ({
 vi.mock('@/hooks/useExportRegistrations', () => ({
   useExportRegistrations: () => ({
     mutate: mockExportMutate,
-    isPending: false,
+    isPending: mockExportState.isPending,
   }),
 }))
 
@@ -40,6 +41,7 @@ const sampleRegistration = {
 
 describe('RegistrationsPage', () => {
   beforeEach(() => {
+    mockExportState.isPending = false
     mockUseAdminRegistrations.mockReturnValue({
       registrations: [sampleRegistration],
       isLoading: false,
@@ -68,6 +70,16 @@ describe('RegistrationsPage', () => {
       </MemoryRouter>,
     )
     expect(screen.getByText('No registrations match the current filters.')).toBeInTheDocument()
+  })
+
+  it('shows exporting label while export is pending', () => {
+    mockExportState.isPending = true
+    render(
+      <MemoryRouter>
+        <RegistrationsPage />
+      </MemoryRouter>,
+    )
+    expect(screen.getByRole('button', { name: 'Exporting...' })).toBeDisabled()
   })
 
   it('renders table rows, filters, and triggers export', async () => {

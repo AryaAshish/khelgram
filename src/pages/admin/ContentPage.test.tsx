@@ -82,6 +82,25 @@ describe('ContentPage', () => {
     await user.type(screen.getByLabelText('Mission'), 'Updated mission')
 
     expect(screen.getByLabelText('Mission')).toHaveValue('Updated mission')
+    expect(screen.getByLabelText('Values (one per line)')).toHaveAttribute('rows', '5')
+  })
+
+  it('saves countdown section from non-hero tab', async () => {
+    const user = userEvent.setup()
+    mockMutateAsync.mockResolvedValue([])
+
+    render(<ContentPage />, { wrapper: createWrapper() })
+
+    await user.click(screen.getByRole('tab', { name: 'Countdown' }))
+    await user.clear(screen.getByLabelText('Countdown heading'))
+    await user.type(screen.getByLabelText('Countdown heading'), 'Updated countdown')
+    await user.click(screen.getByRole('button', { name: 'Save Countdown' }))
+
+    expect(mockMutateAsync).toHaveBeenCalledWith(
+      expect.arrayContaining([
+        expect.objectContaining({ key: 'countdown_title', value: 'Updated countdown' }),
+      ]),
+    )
   })
 
   it('waits for settings before populating draft values', () => {

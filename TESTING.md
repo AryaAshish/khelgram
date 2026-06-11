@@ -132,3 +132,16 @@ For phases 7–11, enable E2E with `RUN_PHASE7_E2E=1` (etc.) after implementing 
 - [x] Unit tests: service, hooks, ContentPage, contentSections
 - [x] E2E spec ready: `RUN_PHASE7_E2E=1 npm run verify:phase -- 7`
 - [x] `npm run typecheck`, `lint`, `test:coverage`, `build` all pass
+
+## Phase 8 checklist
+
+- [x] Migration `0006_media_assets.sql` applied (media_assets table + Storage bucket `media`)
+- [x] `media.service.ts` — uploadFile, deleteFile, listAssets
+- [x] `useMediaLibrary.ts` — list, upload, delete mutations
+- [x] `gallery.service.ts` extended with saveGalleryImages
+- [x] Admin `MediaPage` — upload grid, drag-drop, delete with confirm
+- [x] Admin `GalleryPage` — add from media library, reorder, inline alt/caption, save
+- [x] `ImagePicker` component for media selection
+- [x] Unit tests: media service, hooks, admin pages, ImagePicker
+- [x] E2E spec ready: `RUN_PHASE8_E2E=1 npm run verify:phase -- 8`
+- [x] `npm run typecheck`, `lint`, `test:coverage`, `build` all pass

@@ -66,6 +66,33 @@ export type Database = {
         }
         Relationships: []
       }
+      media_assets: {
+        Row: {
+          alt: string
+          created_at: string
+          id: string
+          path: string
+          size: number
+          url: string
+        }
+        Insert: {
+          alt?: string
+          created_at?: string
+          id: string
+          path: string
+          size?: number
+          url: string
+        }
+        Update: {
+          alt?: string
+          created_at?: string
+          id?: string
+          path?: string
+          size?: number
+          url?: string
+        }
+        Relationships: []
+      }
       gallery_images: {
         Row: {
           alt: string

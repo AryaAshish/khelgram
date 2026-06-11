@@ -6,14 +6,25 @@ export const galleryKeys = {
   all: ['gallery-images'] as const,
 }
 
-export function useGallery() {
+type UseGalleryOptions = {
+  withFallback?: boolean
+}
+
+export function useGallery({ withFallback = true }: UseGalleryOptions = {}) {
   const query = useQuery({
     queryKey: galleryKeys.all,
     queryFn: galleryService.getGalleryImages,
   })
 
+  const images =
+    query.data && query.data.length > 0
+      ? query.data
+      : withFallback
+        ? fallbackGalleryImages
+        : (query.data ?? [])
+
   return {
     ...query,
-    images: query.data?.length ? query.data : fallbackGalleryImages,
+    images,
   }
 }

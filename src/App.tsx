@@ -24,6 +24,12 @@ const RegistrationDetailPage = lazy(() =>
 const ContentPage = lazy(() =>
   import('@/pages/admin/ContentPage').then((module) => ({ default: module.ContentPage })),
 )
+const MediaPage = lazy(() =>
+  import('@/pages/admin/MediaPage').then((module) => ({ default: module.MediaPage })),
+)
+const GalleryPage = lazy(() =>
+  import('@/pages/admin/GalleryPage').then((module) => ({ default: module.GalleryPage })),
+)
 
 function AdminFallback() {
   return (
@@ -69,6 +75,22 @@ export default function App() {
               element={
                 <Suspense fallback={<AdminFallback />}>
                   <ContentPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/admin/media"
+              element={
+                <Suspense fallback={<AdminFallback />}>
+                  <MediaPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/admin/gallery"
+              element={
+                <Suspense fallback={<AdminFallback />}>
+                  <GalleryPage />
                 </Suspense>
               }
             />

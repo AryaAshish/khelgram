@@ -24,6 +24,23 @@ export type GalleryImage = {
   caption?: string
 }
 
+export type MediaAsset = {
+  id: string
+  path: string
+  url: string
+  alt: string
+  size: number
+  createdAt: string
+}
+
+export type GalleryImageDraft = {
+  id: string
+  url: string
+  alt: string
+  caption?: string
+  sortOrder: number
+}
+
 export type ImpactStat = {
   id: string
   statKey?: string
