@@ -145,3 +145,14 @@ For phases 7–11, enable E2E with `RUN_PHASE7_E2E=1` (etc.) after implementing 
 - [x] Unit tests: media service, hooks, admin pages, ImagePicker
 - [x] E2E spec ready: `RUN_PHASE8_E2E=1 npm run verify:phase -- 8`
 - [x] `npm run typecheck`, `lint`, `test:coverage`, `build` all pass
+
+## Phase 9 checklist
+
+- [x] Migration `0007_credibility.sql` applied (team, contributors, sponsors, testimonials, faq)
+- [x] Credibility services and hooks with fixture fallbacks
+- [x] Public components: ImpactStatsBar, TeamGrid, ContributorsGrid, SponsorWall, TestimonialCarousel, FAQAccordion
+- [x] Admin CRUD pages: Team, Contributors, Sponsors, Testimonials, FAQ, Impact stats
+- [x] HomePage section order updated; impact stats moved out of About
+- [x] Unit tests for services, hooks, components, and admin pages
+- [x] E2E spec ready: `RUN_PHASE9_E2E=1 npm run verify:phase -- 9`
+- [x] `npm run typecheck`, `lint`, `test:coverage`, `build` all pass

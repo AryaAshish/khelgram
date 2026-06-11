@@ -43,6 +43,24 @@ export function AdminLayout() {
           <NavLink to="/admin/gallery" style={navLinkStyle}>
             Gallery
           </NavLink>
+          <NavLink to="/admin/team" style={navLinkStyle}>
+            Team
+          </NavLink>
+          <NavLink to="/admin/contributors" style={navLinkStyle}>
+            Contributors
+          </NavLink>
+          <NavLink to="/admin/sponsors" style={navLinkStyle}>
+            Sponsors
+          </NavLink>
+          <NavLink to="/admin/testimonials" style={navLinkStyle}>
+            Testimonials
+          </NavLink>
+          <NavLink to="/admin/faq" style={navLinkStyle}>
+            FAQ
+          </NavLink>
+          <NavLink to="/admin/impact-stats" style={navLinkStyle}>
+            Impact stats
+          </NavLink>
         </nav>
       </aside>
       <div>

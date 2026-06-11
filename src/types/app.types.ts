@@ -46,6 +46,52 @@ export type ImpactStat = {
   statKey?: string
   value: string
   label: string
+  sortOrder?: number
+}
+
+export type TeamMember = {
+  id: string
+  name: string
+  role: string
+  bio: string
+  photoUrl?: string
+  published: boolean
+  sortOrder: number
+}
+
+export type Contributor = {
+  id: string
+  name: string
+  contribution: string
+  photoUrl?: string
+  sortOrder: number
+}
+
+export type SponsorTier = 'platinum' | 'gold' | 'silver' | 'community'
+
+export type Sponsor = {
+  id: string
+  name: string
+  tier: SponsorTier
+  logoUrl?: string
+  website?: string
+  sortOrder: number
+}
+
+export type Testimonial = {
+  id: string
+  quote: string
+  author: string
+  relation: string
+  photoUrl?: string
+  sortOrder: number
+}
+
+export type FaqItem = {
+  id: string
+  question: string
+  answer: string
+  sortOrder: number
 }
 
 export type AboutContent = {

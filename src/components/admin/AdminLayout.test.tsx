@@ -63,6 +63,8 @@ describe('AdminLayout', () => {
     expect(screen.getByRole('link', { name: 'Content' })).toHaveAttribute('href', '/admin/content')
     expect(screen.getByRole('link', { name: 'Media' })).toHaveAttribute('href', '/admin/media')
     expect(screen.getByRole('link', { name: 'Gallery' })).toHaveAttribute('href', '/admin/gallery')
+    expect(screen.getByRole('link', { name: 'Team' })).toHaveAttribute('href', '/admin/team')
+    expect(screen.getByRole('link', { name: 'FAQ' })).toHaveAttribute('href', '/admin/faq')
 
     await user.click(screen.getByRole('button', { name: 'Logout' }))
     expect(mockMutate).toHaveBeenCalled()

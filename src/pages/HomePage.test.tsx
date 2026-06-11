@@ -7,6 +7,11 @@ import { HomePage } from './HomePage'
 const mockUseGames = vi.fn()
 const mockUseGallery = vi.fn()
 const mockUseImpactStats = vi.fn()
+const mockUseTeam = vi.fn()
+const mockUseContributors = vi.fn()
+const mockUseSponsors = vi.fn()
+const mockUseTestimonials = vi.fn()
+const mockUseFaq = vi.fn()
 const mockUseAllSettings = vi.fn()
 const mockUseRegistrationCount = vi.fn()
 const mockUseCreateRegistration = vi.fn()
@@ -21,6 +26,26 @@ vi.mock('@/hooks/useGallery', () => ({
 
 vi.mock('@/hooks/useImpactStats', () => ({
   useImpactStats: () => mockUseImpactStats(),
+}))
+
+vi.mock('@/hooks/useTeam', () => ({
+  useTeam: () => mockUseTeam(),
+}))
+
+vi.mock('@/hooks/useContributors', () => ({
+  useContributors: () => mockUseContributors(),
+}))
+
+vi.mock('@/hooks/useSponsors', () => ({
+  useSponsors: () => mockUseSponsors(),
+}))
+
+vi.mock('@/hooks/useTestimonials', () => ({
+  useTestimonials: () => mockUseTestimonials(),
+}))
+
+vi.mock('@/hooks/useFaq', () => ({
+  useFaq: () => mockUseFaq(),
 }))
 
 vi.mock('@/hooks/useSiteSettings', () => ({
@@ -59,6 +84,45 @@ function setDefaultHookMocks() {
     impactStats: [{ id: 'children', value: '500+', label: 'Children Participating' }],
     isLoading: false,
   })
+  mockUseTeam.mockReturnValue({
+    members: [
+      { id: 'team-1', name: 'Priya Sharma', role: 'Director', published: true, sortOrder: 0 },
+    ],
+    isLoading: false,
+  })
+  mockUseContributors.mockReturnValue({
+    contributors: [
+      { id: 'contributor-1', name: 'Local Schools', contribution: 'Support', sortOrder: 0 },
+    ],
+    isLoading: false,
+  })
+  mockUseSponsors.mockReturnValue({
+    sponsors: [{ id: 'sponsor-1', name: 'Greenfield Sports', tier: 'platinum', sortOrder: 0 }],
+    isLoading: false,
+  })
+  mockUseTestimonials.mockReturnValue({
+    testimonials: [
+      {
+        id: 'testimonial-1',
+        quote: 'Great event',
+        author: 'Anita',
+        relation: 'Parent',
+        sortOrder: 0,
+      },
+    ],
+    isLoading: false,
+  })
+  mockUseFaq.mockReturnValue({
+    items: [
+      {
+        id: 'faq-1',
+        question: 'What to bring?',
+        answer: 'Water bottle',
+        sortOrder: 0,
+      },
+    ],
+    isLoading: false,
+  })
   mockUseRegistrationCount.mockReturnValue({ data: 12 })
   mockUseCreateRegistration.mockReturnValue({
     mutate: vi.fn(),
@@ -94,6 +158,11 @@ describe('HomePage', () => {
     mockUseGames.mockReset()
     mockUseGallery.mockReset()
     mockUseImpactStats.mockReset()
+    mockUseTeam.mockReset()
+    mockUseContributors.mockReset()
+    mockUseSponsors.mockReset()
+    mockUseTestimonials.mockReset()
+    mockUseFaq.mockReset()
     mockUseAllSettings.mockReset()
     mockUseRegistrationCount.mockReset()
     mockUseCreateRegistration.mockReset()
@@ -113,11 +182,34 @@ describe('HomePage', () => {
       impactStats: [],
       isLoading: true,
     })
+    mockUseTeam.mockReturnValue({ members: [], isLoading: true })
+    mockUseContributors.mockReturnValue({ contributors: [], isLoading: true })
+    mockUseSponsors.mockReturnValue({ sponsors: [], isLoading: true })
+    mockUseTestimonials.mockReturnValue({ testimonials: [], isLoading: true })
+    mockUseFaq.mockReturnValue({ items: [], isLoading: true })
 
     render(<HomePage />)
 
     expect(screen.getByLabelText('Festival Events loading')).toBeInTheDocument()
-    expect(screen.getByLabelText('About Khelgram Foundation loading')).toBeInTheDocument()
+    expect(screen.getByLabelText('Impact loading')).toBeInTheDocument()
+    expect(screen.getByLabelText('Gallery loading')).toBeInTheDocument()
+    expect(screen.getByLabelText('Our Team loading')).toBeInTheDocument()
+    expect(screen.getByLabelText('FAQ loading')).toBeInTheDocument()
+  })
+
+  it('uses default section titles when settings are missing', () => {
+    setDefaultHookMocks()
+    mockUseAllSettings.mockReturnValue({
+      settingsMap: {},
+      aboutContent,
+      countdownTarget,
+    })
+    mockUseGames.mockReturnValue({ games: [], isLoading: true })
+    mockUseGallery.mockReturnValue({ images: [], isLoading: true })
+
+    render(<HomePage />)
+
+    expect(screen.getByLabelText('Festival Events loading')).toBeInTheDocument()
     expect(screen.getByLabelText('Gallery loading')).toBeInTheDocument()
   })
 
@@ -128,6 +220,11 @@ describe('HomePage', () => {
         about_title: 'Custom About',
         events_title: 'Custom Events',
         gallery_title: 'Custom Gallery',
+        team_title: 'Custom Team',
+        contributors_title: 'Custom Contributors',
+        sponsors_title: 'Custom Sponsors',
+        testimonials_title: 'Custom Testimonials',
+        faq_title: 'Custom FAQ',
       },
       aboutContent,
       countdownTarget,
@@ -135,12 +232,21 @@ describe('HomePage', () => {
     mockUseGames.mockReturnValue({ games: [], isLoading: true })
     mockUseGallery.mockReturnValue({ images: [], isLoading: true })
     mockUseImpactStats.mockReturnValue({ impactStats: [], isLoading: true })
+    mockUseTeam.mockReturnValue({ members: [], isLoading: true })
+    mockUseContributors.mockReturnValue({ contributors: [], isLoading: true })
+    mockUseSponsors.mockReturnValue({ sponsors: [], isLoading: true })
+    mockUseTestimonials.mockReturnValue({ testimonials: [], isLoading: true })
+    mockUseFaq.mockReturnValue({ items: [], isLoading: true })
 
     render(<HomePage />)
 
-    expect(screen.getByLabelText('Custom About loading')).toBeInTheDocument()
     expect(screen.getByLabelText('Custom Events loading')).toBeInTheDocument()
     expect(screen.getByLabelText('Custom Gallery loading')).toBeInTheDocument()
+    expect(screen.getByLabelText('Custom Team loading')).toBeInTheDocument()
+    expect(screen.getByLabelText('Custom Contributors loading')).toBeInTheDocument()
+    expect(screen.getByLabelText('Custom Sponsors loading')).toBeInTheDocument()
+    expect(screen.getByLabelText('Custom Testimonials loading')).toBeInTheDocument()
+    expect(screen.getByLabelText('Custom FAQ loading')).toBeInTheDocument()
   })
 
   it('renders all main sections', () => {

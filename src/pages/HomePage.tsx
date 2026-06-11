@@ -1,19 +1,30 @@
 import { SectionErrorBoundary } from '@/components/SectionErrorBoundary'
 import { AboutSection } from '@/components/public/AboutSection'
 import { ContactSection } from '@/components/public/ContactSection'
+import { ContributorsGrid } from '@/components/public/ContributorsGrid'
 import { CountdownSection } from '@/components/public/CountdownSection'
 import { EventsSection } from '@/components/public/EventsSection'
+import { FAQAccordion } from '@/components/public/FAQAccordion'
 import { GallerySection } from '@/components/public/GallerySection'
 import { HeroSection } from '@/components/public/HeroSection'
+import { ImpactStatsBar } from '@/components/public/ImpactStatsBar'
 import { RegistrationForm } from '@/components/public/RegistrationForm'
 import { SectionSkeleton } from '@/components/public/SectionSkeleton'
 import { SiteFooter } from '@/components/public/SiteFooter'
 import { SiteHeader } from '@/components/public/SiteHeader'
+import { SponsorWall } from '@/components/public/SponsorWall'
+import { TeamGrid } from '@/components/public/TeamGrid'
+import { TestimonialCarousel } from '@/components/public/TestimonialCarousel'
+import { useContributors } from '@/hooks/useContributors'
+import { useFaq } from '@/hooks/useFaq'
 import { useGames } from '@/hooks/useGames'
 import { useGallery } from '@/hooks/useGallery'
 import { useImpactStats } from '@/hooks/useImpactStats'
 import { useCreateRegistration, useRegistrationCount } from '@/hooks/useRegistration'
 import { useAllSettings } from '@/hooks/useSiteSettings'
+import { useSponsors } from '@/hooks/useSponsors'
+import { useTeam } from '@/hooks/useTeam'
+import { useTestimonials } from '@/hooks/useTestimonials'
 import { contactContent, footerContent, heroContent } from '@/fixtures/homePageFixtures'
 import type { RegistrationInput } from '@/types/app.types'
 
@@ -21,6 +32,11 @@ export function HomePage() {
   const { games, isLoading: gamesLoading } = useGames()
   const { images: galleryImages, isLoading: galleryLoading } = useGallery()
   const { impactStats, isLoading: statsLoading } = useImpactStats()
+  const { members: teamMembers, isLoading: teamLoading } = useTeam()
+  const { contributors, isLoading: contributorsLoading } = useContributors()
+  const { sponsors, isLoading: sponsorsLoading } = useSponsors()
+  const { testimonials, isLoading: testimonialsLoading } = useTestimonials()
+  const { items: faqItems, isLoading: faqLoading } = useFaq()
   const { settingsMap, aboutContent, countdownTarget } = useAllSettings()
   const { data: registrationCount } = useRegistrationCount()
   const createRegistration = useCreateRegistration()
@@ -68,14 +84,16 @@ export function HomePage() {
           toBeAnnouncedText={settingsMap.countdown_tba_text ?? 'To Be Announced'}
         />
         <SectionErrorBoundary title={settingsMap.about_title ?? 'About Khelgram Foundation'}>
+          <AboutSection
+            title={settingsMap.about_title ?? 'About Khelgram Foundation'}
+            content={aboutContent}
+          />
+        </SectionErrorBoundary>
+        <SectionErrorBoundary title="Impact">
           {statsLoading ? (
-            <SectionSkeleton title={settingsMap.about_title ?? 'About Khelgram Foundation'} />
+            <SectionSkeleton title="Impact" />
           ) : (
-            <AboutSection
-              title={settingsMap.about_title ?? 'About Khelgram Foundation'}
-              content={aboutContent}
-              impactStats={impactStats}
-            />
+            <ImpactStatsBar stats={impactStats} />
           )}
         </SectionErrorBoundary>
         <SectionErrorBoundary title={settingsMap.events_title ?? 'Festival Events'}>
@@ -85,11 +103,45 @@ export function HomePage() {
             <EventsSection title={settingsMap.events_title ?? 'Festival Events'} games={games} />
           )}
         </SectionErrorBoundary>
+        <SectionErrorBoundary title={settingsMap.team_title ?? 'Our Team'}>
+          {teamLoading ? (
+            <SectionSkeleton title={settingsMap.team_title ?? 'Our Team'} />
+          ) : (
+            <TeamGrid title={settingsMap.team_title ?? 'Our Team'} members={teamMembers} />
+          )}
+        </SectionErrorBoundary>
+        <SectionErrorBoundary title={settingsMap.contributors_title ?? 'Contributors'}>
+          {contributorsLoading ? (
+            <SectionSkeleton title={settingsMap.contributors_title ?? 'Contributors'} />
+          ) : (
+            <ContributorsGrid
+              title={settingsMap.contributors_title ?? 'Contributors'}
+              contributors={contributors}
+            />
+          )}
+        </SectionErrorBoundary>
+        <SectionErrorBoundary title={settingsMap.sponsors_title ?? 'Sponsors'}>
+          {sponsorsLoading ? (
+            <SectionSkeleton title={settingsMap.sponsors_title ?? 'Sponsors'} />
+          ) : (
+            <SponsorWall title={settingsMap.sponsors_title ?? 'Sponsors'} sponsors={sponsors} />
+          )}
+        </SectionErrorBoundary>
         <SectionErrorBoundary title={settingsMap.gallery_title ?? 'Gallery'}>
           {galleryLoading ? (
             <SectionSkeleton title={settingsMap.gallery_title ?? 'Gallery'} />
           ) : (
             <GallerySection title={settingsMap.gallery_title ?? 'Gallery'} images={galleryImages} />
+          )}
+        </SectionErrorBoundary>
+        <SectionErrorBoundary title={settingsMap.testimonials_title ?? 'Testimonials'}>
+          {testimonialsLoading ? (
+            <SectionSkeleton title={settingsMap.testimonials_title ?? 'Testimonials'} />
+          ) : (
+            <TestimonialCarousel
+              title={settingsMap.testimonials_title ?? 'Testimonials'}
+              testimonials={testimonials}
+            />
           )}
         </SectionErrorBoundary>
         <SectionErrorBoundary title={settingsMap.register_title ?? 'Register Your Child'}>
@@ -105,6 +157,13 @@ export function HomePage() {
             isSubmitting={createRegistration.isPending}
             onSubmit={handleRegistrationSubmit}
           />
+        </SectionErrorBoundary>
+        <SectionErrorBoundary title={settingsMap.faq_title ?? 'FAQ'}>
+          {faqLoading ? (
+            <SectionSkeleton title={settingsMap.faq_title ?? 'FAQ'} />
+          ) : (
+            <FAQAccordion title={settingsMap.faq_title ?? 'FAQ'} items={faqItems} />
+          )}
         </SectionErrorBoundary>
         <ContactSection
           title={settingsMap.contact_title ?? 'Contact'}

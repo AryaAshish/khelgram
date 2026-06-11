@@ -30,6 +30,30 @@ const MediaPage = lazy(() =>
 const GalleryPage = lazy(() =>
   import('@/pages/admin/GalleryPage').then((module) => ({ default: module.GalleryPage })),
 )
+const TeamPage = lazy(() =>
+  import('@/pages/admin/TeamPage').then((module) => ({ default: module.TeamPage })),
+)
+const ContributorsPage = lazy(() =>
+  import('@/pages/admin/ContributorsPage').then((module) => ({
+    default: module.ContributorsPage,
+  })),
+)
+const SponsorsPage = lazy(() =>
+  import('@/pages/admin/SponsorsPage').then((module) => ({ default: module.SponsorsPage })),
+)
+const TestimonialsPage = lazy(() =>
+  import('@/pages/admin/TestimonialsPage').then((module) => ({
+    default: module.TestimonialsPage,
+  })),
+)
+const FAQPage = lazy(() =>
+  import('@/pages/admin/FAQPage').then((module) => ({ default: module.FAQPage })),
+)
+const ImpactStatsPage = lazy(() =>
+  import('@/pages/admin/ImpactStatsPage').then((module) => ({
+    default: module.ImpactStatsPage,
+  })),
+)
 
 function AdminFallback() {
   return (
@@ -91,6 +115,54 @@ export default function App() {
               element={
                 <Suspense fallback={<AdminFallback />}>
                   <GalleryPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/admin/team"
+              element={
+                <Suspense fallback={<AdminFallback />}>
+                  <TeamPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/admin/contributors"
+              element={
+                <Suspense fallback={<AdminFallback />}>
+                  <ContributorsPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/admin/sponsors"
+              element={
+                <Suspense fallback={<AdminFallback />}>
+                  <SponsorsPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/admin/testimonials"
+              element={
+                <Suspense fallback={<AdminFallback />}>
+                  <TestimonialsPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/admin/faq"
+              element={
+                <Suspense fallback={<AdminFallback />}>
+                  <FAQPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/admin/impact-stats"
+              element={
+                <Suspense fallback={<AdminFallback />}>
+                  <ImpactStatsPage />
                 </Suspense>
               }
             />

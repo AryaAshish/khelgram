@@ -93,6 +93,150 @@ export type Database = {
         }
         Relationships: []
       }
+      team_members: {
+        Row: {
+          bio: string
+          id: string
+          name: string
+          photo_url: string | null
+          published: boolean
+          role: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          bio?: string
+          id: string
+          name: string
+          photo_url?: string | null
+          published?: boolean
+          role: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          bio?: string
+          id?: string
+          name?: string
+          photo_url?: string | null
+          published?: boolean
+          role?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      contributors: {
+        Row: {
+          contribution: string
+          id: string
+          name: string
+          photo_url: string | null
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          contribution: string
+          id: string
+          name: string
+          photo_url?: string | null
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          contribution?: string
+          id?: string
+          name?: string
+          photo_url?: string | null
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      sponsors: {
+        Row: {
+          id: string
+          logo_url: string | null
+          name: string
+          sort_order: number
+          tier: string
+          updated_at: string
+          website: string | null
+        }
+        Insert: {
+          id: string
+          logo_url?: string | null
+          name: string
+          sort_order?: number
+          tier: string
+          updated_at?: string
+          website?: string | null
+        }
+        Update: {
+          id?: string
+          logo_url?: string | null
+          name?: string
+          sort_order?: number
+          tier?: string
+          updated_at?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
+      testimonials: {
+        Row: {
+          author: string
+          id: string
+          photo_url: string | null
+          quote: string
+          relation: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          author: string
+          id: string
+          photo_url?: string | null
+          quote: string
+          relation?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          author?: string
+          id?: string
+          photo_url?: string | null
+          quote?: string
+          relation?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      faq_items: {
+        Row: {
+          answer: string
+          id: string
+          question: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          answer: string
+          id: string
+          question: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          answer?: string
+          id?: string
+          question?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       gallery_images: {
         Row: {
           alt: string
