@@ -46,6 +46,7 @@ const fallbackAllSettings: Record<string, string> = {
   contact_email: contactContent.email,
   footer_description: footerContent.description,
   footer_copyright: footerContent.copyright,
+  admin_email: contactContent.email,
 }
 
 function mergeSettingsList(

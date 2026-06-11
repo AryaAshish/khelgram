@@ -32,6 +32,15 @@ run('npm', ['run', 'lint'])
 run('npm', ['run', 'test:coverage'])
 run('npm', ['run', 'build'])
 
+if (phaseNumber === 11) {
+  const denoCheck = spawnSync('deno', ['--version'], { stdio: 'ignore' })
+  if (denoCheck.status === 0) {
+    run('npm', ['run', 'test:edge'])
+  } else {
+    console.log('\nSkipped edge function Deno tests (deno not installed).')
+  }
+}
+
 if (phaseNumber >= 1 && phaseNumber <= 6) {
   run('node', ['scripts/verify-rls.mjs'])
 }

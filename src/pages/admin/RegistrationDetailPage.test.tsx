@@ -5,6 +5,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { RegistrationDetailPage } from './RegistrationDetailPage'
 
 const mockMutate = vi.fn()
+const mockResendMutate = vi.fn()
 
 const mockUseRegistrationDetail = vi.fn()
 
@@ -16,6 +17,10 @@ vi.mock('@/hooks/useAdminRegistrations', () => ({
   }),
   usePromoteFromWaitlist: () => ({
     mutate: mockMutate,
+    isPending: false,
+  }),
+  useResendConfirmation: () => ({
+    mutate: mockResendMutate,
     isPending: false,
   }),
 }))
@@ -89,6 +94,22 @@ describe('RegistrationDetailPage', () => {
 
     await user.click(screen.getByRole('button', { name: 'Refresh Status' }))
     expect(mockMutate).toHaveBeenCalledWith({ id: 'reg-1', status: 'confirmed' })
+  })
+
+  it('resends confirmation email from detail page', async () => {
+    const user = userEvent.setup()
+    mockUseRegistrationDetail.mockReturnValue({ data: sampleDetail, isLoading: false })
+
+    render(
+      <MemoryRouter initialEntries={['/admin/registrations/reg-1']}>
+        <Routes>
+          <Route path="/admin/registrations/:id" element={<RegistrationDetailPage />} />
+        </Routes>
+      </MemoryRouter>,
+    )
+
+    await user.click(screen.getByRole('button', { name: 'Resend Confirmation' }))
+    expect(mockResendMutate).toHaveBeenCalledWith('reg-1')
   })
 
   it('shows promote button for waitlisted registrations', async () => {

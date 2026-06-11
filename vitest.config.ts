@@ -19,6 +19,7 @@ export default mergeConfig(
           'src/components/**',
           'src/pages/**',
           'src/lib/utils.ts',
+          'src/lib/registrationEmail.ts',
         ],
         exclude: ['src/types/**', 'src/lib/supabase.ts', 'src/test/**'],
         thresholds: {

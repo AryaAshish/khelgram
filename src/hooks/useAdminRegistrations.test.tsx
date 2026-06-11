@@ -9,6 +9,7 @@ import {
   useAdminCreateRegistration,
   usePromoteFromWaitlist,
   useRegistrationDetail,
+  useResendConfirmation,
   useUpdateRegistrationStatus,
 } from './useAdminRegistrations'
 import * as gamesService from '@/services/games.service'
@@ -25,6 +26,7 @@ vi.mock('@/services/registrations.service', () => ({
   createRegistration: vi.fn(),
   resolveGameRegistrationStatuses: vi.fn(),
   promoteFromWaitlist: vi.fn(),
+  resendConfirmation: vi.fn(),
   filterRegistrations: vi.fn((registrations, filters) =>
     registrations.filter((registration: { childName: string }) =>
       filters.search ? registration.childName.includes(filters.search) : true,
@@ -257,6 +259,41 @@ describe('useAdminRegistrations', () => {
     ).rejects.toThrow('boom')
 
     expect(toast.error).toHaveBeenCalledWith('Unable to create registration.')
+  })
+
+  it('resends confirmation email', async () => {
+    vi.mocked(registrationsService.resendConfirmation).mockResolvedValue()
+    const { result } = renderHook(() => useResendConfirmation(), {
+      wrapper: createWrapper(),
+    })
+
+    await result.current.mutateAsync('reg-1')
+    expect(registrationsService.resendConfirmation).toHaveBeenCalledWith('reg-1')
+    expect(toast.success).toHaveBeenCalledWith('Confirmation email sent.')
+  })
+
+  it('shows generic error toast when resend fails unexpectedly', async () => {
+    vi.mocked(registrationsService.resendConfirmation).mockRejectedValue(new Error('boom'))
+    const { result } = renderHook(() => useResendConfirmation(), {
+      wrapper: createWrapper(),
+    })
+
+    await expect(result.current.mutateAsync('reg-1')).rejects.toThrow('boom')
+    expect(toast.error).toHaveBeenCalledWith('Unable to send confirmation email.')
+  })
+
+  it('shows error toast when resend confirmation fails', async () => {
+    vi.mocked(registrationsService.resendConfirmation).mockRejectedValue(
+      new RegistrationError('Email service is not configured'),
+    )
+    const { result } = renderHook(() => useResendConfirmation(), {
+      wrapper: createWrapper(),
+    })
+
+    await expect(result.current.mutateAsync('reg-1')).rejects.toThrow(
+      'Email service is not configured',
+    )
+    expect(toast.error).toHaveBeenCalledWith('Email service is not configured')
   })
 
   it('does not fetch registration detail when id is empty', async () => {

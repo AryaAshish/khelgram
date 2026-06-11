@@ -4,6 +4,7 @@ import { Label } from '@/components/ui/label'
 import {
   usePromoteFromWaitlist,
   useRegistrationDetail,
+  useResendConfirmation,
   useUpdateRegistrationStatus,
 } from '@/hooks/useAdminRegistrations'
 import type { RegistrationStatus } from '@/types/app.types'
@@ -15,6 +16,7 @@ export function RegistrationDetailPage() {
   const { data: registration, isLoading } = useRegistrationDetail(id)
   const updateStatus = useUpdateRegistrationStatus()
   const promoteFromWaitlist = usePromoteFromWaitlist()
+  const resendConfirmation = useResendConfirmation()
 
   if (isLoading) {
     return <p>Loading registration details...</p>
@@ -92,6 +94,14 @@ export function RegistrationDetailPage() {
           ))}
         </select>
       </div>
+
+      <Button
+        style={{ marginTop: '1rem', marginRight: '0.5rem' }}
+        onClick={() => resendConfirmation.mutate(registration.id)}
+        disabled={resendConfirmation.isPending}
+      >
+        {resendConfirmation.isPending ? 'Sending...' : 'Resend Confirmation'}
+      </Button>
 
       {registration.status === 'waitlisted' && registration.gameIds[0] ? (
         <Button

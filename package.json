@@ -13,6 +13,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
+    "test:edge": "deno test --allow-env supabase/functions/send-registration-email",
     "e2e": "playwright test",
     "e2e:smoke": "playwright test e2e/phases/phase2-sections.spec.ts e2e/phases/mobile-health.spec.ts",
     "e2e:phases": "playwright test e2e/phases",

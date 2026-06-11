@@ -9,6 +9,7 @@ import {
   getRegistrationDetail,
   getRegistrations,
   promoteFromWaitlist,
+  resendConfirmation,
   resolveGameRegistrationStatuses,
   updateRegistrationStatus,
 } from './registrations.service'
@@ -16,12 +17,16 @@ import type { AdminRegistration } from '@/types/app.types'
 
 const mockFrom = vi.fn()
 const mockRpc = vi.fn()
+const mockInvoke = vi.fn()
 const mockGetGameWithCapacity = vi.fn()
 
 vi.mock('@/lib/supabase', () => ({
   supabase: {
     from: (...args: unknown[]) => mockFrom(...args),
     rpc: (...args: unknown[]) => mockRpc(...args),
+    functions: {
+      invoke: (...args: unknown[]) => mockInvoke(...args),
+    },
   },
 }))
 
@@ -556,5 +561,35 @@ describe('registrations.service', () => {
       ...sampleAdminRegistration,
       status: 'waitlisted',
     })
+  })
+
+  it('resendConfirmation invokes send-registration-email function', async () => {
+    mockInvoke.mockResolvedValue({ data: { ok: true, sent: 2 }, error: null })
+
+    await expect(resendConfirmation('reg-1')).resolves.toBeUndefined()
+    expect(mockInvoke).toHaveBeenCalledWith('send-registration-email', {
+      body: { registrationId: 'reg-1' },
+    })
+  })
+
+  it('resendConfirmation throws when edge function returns an error', async () => {
+    mockInvoke.mockResolvedValue({
+      data: { ok: false, error: 'Email service is not configured' },
+      error: null,
+    })
+
+    await expect(resendConfirmation('reg-1')).rejects.toThrow('Email service is not configured')
+  })
+
+  it('resendConfirmation throws when invoke fails', async () => {
+    mockInvoke.mockResolvedValue({ data: null, error: { message: 'invoke failed' } })
+
+    await expect(resendConfirmation('reg-1')).rejects.toBeInstanceOf(RegistrationError)
+  })
+
+  it('resendConfirmation uses fallback message when response omits error text', async () => {
+    mockInvoke.mockResolvedValue({ data: { ok: false }, error: null })
+
+    await expect(resendConfirmation('reg-1')).rejects.toThrow('Unable to send confirmation email')
   })
 })

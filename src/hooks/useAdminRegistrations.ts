@@ -109,6 +109,20 @@ export function useAdminCreateRegistration() {
   })
 }
 
+export function useResendConfirmation() {
+  return useMutation({
+    mutationFn: (registrationId: string) => registrationsService.resendConfirmation(registrationId),
+    onSuccess: () => {
+      toast.success('Confirmation email sent.')
+    },
+    onError: (error: Error) => {
+      const message =
+        error instanceof RegistrationError ? error.message : 'Unable to send confirmation email.'
+      toast.error(message)
+    },
+  })
+}
+
 export function usePromoteFromWaitlist() {
   const queryClient = useQueryClient()
 

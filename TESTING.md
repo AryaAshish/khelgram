@@ -169,3 +169,16 @@ For phases 7–11, enable E2E with `RUN_PHASE7_E2E=1` (etc.) after implementing 
 - [x] Unit tests for services, hooks, components, admin pages
 - [x] E2E spec ready: `RUN_PHASE10_E2E=1 npm run verify:phase -- 10`
 - [x] `npm run typecheck`, `lint`, `test:coverage`, `build` all pass
+
+## Phase 11 checklist
+
+- [x] Migration `0009_admin_email_setting.sql` applied
+- [x] Edge Function `send-registration-email` (Resend, parent + admin emails)
+- [x] `registrationEmail` templates with brand colors
+- [x] `resendConfirmation` service + `useResendConfirmation` hook
+- [x] Admin registration detail: **Resend Confirmation** button
+- [x] Site tab: `admin_email` setting in Content CMS
+- [x] Unit tests: `registrationEmail`, service, hook, detail page
+- [x] Deno tests: `npm run test:edge` (when Deno is installed)
+- [x] E2E spec ready: `RUN_PHASE11_E2E=1 npm run verify:phase -- 11`
+- [x] `npm run typecheck`, `lint`, `test:coverage`, `build` all pass

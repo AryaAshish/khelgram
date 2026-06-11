@@ -285,3 +285,25 @@ export async function promoteFromWaitlist(
 
   return updateRegistrationStatus(registrationId, nextRegistrationStatus)
 }
+
+type SendRegistrationEmailResponse = {
+  ok?: boolean
+  error?: string
+}
+
+export async function resendConfirmation(registrationId: string): Promise<void> {
+  const { data, error } = await supabase.functions.invoke<SendRegistrationEmailResponse>(
+    'send-registration-email',
+    {
+      body: { registrationId },
+    },
+  )
+
+  if (error) {
+    throw mapRegistrationError(error.message)
+  }
+
+  if (!data?.ok) {
+    throw mapRegistrationError(data?.error ?? 'Unable to send confirmation email')
+  }
+}

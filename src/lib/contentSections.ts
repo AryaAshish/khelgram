@@ -134,6 +134,7 @@ export const contentSections: ContentSection[] = [
         ],
       },
       { key: 'event_date', label: 'Event date (ISO)', section: 'site' },
+      { key: 'admin_email', label: 'Admin alert email', section: 'site' },
     ],
   },
 ]
