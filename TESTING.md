@@ -216,5 +216,15 @@ For phases 7–11, enable E2E with `RUN_PHASE7_E2E=1` (etc.) after implementing 
 - [x] Migration `0011_khel2026_split_defaults.sql` — org hero + khel2026 visibility defaults
 - [x] `orgHomeSections.ts`, `khel2026Sections.ts`, `OrgHeroSection`, `EventRegisterCta`
 - [x] Unit tests: `HomePage`, `Khel2026Page`, `EventLandingSections`, header, section configs
-- [x] E2E spec ready: `RUN_PHASE14_E2E=1 npm run verify:phase -- 14`
+- [x] `npm run typecheck`, `lint`, `test:coverage`, `build` all pass
+
+## Phase 15 checklist
+
+- [x] Migration `0012_org_khel2026_content_keys.sql` — `org_*` and `khel2026_*` CMS keys
+- [x] `orgContentSections.ts` + `khel2026ContentSections.ts` admin field configs
+- [x] Content admin grouped tabs: **Organization** | **Khel 2026** | **Shared**
+- [x] `HomePage` reads `org_*`; `EventLandingSections` / `RegisterPage` read `khel2026_*`
+- [x] NGO mission copy seeded for org about fields
+- [x] Unit tests: content sections, ContentPage groups, khel2026Sections keys
+- [x] E2E spec ready: `RUN_PHASE15_E2E=1 npm run verify:phase -- 15`
 - [x] `npm run typecheck`, `lint`, `test:coverage`, `build` all pass

@@ -12,4 +12,15 @@ describe('khel2026Sections', () => {
       'khel2026_faq_visible',
     ])
   })
+
+  it('uses khel2026 namespaced title keys', () => {
+    expect(khel2026Sections.map((section) => section.titleKey)).toEqual([
+      'khel2026_hero_title',
+      'khel2026_countdown_title',
+      'khel2026_events_title',
+      'khel2026_gallery_title',
+      'khel2026_register_title',
+      'khel2026_faq_title',
+    ])
+  })
 })

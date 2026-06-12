@@ -29,14 +29,14 @@ export const orgHomeSections: OrgHomeSectionConfig[] = [
     id: 'about',
     label: 'About',
     visibleKey: 'about_visible',
-    titleKey: 'about_title',
+    titleKey: 'org_about_title',
     defaultTitle: 'About Khelgram Foundation',
   },
   {
     id: 'impact',
     label: 'Impact',
     visibleKey: 'impact_visible',
-    titleKey: 'impact_title',
+    titleKey: 'org_impact_title',
     defaultTitle: 'Impact',
   },
   {

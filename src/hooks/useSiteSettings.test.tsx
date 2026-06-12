@@ -101,6 +101,21 @@ describe('useAllSettings', () => {
     expect(result.current.settingsMap.hero_title).toBe('Custom Hero Title')
     expect(result.current.settingsMap.footer_description).toBeTruthy()
   })
+
+  it('builds about content from org fields', async () => {
+    vi.mocked(settingsService.getAllSettings).mockResolvedValue([
+      { key: 'org_about_mission', value: 'Org mission', section: 'org_about' },
+      { key: 'org_about_values', value: 'One\nTwo', section: 'org_about' },
+    ])
+
+    const { result } = renderHook(() => useAllSettings(), {
+      wrapper: createWrapper(),
+    })
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true))
+    expect(result.current.aboutContent.mission).toBe('Org mission')
+    expect(result.current.aboutContent.values).toEqual(['One', 'Two'])
+  })
 })
 
 describe('useSettingsBySection', () => {

@@ -1,151 +1,16 @@
-import { homepageSections, type HomepageSectionConfig } from './homepageSections'
+import { khel2026ContentSections } from './khel2026ContentSections'
+import { orgContentSections } from './orgContentSections'
+import type { ContentGroup, ContentSection } from './contentSections.shared'
 
-export { homepageSections, type HomepageSectionConfig }
+export type {
+  ContentField,
+  ContentFieldOption,
+  ContentGroup,
+  ContentSection,
+} from './contentSections.shared'
+export { parseAboutValues } from './contentSections.shared'
 
-export type ContentFieldOption = {
-  value: string
-  label: string
-}
-
-export type ContentField = {
-  key: string
-  label: string
-  section: string
-  multiline?: boolean
-  type?: 'text' | 'select' | 'checkbox'
-  options?: ContentFieldOption[]
-}
-
-export type ContentSection = {
-  id: string
-  label: string
-  saveLabel: string
-  successMessage: string
-  fields: ContentField[]
-}
-
-const sectionsTabFields: ContentField[] = homepageSections.flatMap((section) => {
-  const fields: ContentField[] = [
-    {
-      key: section.visibleKey,
-      label: `Show ${section.label} section`,
-      section: 'sections',
-      type: 'checkbox',
-    },
-  ]
-
-  if (section.titleKey && !section.titleContentTabId) {
-    fields.push({
-      key: section.titleKey,
-      label: `${section.label} heading`,
-      section: 'sections',
-    })
-  }
-
-  return fields
-})
-
-export const contentSections: ContentSection[] = [
-  {
-    id: 'hero',
-    label: 'Hero',
-    saveLabel: 'Save Hero',
-    successMessage: 'Hero section saved',
-    fields: [
-      { key: 'hero_title', label: 'Hero title', section: 'hero' },
-      { key: 'hero_subtitle', label: 'Hero subtitle', section: 'hero', multiline: true },
-      { key: 'hero_primary_cta', label: 'Primary CTA', section: 'hero' },
-      { key: 'hero_secondary_cta', label: 'Secondary CTA', section: 'hero' },
-      { key: 'hero_event_date_label', label: 'Event date label', section: 'hero' },
-      { key: 'hero_event_date', label: 'Event date text', section: 'hero' },
-    ],
-  },
-  {
-    id: 'countdown',
-    label: 'Countdown',
-    saveLabel: 'Save Countdown',
-    successMessage: 'Countdown section saved',
-    fields: [
-      { key: 'countdown_title', label: 'Countdown heading', section: 'countdown' },
-      { key: 'countdown_tba_text', label: 'To-be-announced text', section: 'countdown' },
-    ],
-  },
-  {
-    id: 'about',
-    label: 'About',
-    saveLabel: 'Save About',
-    successMessage: 'About section saved',
-    fields: [
-      { key: 'about_title', label: 'Section heading', section: 'about' },
-      { key: 'about_mission', label: 'Mission', section: 'about', multiline: true },
-      { key: 'about_vision', label: 'Vision', section: 'about', multiline: true },
-      {
-        key: 'about_values',
-        label: 'Values (one per line)',
-        section: 'about',
-        multiline: true,
-      },
-    ],
-  },
-  {
-    id: 'events',
-    label: 'Events',
-    saveLabel: 'Save Events',
-    successMessage: 'Events section saved',
-    fields: [{ key: 'events_title', label: 'Section heading', section: 'events' }],
-  },
-  {
-    id: 'gallery',
-    label: 'Gallery',
-    saveLabel: 'Save Gallery',
-    successMessage: 'Gallery section saved',
-    fields: [{ key: 'gallery_title', label: 'Section heading', section: 'gallery' }],
-  },
-  {
-    id: 'register',
-    label: 'Register',
-    saveLabel: 'Save Register',
-    successMessage: 'Register section saved',
-    fields: [
-      { key: 'register_title', label: 'Section heading', section: 'register' },
-      {
-        key: 'register_pre_message',
-        label: 'Pre-registration message',
-        section: 'register',
-        multiline: true,
-      },
-      { key: 'register_submit_label', label: 'Submit button label', section: 'register' },
-    ],
-  },
-  {
-    id: 'contact',
-    label: 'Contact',
-    saveLabel: 'Save Contact',
-    successMessage: 'Contact section saved',
-    fields: [
-      { key: 'contact_title', label: 'Section heading', section: 'contact' },
-      { key: 'contact_address', label: 'Address', section: 'contact', multiline: true },
-      { key: 'contact_phone', label: 'Phone', section: 'contact' },
-      { key: 'contact_email', label: 'Email', section: 'contact' },
-    ],
-  },
-  {
-    id: 'footer',
-    label: 'Footer',
-    saveLabel: 'Save Footer',
-    successMessage: 'Footer section saved',
-    fields: [
-      { key: 'footer_description', label: 'Description', section: 'footer', multiline: true },
-      { key: 'footer_copyright', label: 'Copyright', section: 'footer' },
-    ],
-  },
-  {
-    id: 'sections',
-    label: 'Sections',
-    saveLabel: 'Save section settings',
-    successMessage: 'Section visibility saved',
-    fields: sectionsTabFields,
-  },
+const sharedContentSections: ContentSection[] = [
   {
     id: 'site',
     label: 'Site',
@@ -172,9 +37,23 @@ export const contentSections: ContentSection[] = [
   },
 ]
 
-export function parseAboutValues(raw: string): string[] {
-  return raw
-    .split('\n')
-    .map((value) => value.trim())
-    .filter(Boolean)
-}
+export const contentGroups: ContentGroup[] = [
+  {
+    id: 'organization',
+    label: 'Organization',
+    sections: orgContentSections,
+  },
+  {
+    id: 'khel2026',
+    label: 'Khel 2026',
+    sections: khel2026ContentSections,
+  },
+  {
+    id: 'shared',
+    label: 'Shared',
+    sections: sharedContentSections,
+  },
+]
+
+/** Flat list of all CMS sections (used in tests and legacy lookups). */
+export const contentSections: ContentSection[] = contentGroups.flatMap((group) => group.sections)

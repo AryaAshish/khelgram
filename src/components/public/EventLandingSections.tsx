@@ -28,8 +28,8 @@ export function EventLandingSections() {
   const eventStatus = settingsMap.event_status ?? 'registration_open'
   const isPreRegistration = eventStatus === 'pre_registration'
   const eventDate = isPreRegistration
-    ? (settingsMap.countdown_tba_text ?? 'To Be Announced')
-    : (settingsMap.hero_event_date ?? settingsMap.event_date ?? heroContent.eventDate)
+    ? (settingsMap.khel2026_countdown_tba_text ?? 'To Be Announced')
+    : (settingsMap.khel2026_hero_event_date ?? settingsMap.event_date ?? heroContent.eventDate)
   const countdownDate = isPreRegistration ? null : countdownTarget
 
   const show = (visibleKey: string) => isSectionVisible(settingsMap, visibleKey)
@@ -55,21 +55,16 @@ export function EventLandingSections() {
   return (
     <>
       {isPreRegistration ? (
-        <PreRegBanner
-          message={
-            settingsMap.register_pre_message ??
-            "Pre-registration open — we'll confirm dates by email"
-          }
-        />
+        <PreRegBanner message={settingsMap.khel2026_register_pre_message} />
       ) : null}
       {show('khel2026_hero_visible') ? (
         <SectionErrorBoundary title="Khel 2026 Hero">
           <HeroSection
-            title={settingsMap.hero_title ?? heroContent.title}
-            subtitle={settingsMap.hero_subtitle ?? heroContent.subtitle}
-            primaryCta={settingsMap.hero_primary_cta ?? heroContent.primaryCta}
-            secondaryCta={settingsMap.hero_secondary_cta ?? heroContent.secondaryCta}
-            eventDateLabel={settingsMap.hero_event_date_label ?? heroContent.eventDateLabel}
+            title={settingsMap.khel2026_hero_title}
+            subtitle={settingsMap.khel2026_hero_subtitle}
+            primaryCta={settingsMap.khel2026_hero_primary_cta}
+            secondaryCta={settingsMap.khel2026_hero_secondary_cta}
+            eventDateLabel={settingsMap.khel2026_hero_event_date_label}
             eventDate={eventDate}
             registrationCount={registrationCount}
             onPrimaryClick={() => navigate('/register')}
@@ -79,9 +74,9 @@ export function EventLandingSections() {
       ) : null}
       {show('khel2026_countdown_visible') ? (
         <CountdownSection
-          title={settingsMap.countdown_title ?? 'Countdown to Festival Day'}
+          title={settingsMap.khel2026_countdown_title}
           targetDate={countdownDate}
-          toBeAnnouncedText={settingsMap.countdown_tba_text ?? 'To Be Announced'}
+          toBeAnnouncedText={settingsMap.khel2026_countdown_tba_text}
         />
       ) : null}
       {show('khel2026_events_visible') ? (
@@ -105,11 +100,8 @@ export function EventLandingSections() {
       {show('khel2026_register_cta_visible') ? (
         <EventRegisterCta
           title={titles.registerCta}
-          description={
-            settingsMap.register_pre_message ??
-            "Pre-registration open — we'll confirm dates by email"
-          }
-          buttonLabel={settingsMap.register_submit_label ?? 'Register Now'}
+          description={settingsMap.khel2026_register_pre_message}
+          buttonLabel={settingsMap.khel2026_register_submit_label}
         />
       ) : null}
       {show('khel2026_faq_visible') ? (

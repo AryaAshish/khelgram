@@ -84,8 +84,8 @@ function setDefaultHookMocks() {
       org_hero_subtitle: 'Grassroots sports NGO copy',
       org_hero_primary_cta: 'Our impact',
       org_hero_secondary_cta: 'Khel 2026',
-      about_title: 'About Khelgram Foundation',
-      impact_title: 'Impact',
+      org_about_title: 'About Khelgram Foundation',
+      org_impact_title: 'Impact',
       team_title: 'Our Team',
       contributors_title: 'Contributors',
       sponsors_title: 'Sponsors',
@@ -219,7 +219,7 @@ describe('HomePage', () => {
     mockUseAllSettings.mockReturnValue({
       settingsMap: {
         impact_visible: 'false',
-        impact_title: 'Impact',
+        org_impact_title: 'Impact',
       },
       aboutContent,
     })
@@ -233,7 +233,7 @@ describe('HomePage', () => {
     setDefaultHookMocks()
     mockUseAllSettings.mockReturnValue({
       settingsMap: {
-        impact_title: 'Community Impact',
+        org_impact_title: 'Community Impact',
       },
       aboutContent,
     })
@@ -293,7 +293,7 @@ describe('HomePage', () => {
     setDefaultHookMocks()
     mockUseAllSettings.mockReturnValue({
       settingsMap: {
-        about_title: 'Custom About',
+        org_about_title: 'Custom About',
         team_title: 'Custom Team',
         contributors_title: 'Custom Contributors',
         sponsors_title: 'Custom Sponsors',

@@ -15,16 +15,22 @@ vi.mock('sonner', () => ({
 }))
 
 const mockSettingsMap = {
-  hero_title: 'Current Hero Title',
-  hero_subtitle: 'Current subtitle',
-  hero_primary_cta: 'Register Now',
-  hero_secondary_cta: 'Explore Events',
-  hero_event_date_label: 'Festival Date',
-  hero_event_date: 'March 20, 2026',
-  about_title: 'About Khelgram Foundation',
-  about_mission: 'Mission text',
-  about_vision: 'Vision text',
-  about_values: 'Value One',
+  org_hero_title: 'Org Hero Title',
+  org_hero_subtitle: 'Org subtitle',
+  org_hero_primary_cta: 'Our impact',
+  org_hero_secondary_cta: 'Khel 2026',
+  org_about_title: 'About Khelgram Foundation',
+  org_about_mission: 'Mission text',
+  org_about_vision: 'Vision text',
+  org_about_values: 'Value One',
+  khel2026_hero_title: 'Event Hero Title',
+  khel2026_hero_subtitle: 'Event subtitle',
+  khel2026_hero_primary_cta: 'Register Now',
+  khel2026_hero_secondary_cta: 'Explore Events',
+  khel2026_hero_event_date_label: 'Festival Date',
+  khel2026_hero_event_date: 'March 20, 2026',
+  khel2026_countdown_title: 'Countdown to Festival Day',
+  khel2026_countdown_tba_text: 'To Be Announced',
 }
 
 vi.mock('@/hooks/useSiteSettings', () => ({
@@ -51,29 +57,68 @@ describe('ContentPage', () => {
     })
   })
 
-  it('renders hero tab fields and saves section content', async () => {
+  it('renders organization hero fields and saves org copy', async () => {
     const user = userEvent.setup()
     mockMutateAsync.mockResolvedValue([])
 
     render(<ContentPage />, { wrapper: createWrapper() })
 
-    expect(screen.getByLabelText('Hero title')).toHaveValue('Current Hero Title')
+    expect(screen.getByLabelText('Hero title')).toHaveValue('Org Hero Title')
     await user.clear(screen.getByLabelText('Hero title'))
-    await user.type(screen.getByLabelText('Hero title'), 'Updated Hero Title')
-    await user.click(screen.getByRole('button', { name: 'Save Hero' }))
+    await user.type(screen.getByLabelText('Hero title'), 'Updated Org Hero')
+    await user.click(screen.getByRole('button', { name: 'Save org hero' }))
 
     expect(mockMutateAsync).toHaveBeenCalledWith(
       expect.arrayContaining([
         expect.objectContaining({
-          key: 'hero_title',
-          value: 'Updated Hero Title',
-          section: 'hero',
+          key: 'org_hero_title',
+          value: 'Updated Org Hero',
+          section: 'org',
         }),
       ]),
     )
   })
 
-  it('switches tabs and edits multiline about fields', async () => {
+  it('saves org hero CTA labels', async () => {
+    const user = userEvent.setup()
+    mockMutateAsync.mockResolvedValue([])
+
+    render(<ContentPage />, { wrapper: createWrapper() })
+
+    await user.clear(screen.getByLabelText('Primary CTA'))
+    await user.type(screen.getByLabelText('Primary CTA'), 'Get involved')
+    await user.click(screen.getByRole('button', { name: 'Save org hero' }))
+
+    expect(mockMutateAsync).toHaveBeenCalledWith(
+      expect.arrayContaining([
+        expect.objectContaining({ key: 'org_hero_primary_cta', value: 'Get involved' }),
+      ]),
+    )
+  })
+
+  it('edits org hero subtitle multiline field', async () => {
+    const user = userEvent.setup()
+    render(<ContentPage />, { wrapper: createWrapper() })
+
+    await user.clear(screen.getByLabelText('Hero subtitle'))
+    await user.type(screen.getByLabelText('Hero subtitle'), 'Updated org subtitle')
+
+    expect(screen.getByLabelText('Hero subtitle')).toHaveValue('Updated org subtitle')
+  })
+
+  it('switches to Khel 2026 group and edits event hero independently', async () => {
+    const user = userEvent.setup()
+    render(<ContentPage />, { wrapper: createWrapper() })
+
+    await user.click(screen.getByRole('tab', { name: 'Khel 2026' }))
+    expect(screen.getByLabelText('Hero title')).toHaveValue('Event Hero Title')
+
+    await user.clear(screen.getByLabelText('Hero title'))
+    await user.type(screen.getByLabelText('Hero title'), 'Updated Event Hero')
+    expect(screen.getByLabelText('Hero title')).toHaveValue('Updated Event Hero')
+  })
+
+  it('edits org about fields on organization tab', async () => {
     const user = userEvent.setup()
     render(<ContentPage />, { wrapper: createWrapper() })
 
@@ -85,20 +130,21 @@ describe('ContentPage', () => {
     expect(screen.getByLabelText('Values (one per line)')).toHaveAttribute('rows', '5')
   })
 
-  it('saves countdown section from non-hero tab', async () => {
+  it('saves Khel 2026 countdown from event group', async () => {
     const user = userEvent.setup()
     mockMutateAsync.mockResolvedValue([])
 
     render(<ContentPage />, { wrapper: createWrapper() })
 
+    await user.click(screen.getByRole('tab', { name: 'Khel 2026' }))
     await user.click(screen.getByRole('tab', { name: 'Countdown' }))
     await user.clear(screen.getByLabelText('Countdown heading'))
     await user.type(screen.getByLabelText('Countdown heading'), 'Updated countdown')
-    await user.click(screen.getByRole('button', { name: 'Save Countdown' }))
+    await user.click(screen.getByRole('button', { name: 'Save countdown' }))
 
     expect(mockMutateAsync).toHaveBeenCalledWith(
       expect.arrayContaining([
-        expect.objectContaining({ key: 'countdown_title', value: 'Updated countdown' }),
+        expect.objectContaining({ key: 'khel2026_countdown_title', value: 'Updated countdown' }),
       ]),
     )
   })
@@ -114,17 +160,15 @@ describe('ContentPage', () => {
   })
 
   it('returns null when no content sections are configured', () => {
-    const sectionsSpy = vi
-      .spyOn(contentSectionsModule, 'contentSections', 'get')
-      .mockReturnValue([])
+    const groupsSpy = vi.spyOn(contentSectionsModule, 'contentGroups', 'get').mockReturnValue([])
 
     const { container } = render(<ContentPage />, { wrapper: createWrapper() })
     expect(container.firstChild).toBeNull()
 
-    sectionsSpy.mockRestore()
+    groupsSpy.mockRestore()
   })
 
-  it('saves site event status from select field', async () => {
+  it('saves site event status from shared site tab', async () => {
     const user = userEvent.setup()
     mockMutateAsync.mockResolvedValue([])
     mockUseAllSettings.mockReturnValue({
@@ -138,6 +182,7 @@ describe('ContentPage', () => {
 
     render(<ContentPage />, { wrapper: createWrapper() })
 
+    await user.click(screen.getByRole('tab', { name: 'Shared' }))
     await user.click(screen.getByRole('tab', { name: 'Site' }))
     await user.selectOptions(screen.getByLabelText('Event status'), 'pre_registration')
     await user.click(screen.getByRole('button', { name: 'Save site settings' }))
@@ -145,6 +190,99 @@ describe('ContentPage', () => {
     expect(mockMutateAsync).toHaveBeenCalledWith(
       expect.arrayContaining([
         expect.objectContaining({ key: 'event_status', value: 'pre_registration' }),
+      ]),
+    )
+  })
+
+  it('saves org section visibility settings', async () => {
+    const user = userEvent.setup()
+    mockMutateAsync.mockResolvedValue([])
+    mockUseAllSettings.mockReturnValue({
+      settingsMap: {
+        ...mockSettingsMap,
+        team_visible: 'true',
+        team_title: 'Our Team',
+        org_impact_title: 'Impact',
+      },
+      isSuccess: true,
+    })
+
+    render(<ContentPage />, { wrapper: createWrapper() })
+
+    await user.click(screen.getByRole('tab', { name: 'Sections' }))
+    await user.click(screen.getByLabelText('Show Team section'))
+    await user.clear(screen.getByLabelText('Team heading'))
+    await user.type(screen.getByLabelText('Team heading'), 'Leadership Team')
+    await user.click(screen.getByRole('button', { name: 'Save org section settings' }))
+
+    expect(mockMutateAsync).toHaveBeenCalledWith(
+      expect.arrayContaining([
+        expect.objectContaining({ key: 'team_visible', value: 'false', section: 'org_sections' }),
+        expect.objectContaining({
+          key: 'team_title',
+          value: 'Leadership Team',
+          section: 'org_sections',
+        }),
+      ]),
+    )
+  })
+
+  it('defaults org section visibility checkboxes to checked when unset', async () => {
+    const user = userEvent.setup()
+    render(<ContentPage />, { wrapper: createWrapper() })
+
+    await user.click(screen.getByRole('tab', { name: 'Sections' }))
+    expect(screen.getByLabelText('Show Hero section')).toBeChecked()
+    expect(screen.getByLabelText('Show Impact section')).toBeChecked()
+  })
+
+  it('resets section tab when switching content groups', async () => {
+    const user = userEvent.setup()
+    render(<ContentPage />, { wrapper: createWrapper() })
+
+    await user.click(screen.getByRole('tab', { name: 'About' }))
+    expect(screen.getByLabelText('Mission')).toBeInTheDocument()
+
+    await user.click(screen.getByRole('tab', { name: 'Khel 2026' }))
+    expect(screen.getByLabelText('Hero title')).toHaveValue('Event Hero Title')
+
+    await user.click(screen.getByRole('tab', { name: 'Shared' }))
+    expect(screen.getByLabelText('Site name (header)')).toBeInTheDocument()
+  })
+
+  it('saves org footer and contact fields', async () => {
+    const user = userEvent.setup()
+    mockMutateAsync.mockResolvedValue([])
+    mockUseAllSettings.mockReturnValue({
+      settingsMap: {
+        ...mockSettingsMap,
+        footer_description: 'Footer description',
+        contact_address: 'Old address',
+      },
+      isSuccess: true,
+    })
+
+    render(<ContentPage />, { wrapper: createWrapper() })
+
+    await user.click(screen.getByRole('tab', { name: 'Footer' }))
+    await user.clear(screen.getByLabelText('Description'))
+    await user.type(screen.getByLabelText('Description'), 'Updated footer')
+    await user.click(screen.getByRole('button', { name: 'Save footer' }))
+
+    expect(mockMutateAsync).toHaveBeenCalledWith(
+      expect.arrayContaining([
+        expect.objectContaining({ key: 'footer_description', value: 'Updated footer' }),
+      ]),
+    )
+
+    await user.click(screen.getByRole('tab', { name: 'Contact' }))
+    await user.clear(screen.getByLabelText('Address'))
+    await user.type(screen.getByLabelText('Address'), 'New address')
+    await user.click(screen.getByRole('button', { name: 'Save contact' }))
+
+    expect(mockMutateAsync).toHaveBeenCalledWith(
+      expect.arrayContaining([
+        expect.objectContaining({ key: 'contact_address', value: 'New address' }),
       ]),
     )
   })
@@ -159,55 +297,41 @@ describe('ContentPage', () => {
     expect(screen.getByRole('button', { name: 'Saving...' })).toBeDisabled()
   })
 
-  it('saves section visibility and credibility headings', async () => {
+  it('saves Khel 2026 section visibility from event group', async () => {
     const user = userEvent.setup()
     mockMutateAsync.mockResolvedValue([])
     mockUseAllSettings.mockReturnValue({
       settingsMap: {
         ...mockSettingsMap,
-        team_visible: 'true',
-        team_title: 'Our Team',
-        faq_visible: 'true',
-        faq_title: 'FAQ',
+        khel2026_faq_visible: 'true',
+        khel2026_faq_title: 'FAQ',
       },
       isSuccess: true,
     })
 
     render(<ContentPage />, { wrapper: createWrapper() })
 
+    await user.click(screen.getByRole('tab', { name: 'Khel 2026' }))
     await user.click(screen.getByRole('tab', { name: 'Sections' }))
-    await user.click(screen.getByLabelText('Show Team section'))
-    await user.clear(screen.getByLabelText('Team heading'))
-    await user.type(screen.getByLabelText('Team heading'), 'Leadership Team')
-    await user.click(screen.getByRole('button', { name: 'Save section settings' }))
+    await user.click(screen.getByLabelText('Show FAQ section'))
+    await user.click(screen.getByRole('button', { name: 'Save Khel 2026 section settings' }))
 
     expect(mockMutateAsync).toHaveBeenCalledWith(
       expect.arrayContaining([
-        expect.objectContaining({ key: 'team_visible', value: 'false', section: 'sections' }),
         expect.objectContaining({
-          key: 'team_title',
-          value: 'Leadership Team',
-          section: 'sections',
+          key: 'khel2026_faq_visible',
+          value: 'false',
+          section: 'khel2026_sections',
         }),
       ]),
     )
   })
 
-  it('defaults section visibility checkboxes to checked when unset', async () => {
-    const user = userEvent.setup()
-    render(<ContentPage />, { wrapper: createWrapper() })
-
-    await user.click(screen.getByRole('tab', { name: 'Sections' }))
-    expect(screen.getByLabelText('Show Hero section')).toBeChecked()
-    expect(screen.getByLabelText('Show FAQ section')).toBeChecked()
-  })
-
-  it('loads unchecked visibility from stored false values', async () => {
+  it('loads unchecked org visibility from stored false values', async () => {
     const user = userEvent.setup()
     mockUseAllSettings.mockReturnValue({
       settingsMap: {
         ...mockSettingsMap,
-        gallery_visible: 'false',
         contact_visible: 'false',
       },
       isSuccess: true,
@@ -216,186 +340,27 @@ describe('ContentPage', () => {
     render(<ContentPage />, { wrapper: createWrapper() })
 
     await user.click(screen.getByRole('tab', { name: 'Sections' }))
-    expect(screen.getByLabelText('Show Gallery section')).not.toBeChecked()
     expect(screen.getByLabelText('Show Contact section')).not.toBeChecked()
   })
 
-  it('saves footer and contact multiline fields', async () => {
+  it('saves Khel 2026 register pre-registration message', async () => {
     const user = userEvent.setup()
     mockMutateAsync.mockResolvedValue([])
-    mockUseAllSettings.mockReturnValue({
-      settingsMap: {
-        ...mockSettingsMap,
-        footer_description: 'Footer description',
-        footer_copyright: 'Footer copyright',
-        contact_title: 'Contact',
-        contact_address: 'Old address',
-        contact_phone: '111',
-        contact_email: 'old@example.com',
-      },
-      isSuccess: true,
-    })
 
     render(<ContentPage />, { wrapper: createWrapper() })
 
-    await user.click(screen.getByRole('tab', { name: 'Footer' }))
-    await user.clear(screen.getByLabelText('Description'))
-    await user.type(screen.getByLabelText('Description'), 'Updated footer')
-    await user.click(screen.getByRole('button', { name: 'Save Footer' }))
-
-    expect(mockMutateAsync).toHaveBeenCalledWith(
-      expect.arrayContaining([
-        expect.objectContaining({ key: 'footer_description', value: 'Updated footer' }),
-      ]),
-    )
-
-    await user.click(screen.getByRole('tab', { name: 'Contact' }))
-    await user.clear(screen.getByLabelText('Address'))
-    await user.type(screen.getByLabelText('Address'), 'New address')
-    await user.click(screen.getByRole('button', { name: 'Save Contact' }))
-
-    expect(mockMutateAsync).toHaveBeenCalledWith(
-      expect.arrayContaining([
-        expect.objectContaining({ key: 'contact_address', value: 'New address' }),
-      ]),
-    )
-  })
-
-  it('saves register and events section headings', async () => {
-    const user = userEvent.setup()
-    mockMutateAsync.mockResolvedValue([])
-    mockUseAllSettings.mockReturnValue({
-      settingsMap: {
-        ...mockSettingsMap,
-        events_title: 'Festival Events',
-        register_title: 'Register Your Child',
-        register_submit_label: 'Submit Registration',
-      },
-      isSuccess: true,
-    })
-
-    render(<ContentPage />, { wrapper: createWrapper() })
-
-    await user.click(screen.getByRole('tab', { name: 'Events' }))
-    await user.clear(screen.getByLabelText('Section heading'))
-    await user.type(screen.getByLabelText('Section heading'), 'Updated Events')
-    await user.click(screen.getByRole('button', { name: 'Save Events' }))
-
-    await user.click(screen.getByRole('tab', { name: 'Register' }))
-    await user.clear(screen.getByLabelText('Submit button label'))
-    await user.type(screen.getByLabelText('Submit button label'), 'Send Form')
-    await user.click(screen.getByRole('button', { name: 'Save Register' }))
-
-    expect(mockMutateAsync).toHaveBeenCalledWith(
-      expect.arrayContaining([
-        expect.objectContaining({ key: 'events_title', value: 'Updated Events' }),
-      ]),
-    )
-    expect(mockMutateAsync).toHaveBeenCalledWith(
-      expect.arrayContaining([
-        expect.objectContaining({ key: 'register_submit_label', value: 'Send Form' }),
-      ]),
-    )
-  })
-
-  it('saves register pre-registration message', async () => {
-    const user = userEvent.setup()
-    mockMutateAsync.mockResolvedValue([])
-    mockUseAllSettings.mockReturnValue({
-      settingsMap: {
-        ...mockSettingsMap,
-        register_pre_message: 'Old message',
-      },
-      isSuccess: true,
-    })
-
-    render(<ContentPage />, { wrapper: createWrapper() })
-
+    await user.click(screen.getByRole('tab', { name: 'Khel 2026' }))
     await user.click(screen.getByRole('tab', { name: 'Register' }))
     await user.clear(screen.getByLabelText('Pre-registration message'))
     await user.type(screen.getByLabelText('Pre-registration message'), 'Updated pre-reg message')
-    await user.click(screen.getByRole('button', { name: 'Save Register' }))
+    await user.click(screen.getByRole('button', { name: 'Save register CTA' }))
 
     expect(mockMutateAsync).toHaveBeenCalledWith(
       expect.arrayContaining([
         expect.objectContaining({
-          key: 'register_pre_message',
+          key: 'khel2026_register_pre_message',
           value: 'Updated pre-reg message',
         }),
-      ]),
-    )
-  })
-
-  it('saves impact heading on sections tab', async () => {
-    const user = userEvent.setup()
-    mockMutateAsync.mockResolvedValue([])
-    mockUseAllSettings.mockReturnValue({
-      settingsMap: {
-        ...mockSettingsMap,
-        impact_title: 'Impact',
-      },
-      isSuccess: true,
-    })
-
-    render(<ContentPage />, { wrapper: createWrapper() })
-
-    await user.click(screen.getByRole('tab', { name: 'Sections' }))
-    await user.clear(screen.getByLabelText('Impact heading'))
-    await user.type(screen.getByLabelText('Impact heading'), 'Our Impact')
-    await user.click(screen.getByRole('button', { name: 'Save section settings' }))
-
-    expect(mockMutateAsync).toHaveBeenCalledWith(
-      expect.arrayContaining([
-        expect.objectContaining({ key: 'impact_title', value: 'Our Impact', section: 'sections' }),
-      ]),
-    )
-  })
-
-  it('saves re-enabled section visibility', async () => {
-    const user = userEvent.setup()
-    mockMutateAsync.mockResolvedValue([])
-    mockUseAllSettings.mockReturnValue({
-      settingsMap: {
-        ...mockSettingsMap,
-        gallery_visible: 'false',
-      },
-      isSuccess: true,
-    })
-
-    render(<ContentPage />, { wrapper: createWrapper() })
-
-    await user.click(screen.getByRole('tab', { name: 'Sections' }))
-    await user.click(screen.getByLabelText('Show Gallery section'))
-    await user.click(screen.getByRole('button', { name: 'Save section settings' }))
-
-    expect(mockMutateAsync).toHaveBeenCalledWith(
-      expect.arrayContaining([
-        expect.objectContaining({ key: 'gallery_visible', value: 'true', section: 'sections' }),
-      ]),
-    )
-  })
-
-  it('saves site name from site tab', async () => {
-    const user = userEvent.setup()
-    mockMutateAsync.mockResolvedValue([])
-    mockUseAllSettings.mockReturnValue({
-      settingsMap: {
-        ...mockSettingsMap,
-        site_name: 'Khelgram Foundation',
-      },
-      isSuccess: true,
-    })
-
-    render(<ContentPage />, { wrapper: createWrapper() })
-
-    await user.click(screen.getByRole('tab', { name: 'Site' }))
-    await user.clear(screen.getByLabelText('Site name (header)'))
-    await user.type(screen.getByLabelText('Site name (header)'), 'Khelgram Sports')
-    await user.click(screen.getByRole('button', { name: 'Save site settings' }))
-
-    expect(mockMutateAsync).toHaveBeenCalledWith(
-      expect.arrayContaining([
-        expect.objectContaining({ key: 'site_name', value: 'Khelgram Sports', section: 'header' }),
       ]),
     )
   })

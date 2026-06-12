@@ -11,7 +11,6 @@ import { useCreateRegistration } from '@/hooks/useRegistration'
 import { useAllSettings } from '@/hooks/useSiteSettings'
 import { footerContent } from '@/fixtures/homePageFixtures'
 import { getRegistrationShareUrl } from '@/lib/shareUrl'
-import { isSectionVisible, sectionTitle } from '@/lib/homepageSections'
 import type { RegistrationInput } from '@/types/app.types'
 
 export function RegisterPage() {
@@ -20,9 +19,11 @@ export function RegisterPage() {
   const eventStatus = settingsMap.event_status ?? 'registration_open'
   const createRegistration = useCreateRegistration(eventStatus)
   const isPreRegistration = eventStatus === 'pre_registration'
-  const registerTitle = sectionTitle(settingsMap, 'register_title', 'Register Your Child')
+  const registerTitle = settingsMap.khel2026_register_title
   const shareUrl = useMemo(() => getRegistrationShareUrl(), [])
-  const registrationOpen = isSectionVisible(settingsMap, 'register_visible')
+  const registrationOpen = eventStatus === 'registration_open' || eventStatus === 'pre_registration'
+  const registerPreMessage = settingsMap.khel2026_register_pre_message
+  const registerSubmitLabel = settingsMap.khel2026_register_submit_label
 
   useEffect(() => {
     document.title = `${registerTitle} | ${settingsMap.site_name ?? 'Khelgram Foundation'}`
@@ -37,14 +38,7 @@ export function RegisterPage() {
   return (
     <div className="register-page">
       <SiteHeader siteName={settingsMap.site_name ?? 'Khelgram Foundation'} />
-      {isPreRegistration ? (
-        <PreRegBanner
-          message={
-            settingsMap.register_pre_message ??
-            "Pre-registration open — we'll confirm dates by email"
-          }
-        />
-      ) : null}
+      {isPreRegistration ? <PreRegBanner message={registerPreMessage} /> : null}
       <main style={{ minHeight: '60vh' }}>
         {!registrationOpen ? (
           <section style={{ padding: '4rem 1.5rem', textAlign: 'center' }}>
@@ -66,11 +60,8 @@ export function RegisterPage() {
               <RegistrationForm
                 title={registerTitle}
                 eventOptions={eventOptions}
-                preRegistrationMessage={
-                  settingsMap.register_pre_message ??
-                  "Pre-registration open — we'll confirm dates by email"
-                }
-                submitLabel={settingsMap.register_submit_label ?? 'Submit Registration'}
+                preRegistrationMessage={registerPreMessage}
+                submitLabel={registerSubmitLabel}
                 isPreRegistration={isPreRegistration}
                 isSubmitting={createRegistration.isPending}
                 shareUrl={shareUrl}

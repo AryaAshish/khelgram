@@ -44,8 +44,8 @@ export function HomePage() {
     }
   }
 
-  const aboutTitle = sectionTitle(settingsMap, 'about_title', 'About Khelgram Foundation')
-  const impactTitle = sectionTitle(settingsMap, 'impact_title', 'Impact')
+  const aboutTitle = sectionTitle(settingsMap, 'org_about_title', 'About Khelgram Foundation')
+  const impactTitle = sectionTitle(settingsMap, 'org_impact_title', 'Impact')
   const teamTitle = sectionTitle(settingsMap, 'team_title', 'Our Team')
   const contributorsTitle = sectionTitle(settingsMap, 'contributors_title', 'Contributors')
   const sponsorsTitle = sectionTitle(settingsMap, 'sponsors_title', 'Sponsors')

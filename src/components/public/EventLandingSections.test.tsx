@@ -75,17 +75,18 @@ function setDefaultHookMocks() {
       event_status: 'registration_open',
       event_date: '2026-04-22',
       hero_title: "Khelgram Foundation Children's Sports Festival 2026",
-      hero_subtitle: 'Subtitle',
-      hero_primary_cta: 'Register Now',
-      hero_secondary_cta: 'Explore Events',
-      hero_event_date_label: 'Festival Date',
-      hero_event_date: 'March 20, 2026',
-      countdown_title: 'Countdown to Festival Day',
-      events_title: 'Festival Events',
-      gallery_title: 'Gallery',
-      register_title: 'Register Your Child',
-      register_submit_label: 'Register Now',
-      faq_title: 'FAQ',
+      khel2026_hero_title: "Khelgram Foundation Children's Sports Festival 2026",
+      khel2026_hero_subtitle: 'Subtitle',
+      khel2026_hero_primary_cta: 'Register Now',
+      khel2026_hero_secondary_cta: 'Explore Events',
+      khel2026_hero_event_date_label: 'Festival Date',
+      khel2026_hero_event_date: 'March 20, 2026',
+      khel2026_countdown_title: 'Countdown to Festival Day',
+      khel2026_events_title: 'Festival Events',
+      khel2026_gallery_title: 'Gallery',
+      khel2026_register_title: 'Register Your Child',
+      khel2026_register_submit_label: 'Register Now',
+      khel2026_faq_title: 'FAQ',
       khel2026_hero_visible: 'true',
       khel2026_countdown_visible: 'true',
       khel2026_events_visible: 'true',
@@ -141,10 +142,13 @@ describe('EventLandingSections', () => {
     mockUseAllSettings.mockReturnValue({
       settingsMap: {
         event_status: 'pre_registration',
-        countdown_tba_text: 'To Be Announced',
-        register_pre_message: "Pre-registration open — we'll confirm dates by email",
+        khel2026_register_pre_message: "Pre-registration open — we'll confirm dates by email",
         khel2026_hero_visible: 'true',
         khel2026_register_cta_visible: 'true',
+        khel2026_hero_title: "Khelgram Foundation Children's Sports Festival 2026",
+        khel2026_hero_subtitle: 'Subtitle',
+        khel2026_hero_primary_cta: 'Register Now',
+        khel2026_hero_secondary_cta: 'Explore Events',
       },
       countdownTarget: null,
     })
@@ -160,11 +164,12 @@ describe('EventLandingSections', () => {
     setDefaultHookMocks()
     mockUseAllSettings.mockReturnValue({
       settingsMap: {
-        hero_title: "Khelgram Foundation Children's Sports Festival 2026",
-        events_title: 'Festival Events',
-        register_title: 'Register Your Child',
+        khel2026_hero_title: "Khelgram Foundation Children's Sports Festival 2026",
+        khel2026_events_title: 'Festival Events',
+        khel2026_register_title: 'Register Your Child',
         khel2026_hero_visible: 'false',
         khel2026_countdown_visible: 'false',
+        khel2026_countdown_title: 'Countdown to Festival Day',
         khel2026_events_visible: 'true',
         khel2026_register_cta_visible: 'true',
       },
@@ -220,20 +225,8 @@ describe('EventLandingSections', () => {
     )
   })
 
-  it('uses fixture fallbacks when hero settings are missing', () => {
+  it('renders configured khel2026 hero copy', () => {
     setDefaultHookMocks()
-    mockUseAllSettings.mockReturnValue({
-      settingsMap: {
-        khel2026_hero_visible: 'true',
-        khel2026_countdown_visible: 'true',
-        khel2026_events_visible: 'true',
-        khel2026_gallery_visible: 'true',
-        khel2026_register_cta_visible: 'true',
-        khel2026_faq_visible: 'true',
-      },
-      countdownTarget,
-    })
-
     renderEventLanding()
 
     expect(
@@ -318,17 +311,20 @@ describe('EventLandingSections', () => {
     element.remove()
   })
 
-  it('uses default pre-registration copy when register message is missing', () => {
+  it('shows pre-registration copy on register CTA section', () => {
     setDefaultHookMocks()
     mockUseAllSettings.mockReturnValue({
       settingsMap: {
         event_status: 'pre_registration',
+        khel2026_register_pre_message: "Pre-registration open — we'll confirm dates by email",
         khel2026_register_cta_visible: 'true',
         khel2026_hero_visible: 'false',
         khel2026_countdown_visible: 'false',
         khel2026_events_visible: 'false',
         khel2026_gallery_visible: 'false',
         khel2026_faq_visible: 'false',
+        khel2026_register_title: 'Register Your Child',
+        khel2026_register_submit_label: 'Register Now',
       },
       countdownTarget: null,
     })
@@ -361,11 +357,13 @@ describe('EventLandingSections', () => {
     expect(screen.getByText(/April 22, 2026/)).toBeInTheDocument()
   })
 
-  it('uses default register submit label when setting is missing', () => {
+  it('uses configured register submit label on CTA section', () => {
     setDefaultHookMocks()
     mockUseAllSettings.mockReturnValue({
       settingsMap: {
-        register_title: 'Sign Up',
+        khel2026_register_title: 'Sign Up',
+        khel2026_register_submit_label: 'Register Now',
+        khel2026_register_pre_message: 'Sign up for Khel 2026',
         khel2026_register_cta_visible: 'true',
         khel2026_hero_visible: 'false',
         khel2026_countdown_visible: 'false',
@@ -387,7 +385,7 @@ describe('EventLandingSections', () => {
     mockUseFaq.mockReturnValue({ items: [], isLoading: true })
     mockUseAllSettings.mockReturnValue({
       settingsMap: {
-        faq_title: 'Event FAQ',
+        khel2026_faq_title: 'Event FAQ',
         khel2026_faq_visible: 'true',
         khel2026_hero_visible: 'false',
         khel2026_countdown_visible: 'false',

@@ -46,9 +46,9 @@ describe('RegisterPage', () => {
     mockUseAllSettings.mockReturnValue({
       settingsMap: {
         site_name: 'Khelgram Foundation',
-        register_visible: 'true',
-        register_title: 'Register Your Child',
-        register_submit_label: 'Submit Registration',
+        khel2026_register_title: 'Register Your Child',
+        khel2026_register_submit_label: 'Submit Registration',
+        khel2026_register_pre_message: "Pre-registration open — we'll confirm dates by email",
         event_status: 'registration_open',
       },
     })
@@ -68,7 +68,9 @@ describe('RegisterPage', () => {
   it('uses fallback copy when optional settings are missing', () => {
     mockUseAllSettings.mockReturnValue({
       settingsMap: {
-        register_visible: 'true',
+        khel2026_register_title: 'Register Your Child',
+        khel2026_register_submit_label: 'Submit Registration',
+        event_status: 'registration_open',
       },
     })
 
@@ -87,8 +89,8 @@ describe('RegisterPage', () => {
     mockUseAllSettings.mockReturnValue({
       settingsMap: {
         site_name: 'Khelgram Foundation',
-        register_visible: 'true',
-        register_title: 'Register Your Child',
+        khel2026_register_title: 'Register Your Child',
+        khel2026_register_submit_label: 'Submit Registration',
         event_status: 'registration_open',
       },
     })
@@ -110,10 +112,9 @@ describe('RegisterPage', () => {
     mockUseAllSettings.mockReturnValue({
       settingsMap: {
         site_name: 'Khelgram Foundation',
-        register_visible: 'true',
-        register_title: 'Register Your Child',
+        khel2026_register_title: 'Register Your Child',
         event_status: 'pre_registration',
-        register_pre_message: "Pre-registration open — we'll confirm dates by email",
+        khel2026_register_pre_message: "Pre-registration open — we'll confirm dates by email",
       },
     })
 
@@ -149,11 +150,51 @@ describe('RegisterPage', () => {
     })
   })
 
-  it('shows unavailable message when registration section is hidden', () => {
+  it('renders shareable registration form at dedicated route', () => {
+    render(<RegisterPage />, { wrapper: createWrapper() })
+
+    expect(screen.getByRole('heading', { name: 'Register Your Child' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Copy registration link' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /Back to Khel 2026/i })).toHaveAttribute(
+      'href',
+      '/khel2026',
+    )
+  })
+
+  it('defaults event status to registration_open when unset', () => {
+    mockUseAllSettings.mockReturnValue({
+      settingsMap: {
+        khel2026_register_title: 'Register Your Child',
+        khel2026_register_submit_label: 'Submit Registration',
+      },
+    })
+
+    render(<RegisterPage />, { wrapper: createWrapper() })
+
+    expect(screen.getByLabelText('Child Name')).toBeInTheDocument()
+  })
+
+  it('uses khel2026 register labels when provided', () => {
     mockUseAllSettings.mockReturnValue({
       settingsMap: {
         site_name: 'Khelgram Foundation',
-        register_visible: 'false',
+        khel2026_register_title: 'Khel 2026 Registration',
+        khel2026_register_submit_label: 'Send Form',
+        event_status: 'registration_open',
+      },
+    })
+
+    render(<RegisterPage />, { wrapper: createWrapper() })
+
+    expect(screen.getByRole('heading', { name: 'Khel 2026 Registration' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Send Form' })).toBeInTheDocument()
+  })
+
+  it('shows unavailable message when registration is closed', () => {
+    mockUseAllSettings.mockReturnValue({
+      settingsMap: {
+        site_name: 'Khelgram Foundation',
+        event_status: 'registration_closed',
       },
     })
 

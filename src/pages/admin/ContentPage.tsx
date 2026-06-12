@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useAllSettings, useUpdateSectionSettings } from '@/hooks/useSiteSettings'
-import { contentSections, type ContentSection } from '@/lib/contentSections'
+import { contentGroups, type ContentGroup, type ContentSection } from '@/lib/contentSections'
 
 function defaultFieldValue(
   field: ContentSection['fields'][number],
@@ -124,7 +124,7 @@ function ContentSectionEditor({
                       [field.key]: event.target.value,
                     }))
                   }
-                  rows={field.key === 'about_values' ? 5 : 3}
+                  rows={field.key.includes('values') ? 5 : 3}
                   style={{
                     width: '100%',
                     padding: '0.5rem',
@@ -160,14 +160,16 @@ function ContentSectionEditor({
 export function ContentPage() {
   const { settingsMap, isSuccess } = useAllSettings()
   const updateSection = useUpdateSectionSettings()
-  const [activeTab, setActiveTab] = useState(contentSections[0]?.id ?? 'hero')
+  const [activeGroupId, setActiveGroupId] = useState<ContentGroup['id']>('organization')
+  const activeGroup = contentGroups.find((group) => group.id === activeGroupId) ?? contentGroups[0]
+  const [activeTab, setActiveTab] = useState(activeGroup?.sections[0]?.id ?? 'org_hero')
 
-  const activeSection = useMemo(
-    () => contentSections.find((section) => section.id === activeTab) ?? contentSections[0],
-    [activeTab],
-  )
+  const activeSection = useMemo(() => {
+    const group = contentGroups.find((entry) => entry.id === activeGroupId) ?? contentGroups[0]
+    return group?.sections.find((section) => section.id === activeTab) ?? group?.sections[0]
+  }, [activeGroupId, activeTab])
 
-  if (!activeSection) {
+  if (!activeSection || !activeGroup) {
     return null
   }
 
@@ -175,19 +177,51 @@ export function ContentPage() {
     await updateSection.mutateAsync(payload)
   }
 
+  const handleGroupChange = (groupId: ContentGroup['id']) => {
+    const group = contentGroups.find((entry) => entry.id === groupId)
+    setActiveGroupId(groupId)
+    setActiveTab(group?.sections[0]?.id ?? 'org_hero')
+  }
+
   return (
     <section aria-label="Content management">
       <h2 style={{ fontSize: '1.75rem', marginBottom: '1rem' }}>Content</h2>
       <p style={{ color: '#6b7280', marginBottom: '1.5rem' }}>
-        Edit public site copy by section. Changes appear on the homepage after save.
+        Edit organization copy and Khel 2026 event copy independently.
       </p>
 
       <div
         role="tablist"
-        aria-label="Content sections"
+        aria-label="Content groups"
+        style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1rem' }}
+      >
+        {contentGroups.map((group) => (
+          <button
+            key={group.id}
+            type="button"
+            role="tab"
+            aria-selected={group.id === activeGroupId}
+            onClick={() => handleGroupChange(group.id)}
+            style={{
+              padding: '0.5rem 0.75rem',
+              borderRadius: '0.5rem',
+              border: '1px solid #d1d5db',
+              background: group.id === activeGroupId ? '#dcfce7' : '#fff',
+              fontWeight: group.id === activeGroupId ? 700 : 500,
+              cursor: 'pointer',
+            }}
+          >
+            {group.label}
+          </button>
+        ))}
+      </div>
+
+      <div
+        role="tablist"
+        aria-label={`${activeGroup.label} content sections`}
         style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}
       >
-        {contentSections.map((section) => (
+        {activeGroup.sections.map((section) => (
           <button
             key={section.id}
             type="button"
@@ -209,7 +243,7 @@ export function ContentPage() {
       </div>
 
       <ContentSectionEditor
-        key={`${activeTab}-${isSuccess ? 'ready' : 'loading'}`}
+        key={`${activeGroupId}-${activeTab}-${isSuccess ? 'ready' : 'loading'}`}
         section={activeSection}
         settingsMap={isSuccess ? settingsMap : {}}
         isPending={updateSection.isPending}

@@ -1,33 +1,34 @@
 import { describe, expect, it } from 'vitest'
-import { contentSections, parseAboutValues } from './contentSections'
+import { contentGroups, contentSections, parseAboutValues } from './contentSections'
 
 describe('contentSections', () => {
-  it('defines editable fields for each public section', () => {
-    expect(contentSections.map((section) => section.id)).toEqual([
-      'hero',
-      'countdown',
-      'about',
-      'events',
-      'gallery',
-      'register',
-      'contact',
-      'footer',
-      'sections',
-      'site',
-    ])
-    expect(contentSections[0]?.fields.some((field) => field.key === 'hero_title')).toBe(true)
+  it('groups CMS tabs into organization, Khel 2026, and shared', () => {
+    expect(contentGroups.map((group) => group.id)).toEqual(['organization', 'khel2026', 'shared'])
+    expect(contentGroups[0]?.sections.some((section) => section.id === 'org_hero')).toBe(true)
+    expect(contentGroups[1]?.sections.some((section) => section.id === 'khel2026_hero')).toBe(true)
+    expect(contentGroups[2]?.sections.some((section) => section.id === 'site')).toBe(true)
   })
 
-  it('includes section visibility controls and credibility headings', () => {
-    const sectionsTab = contentSections.find((section) => section.id === 'sections')
-    expect(sectionsTab?.fields.some((field) => field.key === 'team_visible')).toBe(true)
-    expect(sectionsTab?.fields.some((field) => field.key === 'team_title')).toBe(true)
-    expect(sectionsTab?.fields.some((field) => field.key === 'hero_title')).toBe(false)
+  it('uses org and khel2026 namespaced field keys', () => {
+    const orgHero = contentGroups[0]?.sections.find((section) => section.id === 'org_hero')
+    const eventHero = contentGroups[1]?.sections.find((section) => section.id === 'khel2026_hero')
+    expect(orgHero?.fields.some((field) => field.key === 'org_hero_title')).toBe(true)
+    expect(eventHero?.fields.some((field) => field.key === 'khel2026_hero_title')).toBe(true)
   })
 
-  it('exposes site name on the site tab', () => {
-    const siteTab = contentSections.find((section) => section.id === 'site')
-    expect(siteTab?.fields.some((field) => field.key === 'site_name')).toBe(true)
+  it('includes org and event section visibility controls', () => {
+    const orgSections = contentGroups[0]?.sections.find((section) => section.id === 'org_sections')
+    const eventSections = contentGroups[1]?.sections.find(
+      (section) => section.id === 'khel2026_sections',
+    )
+    expect(orgSections?.fields.some((field) => field.key === 'org_hero_visible')).toBe(true)
+    expect(orgSections?.fields.some((field) => field.key === 'org_impact_title')).toBe(true)
+    expect(eventSections?.fields.some((field) => field.key === 'khel2026_hero_visible')).toBe(true)
+    expect(eventSections?.fields.some((field) => field.key === 'khel2026_faq_title')).toBe(true)
+  })
+
+  it('flattens all sections for legacy lookups', () => {
+    expect(contentSections.length).toBeGreaterThan(10)
   })
 })
 
