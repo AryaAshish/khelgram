@@ -13,6 +13,7 @@ describe('SiteHeader', () => {
     expect(screen.getByText('Khelgram Foundation')).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'About' })).toHaveAttribute('href', '#about')
     expect(screen.getByRole('link', { name: 'Events' })).toHaveAttribute('href', '#events')
+    expect(screen.getByRole('link', { name: 'Register' })).toHaveAttribute('href', '/register')
     expect(screen.getByRole('link', { name: 'Admin sign in' })).toHaveAttribute('href', '/admin')
   })
 })

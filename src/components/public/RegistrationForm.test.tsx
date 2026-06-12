@@ -34,6 +34,20 @@ describe('RegistrationForm', () => {
     })
   })
 
+  it('renders share actions when shareUrl is provided', () => {
+    render(
+      <RegistrationForm
+        {...defaultProps}
+        eventOptions={['Sack Race']}
+        shareUrl="https://khelgram.example/register"
+        onSubmit={vi.fn()}
+      />,
+    )
+
+    expect(screen.getByRole('button', { name: 'Copy registration link' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Share registration form' })).toBeInTheDocument()
+  })
+
   it('shows pre-registration notice and submitting state', () => {
     render(
       <RegistrationForm

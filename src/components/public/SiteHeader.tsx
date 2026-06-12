@@ -9,7 +9,7 @@ const navItems = [
   { label: 'About', href: '#about' },
   { label: 'Events', href: '#events' },
   { label: 'Gallery', href: '#gallery' },
-  { label: 'Register', href: '#register' },
+  { label: 'Register', href: '/register' },
   { label: 'Contact', href: '#contact' },
 ]
 
@@ -29,9 +29,15 @@ export function SiteHeader({ siteName }: SiteHeaderProps) {
             <ul style={{ display: 'flex', gap: '1rem', listStyle: 'none', margin: 0, padding: 0 }}>
               {navItems.map((item) => (
                 <li key={item.href}>
-                  <a href={item.href} style={{ color: '#1f2937', fontWeight: 600 }}>
-                    {item.label}
-                  </a>
+                  {item.href.startsWith('/') ? (
+                    <Link to={item.href} style={{ color: '#1f2937', fontWeight: 600 }}>
+                      {item.label}
+                    </Link>
+                  ) : (
+                    <a href={item.href} style={{ color: '#1f2937', fontWeight: 600 }}>
+                      {item.label}
+                    </a>
+                  )}
                 </li>
               ))}
               <li>

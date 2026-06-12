@@ -195,3 +195,14 @@ For phases 7–11, enable E2E with `RUN_PHASE7_E2E=1` (etc.) after implementing 
 - [x] Unit tests: `homepageSections`, `contentSections`, `HomePage`, `ContentPage`, `ImpactStatsBar`
 - [x] E2E spec ready: `RUN_PHASE12_E2E=1 npm run verify:phase -- 12`
 - [x] `npm run typecheck`, `lint`, `test:coverage`, `build` all pass
+
+## Phase 13 checklist
+
+- [x] Dedicated `/register` route with focused registration page
+- [x] `ShareRegistrationLink` — copy link + native share on registration form
+- [x] Homepage registration section includes share actions
+- [x] Header **Register** nav links to `/register` (shareable URL)
+- [x] `/#register` hash still scrolls to form on homepage
+- [x] Unit tests: `shareUrl`, `ShareRegistrationLink`, `RegisterPage`, form/header updates
+- [x] E2E spec ready: `RUN_PHASE13_E2E=1 npm run verify:phase -- 13`
+- [x] `npm run typecheck`, `lint`, `test:coverage`, `build` all pass

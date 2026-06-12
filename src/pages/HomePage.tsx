@@ -1,3 +1,4 @@
+import { useEffect, useMemo } from 'react'
 import { SectionErrorBoundary } from '@/components/SectionErrorBoundary'
 import { AboutSection } from '@/components/public/AboutSection'
 import { ContactSection } from '@/components/public/ContactSection'
@@ -28,6 +29,7 @@ import { useTeam } from '@/hooks/useTeam'
 import { useTestimonials } from '@/hooks/useTestimonials'
 import { contactContent, footerContent, heroContent } from '@/fixtures/homePageFixtures'
 import { isSectionVisible, sectionTitle } from '@/lib/homepageSections'
+import { getRegistrationShareUrl } from '@/lib/shareUrl'
 import type { RegistrationInput } from '@/types/app.types'
 
 export function HomePage() {
@@ -61,7 +63,14 @@ export function HomePage() {
   }
 
   const eventOptions = games.map((game) => game.name)
+  const shareUrl = useMemo(() => getRegistrationShareUrl(), [])
   const show = (visibleKey: string) => isSectionVisible(settingsMap, visibleKey)
+
+  useEffect(() => {
+    if (window.location.hash === '#register') {
+      scrollToId('register')
+    }
+  }, [])
 
   const aboutTitle = sectionTitle(settingsMap, 'about_title', 'About Khelgram Foundation')
   const impactTitle = sectionTitle(settingsMap, 'impact_title', 'Impact')
@@ -189,6 +198,7 @@ export function HomePage() {
               submitLabel={settingsMap.register_submit_label ?? 'Submit Registration'}
               isPreRegistration={isPreRegistration}
               isSubmitting={createRegistration.isPending}
+              shareUrl={shareUrl}
               onSubmit={handleRegistrationSubmit}
             />
           </SectionErrorBoundary>

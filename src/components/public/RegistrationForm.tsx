@@ -1,4 +1,5 @@
 import { Component } from 'react'
+import { ShareRegistrationLink } from '@/components/public/ShareRegistrationLink'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -11,6 +12,7 @@ export type RegistrationFormProps = {
   submitLabel: string
   isPreRegistration?: boolean
   isSubmitting?: boolean
+  shareUrl?: string
   onSubmit: (input: RegistrationInput) => void
 }
 
@@ -57,6 +59,9 @@ export class RegistrationForm extends Component<RegistrationFormProps, Registrat
       <section className="registration-section" id="register" style={{ padding: '4rem 0' }}>
         <div className="container-custom">
           <h2 style={{ fontSize: '2rem', marginBottom: '1rem' }}>{this.props.title}</h2>
+          {this.props.shareUrl ? (
+            <ShareRegistrationLink formTitle={this.props.title} shareUrl={this.props.shareUrl} />
+          ) : null}
           {this.props.isPreRegistration ? (
             <p style={{ marginBottom: '1rem', color: '#059669', fontWeight: 600 }}>
               {this.props.preRegistrationMessage}

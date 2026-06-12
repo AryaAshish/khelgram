@@ -3,6 +3,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AdminLayout } from '@/components/admin/AdminLayout'
 import { RequireAuth } from '@/components/admin/RequireAuth'
 import { HomePage } from '@/pages/HomePage'
+import { RegisterPage } from '@/pages/RegisterPage'
 import '@/App.css'
 
 const LoginPage = lazy(() =>
@@ -71,6 +72,7 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/register" element={<RegisterPage />} />
         <Route
           path="/admin/login"
           element={

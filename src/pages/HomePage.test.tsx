@@ -512,6 +512,29 @@ describe('HomePage', () => {
     expect(screen.queryByLabelText('Festival Events loading')).not.toBeInTheDocument()
   })
 
+  it('shows share actions on homepage registration form', () => {
+    setDefaultHookMocks()
+    renderHomePage()
+
+    expect(screen.getByRole('button', { name: 'Copy registration link' })).toBeInTheDocument()
+  })
+
+  it('scrolls to registration when URL hash is #register', () => {
+    setDefaultHookMocks()
+    const scrollIntoView = vi.fn()
+    const element = document.createElement('div')
+    element.id = 'register'
+    element.scrollIntoView = scrollIntoView
+    document.body.appendChild(element)
+    window.location.hash = '#register'
+
+    renderHomePage()
+
+    expect(scrollIntoView).toHaveBeenCalled()
+    element.remove()
+    window.location.hash = ''
+  })
+
   it('hides countdown section when countdown visibility is false', () => {
     setDefaultHookMocks()
     mockUseAllSettings.mockReturnValue({
