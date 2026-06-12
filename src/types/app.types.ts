@@ -110,6 +110,26 @@ export type FaqItem = {
   sortOrder: number
 }
 
+export type ProgramPillar =
+  | 'grassroots_discovery'
+  | 'training'
+  | 'traditional_sports'
+  | 'health'
+  | 'scholarships'
+  | 'girls_inclusion'
+
+export type Program = {
+  id: string
+  title: string
+  description: string
+  pillar: ProgramPillar
+  icon?: string
+  published: boolean
+  sortOrder: number
+  ctaLabel?: string
+  ctaUrl?: string
+}
+
 export type AboutContent = {
   mission: string
   vision: string

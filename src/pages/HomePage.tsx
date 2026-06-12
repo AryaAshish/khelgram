@@ -1,6 +1,7 @@
 import { SectionErrorBoundary } from '@/components/SectionErrorBoundary'
 import { AboutSection } from '@/components/public/AboutSection'
 import { ContactSection } from '@/components/public/ContactSection'
+import { ProgramsSection } from '@/components/public/ProgramsSection'
 import { ContributorsGrid } from '@/components/public/ContributorsGrid'
 import { ImpactStatsBar } from '@/components/public/ImpactStatsBar'
 import { OrgHeroSection } from '@/components/public/OrgHeroSection'
@@ -12,6 +13,7 @@ import { TeamGrid } from '@/components/public/TeamGrid'
 import { TestimonialCarousel } from '@/components/public/TestimonialCarousel'
 import { useContributors } from '@/hooks/useContributors'
 import { useImpactStats } from '@/hooks/useImpactStats'
+import { usePrograms } from '@/hooks/usePrograms'
 import { useAllSettings } from '@/hooks/useSiteSettings'
 import { useSponsors } from '@/hooks/useSponsors'
 import { useTeam } from '@/hooks/useTeam'
@@ -29,6 +31,7 @@ const orgHeroDefaults = {
 
 export function HomePage() {
   const { impactStats, isLoading: statsLoading } = useImpactStats()
+  const { programs, isLoading: programsLoading } = usePrograms()
   const { members: teamMembers, isLoading: teamLoading } = useTeam()
   const { contributors, isLoading: contributorsLoading } = useContributors()
   const { sponsors, isLoading: sponsorsLoading } = useSponsors()
@@ -45,6 +48,7 @@ export function HomePage() {
   }
 
   const aboutTitle = sectionTitle(settingsMap, 'org_about_title', 'About Khelgram Foundation')
+  const programsTitle = sectionTitle(settingsMap, 'programs_title', 'Our Programs')
   const impactTitle = sectionTitle(settingsMap, 'org_impact_title', 'Impact')
   const teamTitle = sectionTitle(settingsMap, 'team_title', 'Our Team')
   const contributorsTitle = sectionTitle(settingsMap, 'contributors_title', 'Contributors')
@@ -75,6 +79,15 @@ export function HomePage() {
         {show('about_visible') ? (
           <SectionErrorBoundary title={aboutTitle}>
             <AboutSection title={aboutTitle} content={aboutContent} />
+          </SectionErrorBoundary>
+        ) : null}
+        {show('programs_visible') ? (
+          <SectionErrorBoundary title={programsTitle}>
+            {programsLoading ? (
+              <SectionSkeleton title={programsTitle} />
+            ) : (
+              <ProgramsSection title={programsTitle} programs={programs} />
+            )}
           </SectionErrorBoundary>
         ) : null}
         {show('impact_visible') ? (

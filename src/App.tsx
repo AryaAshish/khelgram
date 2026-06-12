@@ -56,6 +56,9 @@ const ImpactStatsPage = lazy(() =>
     default: module.ImpactStatsPage,
   })),
 )
+const ProgramsPage = lazy(() =>
+  import('@/pages/admin/ProgramsPage').then((module) => ({ default: module.ProgramsPage })),
+)
 const GamesPage = lazy(() =>
   import('@/pages/admin/GamesPage').then((module) => ({ default: module.GamesPage })),
 )
@@ -170,6 +173,14 @@ export default function App() {
               element={
                 <Suspense fallback={<AdminFallback />}>
                   <ImpactStatsPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/admin/programs"
+              element={
+                <Suspense fallback={<AdminFallback />}>
+                  <ProgramsPage />
                 </Suspense>
               }
             />

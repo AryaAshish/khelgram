@@ -228,3 +228,26 @@ For phases 7–11, enable E2E with `RUN_PHASE7_E2E=1` (etc.) after implementing 
 - [x] Unit tests: content sections, ContentPage groups, khel2026Sections keys
 - [x] E2E spec ready: `RUN_PHASE15_E2E=1 npm run verify:phase -- 15`
 - [x] `npm run typecheck`, `lint`, `test:coverage`, `build` all pass
+
+## Phase 16 checklist
+
+- [x] Migration `0013_programs.sql` — `programs` table with RLS and six NGO pillar seeds
+- [x] `programs.service.ts` + unit tests (CRUD, reorder, publish update)
+- [x] `usePrograms.ts` hook + tests with fixture fallback
+- [x] `ProgramsSection` on homepage `#programs` (after about, before impact)
+- [x] `ProgramsPage` admin — CRUD, reorder, publish toggle + tests
+- [x] Admin sidebar link and `/admin/programs` route
+- [x] `programs_visible` / `programs_title` section settings
+- [x] E2E spec ready: `RUN_PHASE16_E2E=1 npm run verify:phase -- 16`
+- [x] `npm run typecheck`, `lint`, `test:coverage`, `build` all pass
+
+## Phase 17 checklist
+
+- [x] CMS fields under Organization tab: 4 stakeholder cards (title, description, button label, button URL)
+- [x] `org_get_involved_*` keys with defaults in `useSiteSettings` fallback map
+- [x] Public `GetInvolvedSection` on NGO homepage with Parents → `/register`, others → `/#contact`
+- [x] Optional `/get-involved` route via `GetInvolvedPage` (same CMS data)
+- [x] `get_involved_visible` section toggle in org Sections admin tab
+- [x] Unit tests: `getInvolvedContent`, `GetInvolvedSection`, `GetInvolvedPage`, `HomePage`
+- [x] E2E spec ready: `RUN_PHASE17_E2E=1 npm run verify:phase -- 17`
+- [x] `npm run typecheck`, `lint`, `test:coverage`, `build` all pass

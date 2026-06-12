@@ -11,6 +11,7 @@ const mockUseContributors = vi.fn()
 const mockUseSponsors = vi.fn()
 const mockUseTestimonials = vi.fn()
 const mockUseAllSettings = vi.fn()
+const mockUsePrograms = vi.fn()
 
 vi.mock('@/hooks/useImpactStats', () => ({
   useImpactStats: () => mockUseImpactStats(),
@@ -34,6 +35,10 @@ vi.mock('@/hooks/useTestimonials', () => ({
 
 vi.mock('@/hooks/useSiteSettings', () => ({
   useAllSettings: () => mockUseAllSettings(),
+}))
+
+vi.mock('@/hooks/usePrograms', () => ({
+  usePrograms: () => mockUsePrograms(),
 }))
 
 function renderHomePage() {
@@ -96,6 +101,19 @@ function setDefaultHookMocks() {
     },
     aboutContent,
   })
+  mockUsePrograms.mockReturnValue({
+    programs: [
+      {
+        id: 'program-1',
+        title: 'Grassroots Discovery',
+        description: 'Scouting program',
+        pillar: 'grassroots_discovery',
+        published: true,
+        sortOrder: 0,
+      },
+    ],
+    isLoading: false,
+  })
 }
 
 describe('HomePage', () => {
@@ -106,6 +124,7 @@ describe('HomePage', () => {
     mockUseSponsors.mockReset()
     mockUseTestimonials.mockReset()
     mockUseAllSettings.mockReset()
+    mockUsePrograms.mockReset()
   })
 
   it('renders NGO homepage sections without festival blocks', () => {
@@ -114,6 +133,7 @@ describe('HomePage', () => {
 
     expect(screen.getByText('Building sporting futures in rural India')).toBeInTheDocument()
     expect(screen.getByText('About Khelgram Foundation')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Our Programs' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Impact' })).toBeInTheDocument()
     expect(screen.queryByText('Countdown to Festival Day')).not.toBeInTheDocument()
     expect(screen.queryByText('Festival Events')).not.toBeInTheDocument()
@@ -130,6 +150,7 @@ describe('HomePage', () => {
 
   it('shows section skeletons while credibility data is loading', () => {
     setDefaultHookMocks()
+    mockUsePrograms.mockReturnValue({ programs: [], isLoading: true })
     mockUseImpactStats.mockReturnValue({ impactStats: [], isLoading: true })
     mockUseTeam.mockReturnValue({ members: [], isLoading: true })
     mockUseContributors.mockReturnValue({ contributors: [], isLoading: true })
@@ -140,6 +161,7 @@ describe('HomePage', () => {
 
     expect(screen.getByLabelText('Impact loading')).toBeInTheDocument()
     expect(screen.getByLabelText('Our Team loading')).toBeInTheDocument()
+    expect(screen.getByLabelText('Our Programs loading')).toBeInTheDocument()
   })
 
   it('uses default org hero copy when settings are missing', () => {
@@ -184,6 +206,7 @@ describe('HomePage', () => {
     mockUseAllSettings.mockReturnValue({
       settingsMap: {
         org_hero_visible: 'false',
+        programs_visible: 'false',
         team_visible: 'false',
         footer_visible: 'false',
         about_title: 'About Khelgram Foundation',
@@ -194,6 +217,7 @@ describe('HomePage', () => {
     renderHomePage()
 
     expect(screen.queryByText('Building sporting futures in rural India')).not.toBeInTheDocument()
+    expect(screen.queryByRole('heading', { name: 'Our Programs' })).not.toBeInTheDocument()
     expect(screen.queryByText('Our Team')).not.toBeInTheDocument()
     expect(screen.queryByText('Footer copyright')).not.toBeInTheDocument()
     expect(screen.getByText('About Khelgram Foundation')).toBeInTheDocument()
@@ -227,6 +251,20 @@ describe('HomePage', () => {
     renderHomePage()
 
     expect(screen.queryByRole('heading', { name: 'Impact' })).not.toBeInTheDocument()
+  })
+
+  it('hides programs section when programs visibility is false', () => {
+    setDefaultHookMocks()
+    mockUseAllSettings.mockReturnValue({
+      settingsMap: {
+        programs_visible: 'false',
+      },
+      aboutContent,
+    })
+
+    renderHomePage()
+
+    expect(screen.queryByRole('heading', { name: 'Our Programs' })).not.toBeInTheDocument()
   })
 
   it('renders custom impact title from settings', () => {

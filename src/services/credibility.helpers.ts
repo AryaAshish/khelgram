@@ -4,7 +4,13 @@ import type { Database } from '@/types/database.types'
 
 type CredibilityTable = keyof Pick<
   Database['public']['Tables'],
-  'team_members' | 'contributors' | 'sponsors' | 'testimonials' | 'faq_items' | 'impact_stats'
+  | 'team_members'
+  | 'contributors'
+  | 'sponsors'
+  | 'testimonials'
+  | 'faq_items'
+  | 'impact_stats'
+  | 'programs'
 >
 
 export async function getNextSortOrder(table: CredibilityTable): Promise<number> {

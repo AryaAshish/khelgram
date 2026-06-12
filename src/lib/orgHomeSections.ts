@@ -1,11 +1,13 @@
 export type OrgHomeSectionId =
   | 'hero'
   | 'about'
+  | 'programs'
   | 'impact'
   | 'team'
   | 'contributors'
   | 'sponsors'
   | 'testimonials'
+  | 'get_involved'
   | 'contact'
   | 'footer'
 
@@ -15,6 +17,8 @@ export type OrgHomeSectionConfig = {
   visibleKey: string
   titleKey?: string
   defaultTitle?: string
+  /** When set, the section heading is edited on another Content tab. */
+  titleContentTabId?: string
 }
 
 export const orgHomeSections: OrgHomeSectionConfig[] = [
@@ -31,6 +35,13 @@ export const orgHomeSections: OrgHomeSectionConfig[] = [
     visibleKey: 'about_visible',
     titleKey: 'org_about_title',
     defaultTitle: 'About Khelgram Foundation',
+  },
+  {
+    id: 'programs',
+    label: 'Programs',
+    visibleKey: 'programs_visible',
+    titleKey: 'programs_title',
+    defaultTitle: 'Our Programs',
   },
   {
     id: 'impact',
@@ -66,6 +77,14 @@ export const orgHomeSections: OrgHomeSectionConfig[] = [
     visibleKey: 'testimonials_visible',
     titleKey: 'testimonials_title',
     defaultTitle: 'Testimonials',
+  },
+  {
+    id: 'get_involved',
+    label: 'Get Involved',
+    visibleKey: 'get_involved_visible',
+    titleKey: 'org_get_involved_title',
+    defaultTitle: 'Get Involved',
+    titleContentTabId: 'org_get_involved',
   },
   {
     id: 'contact',

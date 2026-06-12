@@ -294,6 +294,45 @@ export type Database = {
         }
         Relationships: []
       }
+      programs: {
+        Row: {
+          cta_label: string | null
+          cta_url: string | null
+          description: string
+          icon: string | null
+          id: string
+          pillar: string
+          published: boolean
+          sort_order: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          cta_label?: string | null
+          cta_url?: string | null
+          description?: string
+          icon?: string | null
+          id: string
+          pillar: string
+          published?: boolean
+          sort_order?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          cta_label?: string | null
+          cta_url?: string | null
+          description?: string
+          icon?: string | null
+          id?: string
+          pillar?: string
+          published?: boolean
+          sort_order?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       registration_games: {
         Row: {
           game_id: string
