@@ -59,9 +59,9 @@ describe('RegisterPage', () => {
 
     expect(screen.getByRole('heading', { name: 'Register Your Child' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Copy registration link' })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: /full festival homepage/i })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: /Back to Khel 2026/i })).toHaveAttribute(
       'href',
-      '/',
+      '/khel2026',
     )
   })
 

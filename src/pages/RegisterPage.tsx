@@ -78,8 +78,8 @@ export function RegisterPage() {
               />
             )}
             <div className="container-custom" style={{ paddingBottom: '2rem' }}>
-              <Link to="/" style={{ color: '#6b7280', fontWeight: 600 }}>
-                ← View full festival homepage
+              <Link to="/khel2026" style={{ color: '#6b7280', fontWeight: 600 }}>
+                ← Back to Khel 2026
               </Link>
             </div>
           </SectionErrorBoundary>

@@ -15,12 +15,13 @@ test.describe('Phase 13: Shareable registration @phase13', () => {
     await expect(page.getByRole('heading', { name: 'Register Your Child' })).toBeVisible()
     await expect(page.getByRole('button', { name: 'Copy registration link' })).toBeVisible()
     await expect(page.getByRole('button', { name: 'Share registration form' })).toBeVisible()
-    await expect(page.getByRole('link', { name: /full festival homepage/i })).toBeVisible()
+    await expect(page.getByRole('link', { name: /Back to Khel 2026/i })).toBeVisible()
   })
 
-  test('header Register link opens shareable registration page', async ({ page }) => {
+  test('Khel 2026 register CTA opens shareable registration page', async ({ page }) => {
     await visitPublicHomepage(page)
-    await page.getByRole('link', { name: 'Register' }).click()
+    await page.getByRole('link', { name: 'Khel2026' }).click()
+    await page.getByRole('link', { name: 'Register Now' }).first().click()
     await expect(page).toHaveURL(/\/register$/)
     await expect(page.getByLabel('Child Name')).toBeVisible()
   })

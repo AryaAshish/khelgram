@@ -1,0 +1,414 @@
+import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { MemoryRouter } from 'react-router-dom'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { aboutContent, countdownTarget } from '@/fixtures/homePageFixtures'
+import { EventLandingSections } from './EventLandingSections'
+
+const mockUseGames = vi.fn()
+const mockUseGallery = vi.fn()
+const mockUseFaq = vi.fn()
+const mockUseAllSettings = vi.fn()
+const mockUseRegistrationCount = vi.fn()
+const mockNavigate = vi.fn()
+
+vi.mock('@/hooks/useGames', () => ({
+  useGames: () => mockUseGames(),
+}))
+
+vi.mock('@/hooks/useGallery', () => ({
+  useGallery: () => mockUseGallery(),
+}))
+
+vi.mock('@/hooks/useFaq', () => ({
+  useFaq: () => mockUseFaq(),
+}))
+
+vi.mock('@/hooks/useSiteSettings', () => ({
+  useAllSettings: () => mockUseAllSettings(),
+}))
+
+vi.mock('@/hooks/useRegistration', () => ({
+  useRegistrationCount: () => mockUseRegistrationCount(),
+}))
+
+vi.mock('react-router-dom', async () => {
+  const actual = await vi.importActual<typeof import('react-router-dom')>('react-router-dom')
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate,
+  }
+})
+
+function renderEventLanding() {
+  return render(
+    <MemoryRouter>
+      <EventLandingSections />
+    </MemoryRouter>,
+  )
+}
+
+function setDefaultHookMocks() {
+  mockUseGames.mockReturnValue({
+    games: [
+      {
+        id: 'sack-race',
+        name: 'Sack Race',
+        description: 'Hop',
+        ageGroup: '6-10',
+        startTime: '10:00',
+      },
+    ],
+    isLoading: false,
+  })
+  mockUseGallery.mockReturnValue({
+    images: [{ id: 'gallery-1', url: 'https://example.com/1.jpg', alt: 'Gallery image' }],
+    isLoading: false,
+  })
+  mockUseFaq.mockReturnValue({
+    items: [{ id: 'faq-1', question: 'What to bring?', answer: 'Water bottle', sortOrder: 0 }],
+    isLoading: false,
+  })
+  mockUseRegistrationCount.mockReturnValue({ data: 12 })
+  mockUseAllSettings.mockReturnValue({
+    settingsMap: {
+      event_status: 'registration_open',
+      event_date: '2026-04-22',
+      hero_title: "Khelgram Foundation Children's Sports Festival 2026",
+      hero_subtitle: 'Subtitle',
+      hero_primary_cta: 'Register Now',
+      hero_secondary_cta: 'Explore Events',
+      hero_event_date_label: 'Festival Date',
+      hero_event_date: 'March 20, 2026',
+      countdown_title: 'Countdown to Festival Day',
+      events_title: 'Festival Events',
+      gallery_title: 'Gallery',
+      register_title: 'Register Your Child',
+      register_submit_label: 'Register Now',
+      faq_title: 'FAQ',
+      khel2026_hero_visible: 'true',
+      khel2026_countdown_visible: 'true',
+      khel2026_events_visible: 'true',
+      khel2026_gallery_visible: 'true',
+      khel2026_register_cta_visible: 'true',
+      khel2026_faq_visible: 'true',
+    },
+    countdownTarget,
+  })
+}
+
+describe('EventLandingSections', () => {
+  beforeEach(() => {
+    mockUseGames.mockReset()
+    mockUseGallery.mockReset()
+    mockUseFaq.mockReset()
+    mockUseAllSettings.mockReset()
+    mockUseRegistrationCount.mockReset()
+    mockNavigate.mockReset()
+  })
+
+  it('renders festival sections on the event landing page', () => {
+    setDefaultHookMocks()
+    renderEventLanding()
+
+    expect(
+      screen.getByText("Khelgram Foundation Children's Sports Festival 2026"),
+    ).toBeInTheDocument()
+    expect(screen.getByText('Countdown to Festival Day')).toBeInTheDocument()
+    expect(screen.getByText('Festival Events')).toBeInTheDocument()
+    expect(screen.getByText('Register Your Child')).toBeInTheDocument()
+    expect(screen.getByText('FAQ')).toBeInTheDocument()
+  })
+
+  it('navigates to /register when hero primary CTA is clicked', async () => {
+    setDefaultHookMocks()
+    const user = userEvent.setup()
+    renderEventLanding()
+
+    await user.click(screen.getAllByRole('button', { name: 'Register Now' })[0]!)
+    expect(mockNavigate).toHaveBeenCalledWith('/register')
+  })
+
+  it('links register CTA section to /register', () => {
+    setDefaultHookMocks()
+    renderEventLanding()
+
+    expect(screen.getByRole('link', { name: 'Register Now' })).toHaveAttribute('href', '/register')
+  })
+
+  it('shows pre-registration banner when event status is pre_registration', () => {
+    setDefaultHookMocks()
+    mockUseAllSettings.mockReturnValue({
+      settingsMap: {
+        event_status: 'pre_registration',
+        countdown_tba_text: 'To Be Announced',
+        register_pre_message: "Pre-registration open — we'll confirm dates by email",
+        khel2026_hero_visible: 'true',
+        khel2026_register_cta_visible: 'true',
+      },
+      countdownTarget: null,
+    })
+
+    renderEventLanding()
+
+    expect(
+      screen.getAllByText("Pre-registration open — we'll confirm dates by email").length,
+    ).toBeGreaterThan(0)
+  })
+
+  it('hides sections when khel2026 visibility settings are false', () => {
+    setDefaultHookMocks()
+    mockUseAllSettings.mockReturnValue({
+      settingsMap: {
+        hero_title: "Khelgram Foundation Children's Sports Festival 2026",
+        events_title: 'Festival Events',
+        register_title: 'Register Your Child',
+        khel2026_hero_visible: 'false',
+        khel2026_countdown_visible: 'false',
+        khel2026_events_visible: 'true',
+        khel2026_register_cta_visible: 'true',
+      },
+      aboutContent,
+      countdownTarget,
+    })
+
+    renderEventLanding()
+
+    expect(
+      screen.queryByText("Khelgram Foundation Children's Sports Festival 2026"),
+    ).not.toBeInTheDocument()
+    expect(screen.queryByText('Countdown to Festival Day')).not.toBeInTheDocument()
+    expect(screen.getByText('Festival Events')).toBeInTheDocument()
+  })
+
+  it('shows loading skeletons while event data loads', () => {
+    setDefaultHookMocks()
+    mockUseGames.mockReturnValue({ games: [], isLoading: true })
+    mockUseGallery.mockReturnValue({ images: [], isLoading: true })
+    mockUseFaq.mockReturnValue({ items: [], isLoading: true })
+
+    renderEventLanding()
+
+    expect(screen.getByLabelText('Festival Events loading')).toBeInTheDocument()
+    expect(screen.getByLabelText('Gallery loading')).toBeInTheDocument()
+    expect(screen.getByLabelText('FAQ loading')).toBeInTheDocument()
+  })
+
+  it('scrolls to events when hero secondary CTA is clicked', async () => {
+    setDefaultHookMocks()
+    const scrollIntoView = vi.fn()
+    const element = document.createElement('div')
+    element.id = 'events'
+    element.scrollIntoView = scrollIntoView
+    document.body.appendChild(element)
+
+    const user = userEvent.setup()
+    renderEventLanding()
+    await user.click(screen.getByRole('button', { name: 'Explore Events' }))
+
+    expect(scrollIntoView).toHaveBeenCalled()
+    element.remove()
+  })
+
+  it('does nothing when events anchor is missing', async () => {
+    setDefaultHookMocks()
+    const user = userEvent.setup()
+    renderEventLanding()
+
+    await expect(user.click(screen.getByRole('button', { name: 'Explore Events' }))).resolves.toBe(
+      undefined,
+    )
+  })
+
+  it('uses fixture fallbacks when hero settings are missing', () => {
+    setDefaultHookMocks()
+    mockUseAllSettings.mockReturnValue({
+      settingsMap: {
+        khel2026_hero_visible: 'true',
+        khel2026_countdown_visible: 'true',
+        khel2026_events_visible: 'true',
+        khel2026_gallery_visible: 'true',
+        khel2026_register_cta_visible: 'true',
+        khel2026_faq_visible: 'true',
+      },
+      countdownTarget,
+    })
+
+    renderEventLanding()
+
+    expect(
+      screen.getByText("Khelgram Foundation Children's Sports Festival 2026"),
+    ).toBeInTheDocument()
+    expect(screen.getAllByRole('button', { name: 'Register Now' }).length).toBeGreaterThan(0)
+  })
+
+  it('hides gallery and FAQ when visibility settings are false', () => {
+    setDefaultHookMocks()
+    mockUseAllSettings.mockReturnValue({
+      settingsMap: {
+        hero_title: "Khelgram Foundation Children's Sports Festival 2026",
+        events_title: 'Festival Events',
+        register_title: 'Register Your Child',
+        faq_title: 'FAQ',
+        gallery_title: 'Gallery',
+        khel2026_hero_visible: 'true',
+        khel2026_events_visible: 'true',
+        khel2026_register_cta_visible: 'true',
+        khel2026_gallery_visible: 'false',
+        khel2026_faq_visible: 'false',
+      },
+      countdownTarget,
+    })
+
+    renderEventLanding()
+
+    expect(screen.queryByRole('heading', { name: 'Gallery' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('heading', { name: 'FAQ' })).not.toBeInTheDocument()
+  })
+
+  it('hides register CTA when visibility is false', () => {
+    setDefaultHookMocks()
+    mockUseAllSettings.mockReturnValue({
+      settingsMap: {
+        hero_title: "Khelgram Foundation Children's Sports Festival 2026",
+        events_title: 'Festival Events',
+        register_title: 'Register Your Child',
+        khel2026_hero_visible: 'true',
+        khel2026_events_visible: 'true',
+        khel2026_register_cta_visible: 'false',
+      },
+      countdownTarget,
+    })
+
+    renderEventLanding()
+
+    expect(screen.queryByRole('heading', { name: 'Register Your Child' })).not.toBeInTheDocument()
+  })
+
+  it('does not show countdown when hidden during pre-registration', () => {
+    setDefaultHookMocks()
+    mockUseAllSettings.mockReturnValue({
+      settingsMap: {
+        event_status: 'pre_registration',
+        khel2026_countdown_visible: 'false',
+        khel2026_hero_visible: 'true',
+      },
+      countdownTarget: null,
+    })
+
+    renderEventLanding()
+
+    expect(
+      screen.queryByRole('heading', { name: 'Countdown to Festival Day' }),
+    ).not.toBeInTheDocument()
+  })
+
+  it('does nothing when events anchor lacks scrollIntoView', async () => {
+    setDefaultHookMocks()
+    const element = document.createElement('div')
+    element.id = 'events'
+    document.body.appendChild(element)
+
+    const user = userEvent.setup()
+    renderEventLanding()
+    await expect(user.click(screen.getByRole('button', { name: 'Explore Events' }))).resolves.toBe(
+      undefined,
+    )
+
+    element.remove()
+  })
+
+  it('uses default pre-registration copy when register message is missing', () => {
+    setDefaultHookMocks()
+    mockUseAllSettings.mockReturnValue({
+      settingsMap: {
+        event_status: 'pre_registration',
+        khel2026_register_cta_visible: 'true',
+        khel2026_hero_visible: 'false',
+        khel2026_countdown_visible: 'false',
+        khel2026_events_visible: 'false',
+        khel2026_gallery_visible: 'false',
+        khel2026_faq_visible: 'false',
+      },
+      countdownTarget: null,
+    })
+
+    renderEventLanding()
+
+    expect(
+      screen.getAllByText("Pre-registration open — we'll confirm dates by email").length,
+    ).toBeGreaterThan(0)
+  })
+
+  it('uses event_date when hero_event_date is missing', () => {
+    setDefaultHookMocks()
+    mockUseAllSettings.mockReturnValue({
+      settingsMap: {
+        event_status: 'registration_open',
+        event_date: 'April 22, 2026',
+        khel2026_hero_visible: 'true',
+        khel2026_countdown_visible: 'false',
+        khel2026_events_visible: 'false',
+        khel2026_gallery_visible: 'false',
+        khel2026_register_cta_visible: 'false',
+        khel2026_faq_visible: 'false',
+      },
+      countdownTarget,
+    })
+
+    renderEventLanding()
+
+    expect(screen.getByText(/April 22, 2026/)).toBeInTheDocument()
+  })
+
+  it('uses default register submit label when setting is missing', () => {
+    setDefaultHookMocks()
+    mockUseAllSettings.mockReturnValue({
+      settingsMap: {
+        register_title: 'Sign Up',
+        khel2026_register_cta_visible: 'true',
+        khel2026_hero_visible: 'false',
+        khel2026_countdown_visible: 'false',
+        khel2026_events_visible: 'false',
+        khel2026_gallery_visible: 'false',
+        khel2026_faq_visible: 'false',
+      },
+      countdownTarget,
+    })
+
+    renderEventLanding()
+
+    expect(screen.getByRole('heading', { name: 'Sign Up' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Register Now' })).toBeInTheDocument()
+  })
+
+  it('shows custom FAQ title on loading skeleton', () => {
+    setDefaultHookMocks()
+    mockUseFaq.mockReturnValue({ items: [], isLoading: true })
+    mockUseAllSettings.mockReturnValue({
+      settingsMap: {
+        faq_title: 'Event FAQ',
+        khel2026_faq_visible: 'true',
+        khel2026_hero_visible: 'false',
+        khel2026_countdown_visible: 'false',
+        khel2026_events_visible: 'false',
+        khel2026_gallery_visible: 'false',
+        khel2026_register_cta_visible: 'false',
+      },
+      countdownTarget,
+    })
+
+    renderEventLanding()
+
+    expect(screen.getByLabelText('Event FAQ loading')).toBeInTheDocument()
+  })
+
+  it('shows link back to NGO homepage', () => {
+    setDefaultHookMocks()
+    renderEventLanding()
+
+    expect(
+      screen.getByRole('link', { name: /Back to Khelgram Foundation homepage/i }),
+    ).toHaveAttribute('href', '/')
+  })
+})

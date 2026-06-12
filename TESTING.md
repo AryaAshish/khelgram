@@ -206,3 +206,15 @@ For phases 7–11, enable E2E with `RUN_PHASE7_E2E=1` (etc.) after implementing 
 - [x] Unit tests: `shareUrl`, `ShareRegistrationLink`, `RegisterPage`, form/header updates
 - [x] E2E spec ready: `RUN_PHASE13_E2E=1 npm run verify:phase -- 13`
 - [x] `npm run typecheck`, `lint`, `test:coverage`, `build` all pass
+
+## Phase 14 checklist
+
+- [x] `/` NGO homepage — org hero, about, impact, credibility, contact (no countdown/events/register)
+- [x] `/khel2026` event landing via `EventLandingSections` + `Khel2026Page`
+- [x] Header nav: About, Programs (`#programs`), Impact, **Khel2026**, Contact; logo → `/`
+- [x] `RegisterPage` back link → `/khel2026`
+- [x] Migration `0011_khel2026_split_defaults.sql` — org hero + khel2026 visibility defaults
+- [x] `orgHomeSections.ts`, `khel2026Sections.ts`, `OrgHeroSection`, `EventRegisterCta`
+- [x] Unit tests: `HomePage`, `Khel2026Page`, `EventLandingSections`, header, section configs
+- [x] E2E spec ready: `RUN_PHASE14_E2E=1 npm run verify:phase -- 14`
+- [x] `npm run typecheck`, `lint`, `test:coverage`, `build` all pass

@@ -1,5 +1,4 @@
 import { test, expect } from '../fixtures'
-import { visitPublicHomepage } from '../helpers/pageHealth'
 import { getAdminCredentials, loginAsAdmin } from '../helpers/auth'
 
 /**
@@ -19,8 +18,7 @@ test.describe('Phase 11: Email Notifications @phase11', () => {
     const stamp = Date.now()
     const email = `email-e2e-${stamp}@khelgram.test`
 
-    await visitPublicHomepage(page)
-    await page.locator('#register').scrollIntoViewIfNeeded()
+    await page.goto('/register')
     await page.getByLabel('Child Name').fill(`Email Child ${stamp}`)
     await page.getByLabel('Age').fill('9')
     await page.getByLabel('Parent Name').fill('Email Parent')

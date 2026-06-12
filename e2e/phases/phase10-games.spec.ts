@@ -1,6 +1,5 @@
 import { test, expect } from '../fixtures'
 import { getAdminCredentials, loginAsAdmin } from '../helpers/auth'
-import { visitPublicHomepage } from '../helpers/pageHealth'
 
 /**
  * Enable after Phase 10 implementation:
@@ -22,10 +21,9 @@ test.describe('Phase 10: Games Management @phase10', () => {
     await page.getByLabel('Capacity').fill('1')
     await page.getByRole('button', { name: 'Save game' }).click()
 
-    await visitPublicHomepage(page)
+    await page.goto('/register')
     const submitRegistration = async (suffix: string) => {
       const stamp = Date.now() + suffix
-      await page.locator('#register').scrollIntoViewIfNeeded()
       await page.getByLabel('Child Name').fill(`Child ${stamp}`)
       await page.getByLabel('Age').fill('9')
       await page.getByLabel('Parent Name').fill('Parent')

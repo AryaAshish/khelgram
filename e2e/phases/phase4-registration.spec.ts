@@ -1,5 +1,4 @@
 import { test, expect } from '../fixtures'
-import { visitPublicHomepage } from '../helpers/pageHealth'
 
 function uniqueRegistrationInput() {
   const stamp = Date.now()
@@ -18,8 +17,7 @@ test.describe('Phase 4 @phase4', () => {
     test.skip(!process.env.VITE_SUPABASE_URL, 'Requires live Supabase configuration in .env')
 
     const input = uniqueRegistrationInput()
-    await visitPublicHomepage(page)
-    await page.locator('#register').scrollIntoViewIfNeeded()
+    await page.goto('/register')
 
     await page.getByLabel('Child Name').fill(input.childName)
     await page.getByLabel('Age').fill(input.age)
