@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { MemoryRouter } from 'react-router-dom'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { aboutContent, countdownTarget } from '@/fixtures/homePageFixtures'
 import { HomePage } from './HomePage'
@@ -56,6 +57,14 @@ vi.mock('@/hooks/useRegistration', () => ({
   useRegistrationCount: () => mockUseRegistrationCount(),
   useCreateRegistration: () => mockUseCreateRegistration(),
 }))
+
+function renderHomePage() {
+  return render(
+    <MemoryRouter>
+      <HomePage />
+    </MemoryRouter>,
+  )
+}
 
 function setDefaultHookMocks() {
   mockUseGames.mockReturnValue({
@@ -188,7 +197,7 @@ describe('HomePage', () => {
     mockUseTestimonials.mockReturnValue({ testimonials: [], isLoading: true })
     mockUseFaq.mockReturnValue({ items: [], isLoading: true })
 
-    render(<HomePage />)
+    renderHomePage()
 
     expect(screen.getByLabelText('Festival Events loading')).toBeInTheDocument()
     expect(screen.getByLabelText('Impact loading')).toBeInTheDocument()
@@ -207,7 +216,7 @@ describe('HomePage', () => {
     mockUseGames.mockReturnValue({ games: [], isLoading: true })
     mockUseGallery.mockReturnValue({ images: [], isLoading: true })
 
-    render(<HomePage />)
+    renderHomePage()
 
     expect(screen.getByLabelText('Festival Events loading')).toBeInTheDocument()
     expect(screen.getByLabelText('Gallery loading')).toBeInTheDocument()
@@ -238,7 +247,7 @@ describe('HomePage', () => {
     mockUseTestimonials.mockReturnValue({ testimonials: [], isLoading: true })
     mockUseFaq.mockReturnValue({ items: [], isLoading: true })
 
-    render(<HomePage />)
+    renderHomePage()
 
     expect(screen.getByLabelText('Custom Events loading')).toBeInTheDocument()
     expect(screen.getByLabelText('Custom Gallery loading')).toBeInTheDocument()
@@ -251,7 +260,7 @@ describe('HomePage', () => {
 
   it('renders all main sections', () => {
     setDefaultHookMocks()
-    render(<HomePage />)
+    renderHomePage()
 
     expect(
       screen.getByText("Khelgram Foundation Children's Sports Festival 2026"),
@@ -265,7 +274,7 @@ describe('HomePage', () => {
   it('contains CTA buttons', async () => {
     setDefaultHookMocks()
     const user = userEvent.setup()
-    render(<HomePage />)
+    renderHomePage()
 
     await user.click(screen.getByRole('button', { name: 'Register Now' }))
     await user.click(screen.getByRole('button', { name: 'Explore Events' }))
@@ -281,7 +290,7 @@ describe('HomePage', () => {
     element.scrollIntoView = scrollIntoView
     document.body.appendChild(element)
 
-    render(<HomePage />)
+    renderHomePage()
     screen.getByRole('button', { name: 'Register Now' }).click()
 
     expect(scrollIntoView).toHaveBeenCalled()
@@ -296,7 +305,7 @@ describe('HomePage', () => {
       countdownTarget,
     })
 
-    render(<HomePage />)
+    renderHomePage()
 
     expect(screen.getByText('Khelgram Foundation')).toBeInTheDocument()
     expect(
@@ -321,7 +330,7 @@ describe('HomePage', () => {
       countdownTarget,
     })
 
-    render(<HomePage />)
+    renderHomePage()
 
     expect(screen.getByText('To Be Announced')).toBeInTheDocument()
     expect(
@@ -339,7 +348,7 @@ describe('HomePage', () => {
       countdownTarget: null,
     })
 
-    render(<HomePage />)
+    renderHomePage()
 
     expect(screen.getAllByText('To Be Announced').length).toBeGreaterThan(0)
   })
@@ -353,7 +362,7 @@ describe('HomePage', () => {
     })
 
     const user = userEvent.setup()
-    render(<HomePage />)
+    renderHomePage()
 
     await user.type(screen.getByLabelText('Child Name'), 'Aarav')
     await user.type(screen.getByLabelText('Age'), '9')
@@ -399,7 +408,7 @@ describe('HomePage', () => {
       countdownTarget,
     })
 
-    render(<HomePage />)
+    renderHomePage()
 
     expect(screen.getByText('Custom Countdown')).toBeInTheDocument()
     expect(screen.getByText('Custom About')).toBeInTheDocument()
@@ -412,7 +421,7 @@ describe('HomePage', () => {
 
   it('shows registration counter in hero', () => {
     setDefaultHookMocks()
-    render(<HomePage />)
+    renderHomePage()
 
     expect(screen.getByText('12 children registered so far')).toBeInTheDocument()
   })
@@ -420,10 +429,139 @@ describe('HomePage', () => {
   it('does nothing when target section is missing', async () => {
     setDefaultHookMocks()
     const user = userEvent.setup()
-    render(<HomePage />)
+    renderHomePage()
 
     await expect(user.click(screen.getByRole('button', { name: 'Explore Events' }))).resolves.toBe(
       undefined,
     )
+  })
+
+  it('hides sections when visibility settings are false', () => {
+    setDefaultHookMocks()
+    mockUseAllSettings.mockReturnValue({
+      settingsMap: {
+        hero_visible: 'false',
+        countdown_visible: 'false',
+        team_visible: 'false',
+        faq_visible: 'false',
+        footer_visible: 'false',
+        hero_title: "Khelgram Foundation Children's Sports Festival 2026",
+        events_title: 'Festival Events',
+        register_title: 'Register Your Child',
+      },
+      aboutContent,
+      countdownTarget,
+    })
+
+    renderHomePage()
+
+    expect(
+      screen.queryByText("Khelgram Foundation Children's Sports Festival 2026"),
+    ).not.toBeInTheDocument()
+    expect(screen.queryByText('Countdown to Festival Day')).not.toBeInTheDocument()
+    expect(screen.queryByText('Our Team')).not.toBeInTheDocument()
+    expect(screen.queryByText('FAQ')).not.toBeInTheDocument()
+    expect(screen.queryByText('Footer copyright')).not.toBeInTheDocument()
+    expect(screen.getByText('Festival Events')).toBeInTheDocument()
+    expect(screen.getByText('Register Your Child')).toBeInTheDocument()
+  })
+
+  it('hides credibility and contact sections when visibility is false', () => {
+    setDefaultHookMocks()
+    mockUseAllSettings.mockReturnValue({
+      settingsMap: {
+        about_visible: 'false',
+        impact_visible: 'false',
+        contributors_visible: 'false',
+        sponsors_visible: 'false',
+        testimonials_visible: 'false',
+        contact_visible: 'false',
+        gallery_visible: 'false',
+        events_title: 'Festival Events',
+        register_title: 'Register Your Child',
+      },
+      aboutContent,
+      countdownTarget,
+    })
+
+    renderHomePage()
+
+    expect(screen.queryByText('About Khelgram Foundation')).not.toBeInTheDocument()
+    expect(screen.queryByRole('heading', { name: 'Impact' })).not.toBeInTheDocument()
+    expect(screen.queryByText('Contributors')).not.toBeInTheDocument()
+    expect(screen.queryByText('Sponsors')).not.toBeInTheDocument()
+    expect(screen.queryByText('Testimonials')).not.toBeInTheDocument()
+    expect(screen.queryByText('Custom Contact')).not.toBeInTheDocument()
+    expect(screen.getByText('Festival Events')).toBeInTheDocument()
+  })
+
+  it('does not show events skeleton when events section is hidden during load', () => {
+    setDefaultHookMocks()
+    mockUseGames.mockReturnValue({ games: [], isLoading: true })
+    mockUseAllSettings.mockReturnValue({
+      settingsMap: {
+        events_visible: 'false',
+        events_title: 'Festival Events',
+      },
+      aboutContent,
+      countdownTarget,
+    })
+
+    renderHomePage()
+
+    expect(screen.queryByLabelText('Festival Events loading')).not.toBeInTheDocument()
+  })
+
+  it('hides countdown section when countdown visibility is false', () => {
+    setDefaultHookMocks()
+    mockUseAllSettings.mockReturnValue({
+      settingsMap: {
+        countdown_visible: 'false',
+        countdown_title: 'Countdown to Festival Day',
+        event_status: 'registration_open',
+        event_date: '2026-04-22',
+      },
+      aboutContent,
+      countdownTarget,
+    })
+
+    renderHomePage()
+
+    expect(screen.queryByText('Countdown to Festival Day')).not.toBeInTheDocument()
+  })
+
+  it('still shows pre-registration banner when register section is hidden', () => {
+    setDefaultHookMocks()
+    mockUseAllSettings.mockReturnValue({
+      settingsMap: {
+        event_status: 'pre_registration',
+        register_visible: 'false',
+        register_pre_message: "Pre-registration open — we'll confirm dates by email",
+      },
+      aboutContent,
+      countdownTarget: null,
+    })
+
+    renderHomePage()
+
+    expect(screen.queryByText('Register Your Child')).not.toBeInTheDocument()
+    expect(
+      screen.getByText("Pre-registration open — we'll confirm dates by email"),
+    ).toBeInTheDocument()
+  })
+
+  it('renders custom impact title from settings', () => {
+    setDefaultHookMocks()
+    mockUseAllSettings.mockReturnValue({
+      settingsMap: {
+        impact_title: 'Community Impact',
+      },
+      aboutContent,
+      countdownTarget,
+    })
+
+    renderHomePage()
+
+    expect(screen.getByRole('heading', { name: 'Community Impact' })).toBeInTheDocument()
   })
 })

@@ -6,14 +6,33 @@ import { Label } from '@/components/ui/label'
 import { useAllSettings, useUpdateSectionSettings } from '@/hooks/useSiteSettings'
 import { contentSections, type ContentSection } from '@/lib/contentSections'
 
+function defaultFieldValue(
+  field: ContentSection['fields'][number],
+  settingsMap: Record<string, string>,
+) {
+  if (field.type === 'checkbox') {
+    const stored = settingsMap[field.key]
+    if (stored === undefined || stored === '') {
+      return 'true'
+    }
+    return stored
+  }
+
+  return settingsMap[field.key] ?? ''
+}
+
 function buildSectionValues(
   section: ContentSection,
   settingsMap: Record<string, string>,
 ): Record<string, string> {
   return section.fields.reduce<Record<string, string>>((acc, field) => {
-    acc[field.key] = settingsMap[field.key] ?? ''
+    acc[field.key] = defaultFieldValue(field, settingsMap)
     return acc
   }, {})
+}
+
+function isCheckboxChecked(value: string | undefined) {
+  return value === undefined || value === '' || value === 'true'
 }
 
 type ContentSectionEditorProps = {
@@ -50,61 +69,83 @@ function ContentSectionEditor({
     >
       {section.fields.map((field) => (
         <div key={field.key}>
-          <Label htmlFor={field.key}>{field.label}</Label>
-          {field.type === 'select' ? (
-            <select
-              id={field.key}
-              value={draftValues[field.key] ?? ''}
-              onChange={(event) =>
-                setDraftValues((previous) => ({
-                  ...previous,
-                  [field.key]: event.target.value,
-                }))
-              }
-              style={{
-                width: '100%',
-                padding: '0.5rem',
-                borderRadius: '0.5rem',
-                border: '1px solid #d1d5db',
-                marginTop: '0.25rem',
-              }}
+          {field.type === 'checkbox' ? (
+            <label
+              htmlFor={field.key}
+              style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}
             >
-              {(field.options ?? []).map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          ) : field.multiline ? (
-            <textarea
-              id={field.key}
-              value={draftValues[field.key] ?? ''}
-              onChange={(event) =>
-                setDraftValues((previous) => ({
-                  ...previous,
-                  [field.key]: event.target.value,
-                }))
-              }
-              rows={field.key === 'about_values' ? 5 : 3}
-              style={{
-                width: '100%',
-                padding: '0.5rem',
-                borderRadius: '0.5rem',
-                border: '1px solid #d1d5db',
-                marginTop: '0.25rem',
-              }}
-            />
+              <input
+                id={field.key}
+                type="checkbox"
+                checked={isCheckboxChecked(draftValues[field.key])}
+                onChange={(event) =>
+                  setDraftValues((previous) => ({
+                    ...previous,
+                    [field.key]: event.target.checked ? 'true' : 'false',
+                  }))
+                }
+              />
+              <span>{field.label}</span>
+            </label>
           ) : (
-            <Input
-              id={field.key}
-              value={draftValues[field.key] ?? ''}
-              onChange={(event) =>
-                setDraftValues((previous) => ({
-                  ...previous,
-                  [field.key]: event.target.value,
-                }))
-              }
-            />
+            <>
+              <Label htmlFor={field.key}>{field.label}</Label>
+              {field.type === 'select' ? (
+                <select
+                  id={field.key}
+                  value={draftValues[field.key] ?? ''}
+                  onChange={(event) =>
+                    setDraftValues((previous) => ({
+                      ...previous,
+                      [field.key]: event.target.value,
+                    }))
+                  }
+                  style={{
+                    width: '100%',
+                    padding: '0.5rem',
+                    borderRadius: '0.5rem',
+                    border: '1px solid #d1d5db',
+                    marginTop: '0.25rem',
+                  }}
+                >
+                  {(field.options ?? []).map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              ) : field.multiline ? (
+                <textarea
+                  id={field.key}
+                  value={draftValues[field.key] ?? ''}
+                  onChange={(event) =>
+                    setDraftValues((previous) => ({
+                      ...previous,
+                      [field.key]: event.target.value,
+                    }))
+                  }
+                  rows={field.key === 'about_values' ? 5 : 3}
+                  style={{
+                    width: '100%',
+                    padding: '0.5rem',
+                    borderRadius: '0.5rem',
+                    border: '1px solid #d1d5db',
+                    marginTop: '0.25rem',
+                  }}
+                />
+              ) : (
+                <Input
+                  id={field.key}
+                  value={draftValues[field.key] ?? ''}
+                  onChange={(event) =>
+                    setDraftValues((previous) => ({
+                      ...previous,
+                      [field.key]: event.target.value,
+                    }))
+                  }
+                />
+              )}
+            </>
           )}
         </div>
       ))}

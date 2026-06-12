@@ -27,6 +27,7 @@ import { useSponsors } from '@/hooks/useSponsors'
 import { useTeam } from '@/hooks/useTeam'
 import { useTestimonials } from '@/hooks/useTestimonials'
 import { contactContent, footerContent, heroContent } from '@/fixtures/homePageFixtures'
+import { isSectionVisible, sectionTitle } from '@/lib/homepageSections'
 import type { RegistrationInput } from '@/types/app.types'
 
 export function HomePage() {
@@ -60,6 +61,19 @@ export function HomePage() {
   }
 
   const eventOptions = games.map((game) => game.name)
+  const show = (visibleKey: string) => isSectionVisible(settingsMap, visibleKey)
+
+  const aboutTitle = sectionTitle(settingsMap, 'about_title', 'About Khelgram Foundation')
+  const impactTitle = sectionTitle(settingsMap, 'impact_title', 'Impact')
+  const eventsTitle = sectionTitle(settingsMap, 'events_title', 'Festival Events')
+  const teamTitle = sectionTitle(settingsMap, 'team_title', 'Our Team')
+  const contributorsTitle = sectionTitle(settingsMap, 'contributors_title', 'Contributors')
+  const sponsorsTitle = sectionTitle(settingsMap, 'sponsors_title', 'Sponsors')
+  const galleryTitle = sectionTitle(settingsMap, 'gallery_title', 'Gallery')
+  const testimonialsTitle = sectionTitle(settingsMap, 'testimonials_title', 'Testimonials')
+  const registerTitle = sectionTitle(settingsMap, 'register_title', 'Register Your Child')
+  const faqTitle = sectionTitle(settingsMap, 'faq_title', 'FAQ')
+  const contactTitle = sectionTitle(settingsMap, 'contact_title', 'Contact')
 
   return (
     <div className="homepage">
@@ -73,117 +87,136 @@ export function HomePage() {
         />
       ) : null}
       <main>
-        <SectionErrorBoundary title="Hero">
-          <HeroSection
-            title={settingsMap.hero_title ?? heroContent.title}
-            subtitle={settingsMap.hero_subtitle ?? heroContent.subtitle}
-            primaryCta={settingsMap.hero_primary_cta ?? heroContent.primaryCta}
-            secondaryCta={settingsMap.hero_secondary_cta ?? heroContent.secondaryCta}
-            eventDateLabel={settingsMap.hero_event_date_label ?? heroContent.eventDateLabel}
-            eventDate={eventDate}
-            registrationCount={registrationCount}
-            onPrimaryClick={() => scrollToId('register')}
-            onSecondaryClick={() => scrollToId('events')}
-          />
-        </SectionErrorBoundary>
-        <CountdownSection
-          title={settingsMap.countdown_title ?? 'Countdown to Festival Day'}
-          targetDate={countdownDate}
-          toBeAnnouncedText={settingsMap.countdown_tba_text ?? 'To Be Announced'}
-        />
-        <SectionErrorBoundary title={settingsMap.about_title ?? 'About Khelgram Foundation'}>
-          <AboutSection
-            title={settingsMap.about_title ?? 'About Khelgram Foundation'}
-            content={aboutContent}
-          />
-        </SectionErrorBoundary>
-        <SectionErrorBoundary title="Impact">
-          {statsLoading ? (
-            <SectionSkeleton title="Impact" />
-          ) : (
-            <ImpactStatsBar stats={impactStats} />
-          )}
-        </SectionErrorBoundary>
-        <SectionErrorBoundary title={settingsMap.events_title ?? 'Festival Events'}>
-          {gamesLoading ? (
-            <SectionSkeleton title={settingsMap.events_title ?? 'Festival Events'} />
-          ) : (
-            <EventsSection title={settingsMap.events_title ?? 'Festival Events'} games={games} />
-          )}
-        </SectionErrorBoundary>
-        <SectionErrorBoundary title={settingsMap.team_title ?? 'Our Team'}>
-          {teamLoading ? (
-            <SectionSkeleton title={settingsMap.team_title ?? 'Our Team'} />
-          ) : (
-            <TeamGrid title={settingsMap.team_title ?? 'Our Team'} members={teamMembers} />
-          )}
-        </SectionErrorBoundary>
-        <SectionErrorBoundary title={settingsMap.contributors_title ?? 'Contributors'}>
-          {contributorsLoading ? (
-            <SectionSkeleton title={settingsMap.contributors_title ?? 'Contributors'} />
-          ) : (
-            <ContributorsGrid
-              title={settingsMap.contributors_title ?? 'Contributors'}
-              contributors={contributors}
+        {show('hero_visible') ? (
+          <SectionErrorBoundary title="Hero">
+            <HeroSection
+              title={settingsMap.hero_title ?? heroContent.title}
+              subtitle={settingsMap.hero_subtitle ?? heroContent.subtitle}
+              primaryCta={settingsMap.hero_primary_cta ?? heroContent.primaryCta}
+              secondaryCta={settingsMap.hero_secondary_cta ?? heroContent.secondaryCta}
+              eventDateLabel={settingsMap.hero_event_date_label ?? heroContent.eventDateLabel}
+              eventDate={eventDate}
+              registrationCount={registrationCount}
+              onPrimaryClick={() => scrollToId('register')}
+              onSecondaryClick={() => scrollToId('events')}
             />
-          )}
-        </SectionErrorBoundary>
-        <SectionErrorBoundary title={settingsMap.sponsors_title ?? 'Sponsors'}>
-          {sponsorsLoading ? (
-            <SectionSkeleton title={settingsMap.sponsors_title ?? 'Sponsors'} />
-          ) : (
-            <SponsorWall title={settingsMap.sponsors_title ?? 'Sponsors'} sponsors={sponsors} />
-          )}
-        </SectionErrorBoundary>
-        <SectionErrorBoundary title={settingsMap.gallery_title ?? 'Gallery'}>
-          {galleryLoading ? (
-            <SectionSkeleton title={settingsMap.gallery_title ?? 'Gallery'} />
-          ) : (
-            <GallerySection title={settingsMap.gallery_title ?? 'Gallery'} images={galleryImages} />
-          )}
-        </SectionErrorBoundary>
-        <SectionErrorBoundary title={settingsMap.testimonials_title ?? 'Testimonials'}>
-          {testimonialsLoading ? (
-            <SectionSkeleton title={settingsMap.testimonials_title ?? 'Testimonials'} />
-          ) : (
-            <TestimonialCarousel
-              title={settingsMap.testimonials_title ?? 'Testimonials'}
-              testimonials={testimonials}
-            />
-          )}
-        </SectionErrorBoundary>
-        <SectionErrorBoundary title={settingsMap.register_title ?? 'Register Your Child'}>
-          <RegistrationForm
-            title={settingsMap.register_title ?? 'Register Your Child'}
-            eventOptions={eventOptions}
-            preRegistrationMessage={
-              settingsMap.register_pre_message ??
-              "Pre-registration open — we'll confirm dates by email"
-            }
-            submitLabel={settingsMap.register_submit_label ?? 'Submit Registration'}
-            isPreRegistration={isPreRegistration}
-            isSubmitting={createRegistration.isPending}
-            onSubmit={handleRegistrationSubmit}
+          </SectionErrorBoundary>
+        ) : null}
+        {show('countdown_visible') ? (
+          <CountdownSection
+            title={settingsMap.countdown_title ?? 'Countdown to Festival Day'}
+            targetDate={countdownDate}
+            toBeAnnouncedText={settingsMap.countdown_tba_text ?? 'To Be Announced'}
           />
-        </SectionErrorBoundary>
-        <SectionErrorBoundary title={settingsMap.faq_title ?? 'FAQ'}>
-          {faqLoading ? (
-            <SectionSkeleton title={settingsMap.faq_title ?? 'FAQ'} />
-          ) : (
-            <FAQAccordion title={settingsMap.faq_title ?? 'FAQ'} items={faqItems} />
-          )}
-        </SectionErrorBoundary>
-        <ContactSection
-          title={settingsMap.contact_title ?? 'Contact'}
-          address={settingsMap.contact_address ?? contactContent.address}
-          phone={settingsMap.contact_phone ?? contactContent.phone}
-          email={settingsMap.contact_email ?? contactContent.email}
-        />
+        ) : null}
+        {show('about_visible') ? (
+          <SectionErrorBoundary title={aboutTitle}>
+            <AboutSection title={aboutTitle} content={aboutContent} />
+          </SectionErrorBoundary>
+        ) : null}
+        {show('impact_visible') ? (
+          <SectionErrorBoundary title={impactTitle}>
+            {statsLoading ? (
+              <SectionSkeleton title={impactTitle} />
+            ) : (
+              <ImpactStatsBar title={impactTitle} stats={impactStats} />
+            )}
+          </SectionErrorBoundary>
+        ) : null}
+        {show('events_visible') ? (
+          <SectionErrorBoundary title={eventsTitle}>
+            {gamesLoading ? (
+              <SectionSkeleton title={eventsTitle} />
+            ) : (
+              <EventsSection title={eventsTitle} games={games} />
+            )}
+          </SectionErrorBoundary>
+        ) : null}
+        {show('team_visible') ? (
+          <SectionErrorBoundary title={teamTitle}>
+            {teamLoading ? (
+              <SectionSkeleton title={teamTitle} />
+            ) : (
+              <TeamGrid title={teamTitle} members={teamMembers} />
+            )}
+          </SectionErrorBoundary>
+        ) : null}
+        {show('contributors_visible') ? (
+          <SectionErrorBoundary title={contributorsTitle}>
+            {contributorsLoading ? (
+              <SectionSkeleton title={contributorsTitle} />
+            ) : (
+              <ContributorsGrid title={contributorsTitle} contributors={contributors} />
+            )}
+          </SectionErrorBoundary>
+        ) : null}
+        {show('sponsors_visible') ? (
+          <SectionErrorBoundary title={sponsorsTitle}>
+            {sponsorsLoading ? (
+              <SectionSkeleton title={sponsorsTitle} />
+            ) : (
+              <SponsorWall title={sponsorsTitle} sponsors={sponsors} />
+            )}
+          </SectionErrorBoundary>
+        ) : null}
+        {show('gallery_visible') ? (
+          <SectionErrorBoundary title={galleryTitle}>
+            {galleryLoading ? (
+              <SectionSkeleton title={galleryTitle} />
+            ) : (
+              <GallerySection title={galleryTitle} images={galleryImages} />
+            )}
+          </SectionErrorBoundary>
+        ) : null}
+        {show('testimonials_visible') ? (
+          <SectionErrorBoundary title={testimonialsTitle}>
+            {testimonialsLoading ? (
+              <SectionSkeleton title={testimonialsTitle} />
+            ) : (
+              <TestimonialCarousel title={testimonialsTitle} testimonials={testimonials} />
+            )}
+          </SectionErrorBoundary>
+        ) : null}
+        {show('register_visible') ? (
+          <SectionErrorBoundary title={registerTitle}>
+            <RegistrationForm
+              title={registerTitle}
+              eventOptions={eventOptions}
+              preRegistrationMessage={
+                settingsMap.register_pre_message ??
+                "Pre-registration open — we'll confirm dates by email"
+              }
+              submitLabel={settingsMap.register_submit_label ?? 'Submit Registration'}
+              isPreRegistration={isPreRegistration}
+              isSubmitting={createRegistration.isPending}
+              onSubmit={handleRegistrationSubmit}
+            />
+          </SectionErrorBoundary>
+        ) : null}
+        {show('faq_visible') ? (
+          <SectionErrorBoundary title={faqTitle}>
+            {faqLoading ? (
+              <SectionSkeleton title={faqTitle} />
+            ) : (
+              <FAQAccordion title={faqTitle} items={faqItems} />
+            )}
+          </SectionErrorBoundary>
+        ) : null}
+        {show('contact_visible') ? (
+          <ContactSection
+            title={contactTitle}
+            address={settingsMap.contact_address ?? contactContent.address}
+            phone={settingsMap.contact_phone ?? contactContent.phone}
+            email={settingsMap.contact_email ?? contactContent.email}
+          />
+        ) : null}
       </main>
-      <SiteFooter
-        description={settingsMap.footer_description ?? footerContent.description}
-        copyright={settingsMap.footer_copyright ?? footerContent.copyright}
-      />
+      {show('footer_visible') ? (
+        <SiteFooter
+          description={settingsMap.footer_description ?? footerContent.description}
+          copyright={settingsMap.footer_copyright ?? footerContent.copyright}
+        />
+      ) : null}
     </div>
   )
 }

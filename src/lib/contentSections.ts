@@ -1,3 +1,7 @@
+import { homepageSections, type HomepageSectionConfig } from './homepageSections'
+
+export { homepageSections, type HomepageSectionConfig }
+
 export type ContentFieldOption = {
   value: string
   label: string
@@ -8,7 +12,7 @@ export type ContentField = {
   label: string
   section: string
   multiline?: boolean
-  type?: 'text' | 'select'
+  type?: 'text' | 'select' | 'checkbox'
   options?: ContentFieldOption[]
 }
 
@@ -19,6 +23,27 @@ export type ContentSection = {
   successMessage: string
   fields: ContentField[]
 }
+
+const sectionsTabFields: ContentField[] = homepageSections.flatMap((section) => {
+  const fields: ContentField[] = [
+    {
+      key: section.visibleKey,
+      label: `Show ${section.label} section`,
+      section: 'sections',
+      type: 'checkbox',
+    },
+  ]
+
+  if (section.titleKey && !section.titleContentTabId) {
+    fields.push({
+      key: section.titleKey,
+      label: `${section.label} heading`,
+      section: 'sections',
+    })
+  }
+
+  return fields
+})
 
 export const contentSections: ContentSection[] = [
   {
@@ -115,11 +140,19 @@ export const contentSections: ContentSection[] = [
     ],
   },
   {
+    id: 'sections',
+    label: 'Sections',
+    saveLabel: 'Save section settings',
+    successMessage: 'Section visibility saved',
+    fields: sectionsTabFields,
+  },
+  {
     id: 'site',
     label: 'Site',
     saveLabel: 'Save site settings',
     successMessage: 'Site settings saved',
     fields: [
+      { key: 'site_name', label: 'Site name (header)', section: 'header' },
       {
         key: 'event_status',
         label: 'Event status',

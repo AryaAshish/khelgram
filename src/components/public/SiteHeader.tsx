@@ -1,4 +1,5 @@
 import { Trophy } from 'lucide-react'
+import { Link } from 'react-router-dom'
 
 export type SiteHeaderProps = {
   siteName: string
@@ -33,6 +34,15 @@ export function SiteHeader({ siteName }: SiteHeaderProps) {
                   </a>
                 </li>
               ))}
+              <li>
+                <Link
+                  to="/admin"
+                  style={{ color: '#6b7280', fontWeight: 600 }}
+                  aria-label="Admin sign in"
+                >
+                  Admin
+                </Link>
+              </li>
             </ul>
           </nav>
         </div>

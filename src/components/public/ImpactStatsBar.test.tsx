@@ -24,4 +24,12 @@ describe('ImpactStatsBar', () => {
 
     expect(document.getElementById('impact')).toBeInTheDocument()
   })
+
+  it('renders a custom section title', () => {
+    render(
+      <ImpactStatsBar title="Our Impact" stats={[{ id: 'one', value: '100+', label: 'Kids' }]} />,
+    )
+
+    expect(screen.getByRole('heading', { name: 'Our Impact' })).toBeInTheDocument()
+  })
 })

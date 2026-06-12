@@ -12,9 +12,22 @@ describe('contentSections', () => {
       'register',
       'contact',
       'footer',
+      'sections',
       'site',
     ])
     expect(contentSections[0]?.fields.some((field) => field.key === 'hero_title')).toBe(true)
+  })
+
+  it('includes section visibility controls and credibility headings', () => {
+    const sectionsTab = contentSections.find((section) => section.id === 'sections')
+    expect(sectionsTab?.fields.some((field) => field.key === 'team_visible')).toBe(true)
+    expect(sectionsTab?.fields.some((field) => field.key === 'team_title')).toBe(true)
+    expect(sectionsTab?.fields.some((field) => field.key === 'hero_title')).toBe(false)
+  })
+
+  it('exposes site name on the site tab', () => {
+    const siteTab = contentSections.find((section) => section.id === 'site')
+    expect(siteTab?.fields.some((field) => field.key === 'site_name')).toBe(true)
   })
 })
 

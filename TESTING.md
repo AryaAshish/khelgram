@@ -182,3 +182,16 @@ For phases 7–11, enable E2E with `RUN_PHASE7_E2E=1` (etc.) after implementing 
 - [x] Deno tests: `npm run test:edge` (when Deno is installed)
 - [x] E2E spec ready: `RUN_PHASE11_E2E=1 npm run verify:phase -- 11`
 - [x] `npm run typecheck`, `lint`, `test:coverage`, `build` all pass
+
+## Phase 12 checklist
+
+- [x] Migration `0010_section_visibility.sql` applied
+- [x] `homepageSections` config with `isSectionVisible` / `sectionTitle` helpers
+- [x] Content CMS **Sections** tab: per-section visibility toggles
+- [x] Content CMS: credibility headings (`impact_title`, `team_title`, etc.) + `site_name` on Site tab
+- [x] `HomePage` conditional rendering for all 14 homepage blocks
+- [x] `ImpactStatsBar` accepts editable section title
+- [x] Admin link in public header and footer
+- [x] Unit tests: `homepageSections`, `contentSections`, `HomePage`, `ContentPage`, `ImpactStatsBar`
+- [x] E2E spec ready: `RUN_PHASE12_E2E=1 npm run verify:phase -- 12`
+- [x] `npm run typecheck`, `lint`, `test:coverage`, `build` all pass

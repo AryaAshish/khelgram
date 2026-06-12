@@ -278,6 +278,7 @@ describe('registrations.service', () => {
         ...sampleAdminRegistration,
         id: 'reg-2',
         childName: 'Riya',
+        parentName: 'Kavita',
         email: 'riya@example.com',
         status: 'waitlisted' as const,
         gameIds: ['game-2'],
@@ -285,8 +286,10 @@ describe('registrations.service', () => {
     ]
 
     expect(filterRegistrations(registrations, { search: 'aarav' })).toHaveLength(1)
+    expect(filterRegistrations(registrations, { search: 'kavita' })).toHaveLength(1)
     expect(filterRegistrations(registrations, { gameId: 'game-2' })).toHaveLength(1)
     expect(filterRegistrations(registrations, { status: 'waitlisted' })).toHaveLength(1)
+    expect(filterRegistrations(registrations, {})).toHaveLength(2)
   })
 
   it('getRegistrations maps joined game names', async () => {
@@ -423,6 +426,42 @@ describe('registrations.service', () => {
       status: 'active',
       capacity: 3,
       registeredCount: 1,
+    })
+    const registrationGamesBuilder = {
+      update: vi.fn().mockReturnThis(),
+      select: vi.fn().mockReturnValue({
+        eq: vi.fn().mockReturnValue({
+          eq: vi.fn().mockResolvedValue({ data: [], error: null }),
+        }),
+      }),
+      eq: vi.fn().mockReturnThis(),
+    }
+    const registrationsBuilder = createSelectBuilder({
+      data: { ...sampleRow, status: 'confirmed' },
+      error: null,
+    })
+
+    mockFrom.mockImplementation((table: string) => {
+      if (table === 'registration_games') return registrationGamesBuilder
+      if (table === 'registrations') return registrationsBuilder
+      throw new Error(`Unexpected table ${table}`)
+    })
+
+    await expect(promoteFromWaitlist('reg-1', 'game-1')).resolves.toEqual({
+      ...sampleAdminRegistration,
+      status: 'confirmed',
+    })
+  })
+
+  it('promoteFromWaitlist allows promotion when game has no capacity limit', async () => {
+    mockGetGameWithCapacity.mockResolvedValue({
+      id: 'game-1',
+      name: 'Sack Race',
+      description: 'Hop',
+      ageGroup: 'Ages 6-10',
+      startTime: '10:00 AM',
+      status: 'active',
+      registeredCount: 99,
     })
     const registrationGamesBuilder = {
       update: vi.fn().mockReturnThis(),
