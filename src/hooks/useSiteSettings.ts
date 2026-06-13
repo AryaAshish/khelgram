@@ -57,6 +57,18 @@ const fallbackAllSettings: Record<string, string> = {
     'Help at events, training camps, and community sports days.',
   org_get_involved_volunteers_cta_label: 'Sign up to volunteer',
   org_get_involved_volunteers_cta_url: '/get-involved#volunteer-signup',
+  support_visible: 'true',
+  support_title: 'Support Our Mission',
+  support_description:
+    'Your contribution helps us run grassroots sports programs, training camps, and inclusive events across rural communities.',
+  donate_url: 'https://khelgram.org/donate',
+  donate_qr_image: '',
+  support_funds_usage:
+    'Equipment and coaching\nVillage outreach camps\nScholarships for talented athletes',
+  reach_visible: 'true',
+  reach_title: 'Where We Work',
+  org_regions:
+    '[{"name":"Uttar Pradesh","states":["UP"],"description":"Grassroots discovery camps across eastern UP districts."},{"name":"Bihar","states":["BR"],"description":"School partnerships and girls inclusion programs."},{"name":"Rajasthan","states":["RJ"],"description":"Traditional sports revival and village tournaments."}]',
   programs_title: 'Our Programs',
   programs_visible: 'true',
   get_involved_visible: 'true',

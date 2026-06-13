@@ -160,6 +160,44 @@ export const orgContentSections: ContentSection[] = [
     ],
   },
   {
+    id: 'org_support',
+    label: 'Support',
+    saveLabel: 'Save support content',
+    successMessage: 'Support content saved',
+    fields: [
+      { key: 'support_title', label: 'Section heading', section: 'org_support' },
+      {
+        key: 'support_description',
+        label: 'Description',
+        section: 'org_support',
+        multiline: true,
+      },
+      { key: 'donate_url', label: 'Donate URL', section: 'org_support' },
+      { key: 'donate_qr_image', label: 'Donate QR image URL', section: 'org_support' },
+      {
+        key: 'support_funds_usage',
+        label: 'Funds usage (one per line)',
+        section: 'org_support',
+        multiline: true,
+      },
+    ],
+  },
+  {
+    id: 'org_reach',
+    label: 'Reach',
+    saveLabel: 'Save reach content',
+    successMessage: 'Reach content saved',
+    fields: [
+      { key: 'reach_title', label: 'Section heading', section: 'org_reach' },
+      {
+        key: 'org_regions',
+        label: 'Regions JSON',
+        section: 'org_reach',
+        multiline: true,
+      },
+    ],
+  },
+  {
     id: 'org_contact',
     label: 'Contact',
     saveLabel: 'Save contact',

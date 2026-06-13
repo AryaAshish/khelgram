@@ -6,11 +6,14 @@ import { SiteHeader } from '@/components/public/SiteHeader'
 import { useAllSettings } from '@/hooks/useSiteSettings'
 import { footerContent } from '@/fixtures/homePageFixtures'
 import { getInvolvedContent } from '@/lib/getInvolvedContent'
-import { isSectionVisible } from '@/lib/homepageSections'
+import { isSectionVisible } from '@/lib/orgHomeSections'
+import { SupportSection } from '@/components/public/SupportSection'
+import { getSupportContent } from '@/lib/supportContent'
 
 export function GetInvolvedPage() {
   const { settingsMap } = useAllSettings()
   const content = getInvolvedContent(settingsMap)
+  const supportContent = getSupportContent(settingsMap)
   const partnersCard = content.cards.find((card) => card.id === 'partners')
   const volunteersCard = content.cards.find((card) => card.id === 'volunteers')
 
@@ -40,6 +43,7 @@ export function GetInvolvedPage() {
             'Share your availability and interests for upcoming events and camps.'
           }
         />
+        <SupportSection content={supportContent} />
       </main>
       {isSectionVisible(settingsMap, 'footer_visible') ? (
         <SiteFooter

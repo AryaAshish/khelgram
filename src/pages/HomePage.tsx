@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { SectionErrorBoundary } from '@/components/SectionErrorBoundary'
 import { AboutSection } from '@/components/public/AboutSection'
 import { ContactSection } from '@/components/public/ContactSection'
@@ -22,7 +23,12 @@ import { useTeam } from '@/hooks/useTeam'
 import { useTestimonials } from '@/hooks/useTestimonials'
 import { GetInvolvedSection } from '@/components/public/GetInvolvedSection'
 import { contactContent, footerContent } from '@/fixtures/homePageFixtures'
+import { SupportSection } from '@/components/public/SupportSection'
+import { ReachSection } from '@/components/public/ReachSection'
+import { getSupportContent } from '@/lib/supportContent'
+import { parseOrgRegions } from '@/lib/orgRegions'
 import { getInvolvedContent } from '@/lib/getInvolvedContent'
+import { localizedSetting } from '@/lib/localizedSetting'
 import { isSectionVisible, sectionTitle } from '@/lib/orgHomeSections'
 
 const orgHeroDefaults = {
@@ -34,6 +40,7 @@ const orgHeroDefaults = {
 }
 
 export function HomePage() {
+  const { i18n } = useTranslation()
   const { impactStats, isLoading: statsLoading } = useImpactStats('org')
   const { programs, isLoading: programsLoading } = usePrograms()
   const { stories, isLoading: storiesLoading } = useSuccessStories()
@@ -64,11 +71,38 @@ export function HomePage() {
   const contactTitle = sectionTitle(settingsMap, 'contact_title', 'Contact')
   const getInvolvedTitle = sectionTitle(settingsMap, 'org_get_involved_title', 'Get Involved')
   const getInvolved = getInvolvedContent(settingsMap)
+  const supportContent = getSupportContent(settingsMap)
+  const reachTitle = sectionTitle(settingsMap, 'reach_title', 'Where We Work')
+  const regions = parseOrgRegions(settingsMap.org_regions)
 
-  const orgHeroTitle = sectionTitle(settingsMap, 'org_hero_title', orgHeroDefaults.title)
-  const orgHeroSubtitle = settingsMap.org_hero_subtitle ?? orgHeroDefaults.subtitle
-  const orgHeroPrimaryCta = settingsMap.org_hero_primary_cta ?? orgHeroDefaults.primaryCta
-  const orgHeroSecondaryCta = settingsMap.org_hero_secondary_cta ?? orgHeroDefaults.secondaryCta
+  const orgHeroTitle = localizedSetting(
+    settingsMap,
+    'org_hero_title',
+    orgHeroDefaults.title,
+    i18n.language,
+  )
+  const orgHeroSubtitle = localizedSetting(
+    settingsMap,
+    'org_hero_subtitle',
+    orgHeroDefaults.subtitle,
+    i18n.language,
+  )
+  const orgHeroPrimaryCta = settingsMap.org_hero_primary_cta
+    ? localizedSetting(
+        settingsMap,
+        'org_hero_primary_cta',
+        orgHeroDefaults.primaryCta,
+        i18n.language,
+      )
+    : undefined
+  const orgHeroSecondaryCta = settingsMap.org_hero_secondary_cta
+    ? localizedSetting(
+        settingsMap,
+        'org_hero_secondary_cta',
+        orgHeroDefaults.secondaryCta,
+        i18n.language,
+      )
+    : undefined
 
   return (
     <div className="homepage">
@@ -120,6 +154,16 @@ export function HomePage() {
             ) : (
               <SuccessStoriesSection title={successStoriesTitle} stories={stories} />
             )}
+          </SectionErrorBoundary>
+        ) : null}
+        {show('support_visible') ? (
+          <SectionErrorBoundary title={supportContent.title}>
+            <SupportSection content={supportContent} />
+          </SectionErrorBoundary>
+        ) : null}
+        {show('reach_visible') ? (
+          <SectionErrorBoundary title={reachTitle}>
+            <ReachSection title={reachTitle} regions={regions} />
           </SectionErrorBoundary>
         ) : null}
         {show('team_visible') ? (

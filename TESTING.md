@@ -293,3 +293,33 @@ For phases 7–11, enable E2E with `RUN_PHASE7_E2E=1` (etc.) after implementing 
 - [x] Unit tests: `adminNavGroups`, `DashboardPage`, `AdminLayout`
 - [x] E2E spec ready: `RUN_PHASE21_E2E=1 npm run verify:phase -- 21`
 - [x] `npm run typecheck`, `lint`, `test:coverage`, `build` all pass
+
+## Phase 22 checklist
+
+- [x] Migration `0017_support_cms.sql` — support_title, support_description, donate_url, donate_qr_image, support_funds_usage
+- [x] `getSupportContent` helper + unit tests
+- [x] `SupportSection` on homepage and `GetInvolvedPage`
+- [x] Admin Organization content tab `org_support` for support CMS fields
+- [x] `support_visible` section toggle in org Sections admin tab
+- [x] E2E spec ready: `RUN_PHASE22_E2E=1 npm run verify:phase -- 22`
+- [x] `npm run typecheck`, `lint`, `test:coverage`, `build` all pass
+
+## Phase 23 checklist
+
+- [x] Migration `0018_org_regions.sql` — reach_title, org_regions JSON seed
+- [x] `parseOrgRegions` helper + unit tests
+- [x] `ReachSection` on homepage
+- [x] Admin Organization content tab `org_reach` for reach CMS fields
+- [x] `reach_visible` section toggle in org Sections admin tab
+- [x] E2E spec ready: `RUN_PHASE23_E2E=1 npm run verify:phase -- 23`
+- [x] `npm run typecheck`, `lint`, `test:coverage`, `build` all pass
+
+## Phase 24 checklist
+
+- [x] `i18next` + `react-i18next` with English and Hindi locale files
+- [x] `LanguageToggle` in site header; language persisted in localStorage
+- [x] Translated scope: header nav, hero CTAs, get-involved CTAs, register form labels
+- [x] `localizedSetting` helper for optional CMS `*_hi` keys with English fallback
+- [x] Unit tests: `LanguageToggle`, `localizedSetting`, updated header/get-involved/register tests
+- [x] E2E spec ready: `RUN_PHASE24_E2E=1 npm run verify:phase -- 24`
+- [x] `npm run typecheck`, `lint`, `test:coverage`, `build` all pass

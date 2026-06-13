@@ -444,4 +444,23 @@ describe('HomePage', () => {
     expect(screen.queryByText('Testimonials')).not.toBeInTheDocument()
     expect(screen.queryByRole('heading', { name: 'Contact' })).not.toBeInTheDocument()
   })
+
+  it('renders support and reach sections when visible', () => {
+    setDefaultHookMocks()
+    mockUseAllSettings.mockReturnValue({
+      settingsMap: {
+        support_visible: 'true',
+        reach_visible: 'true',
+        support_title: 'Support Our Mission',
+        reach_title: 'Where We Work',
+      },
+      aboutContent,
+    })
+
+    renderHomePage()
+
+    expect(screen.getByRole('heading', { name: 'Support Our Mission' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Where We Work' })).toBeInTheDocument()
+    expect(screen.getByText('Uttar Pradesh')).toBeInTheDocument()
+  })
 })
