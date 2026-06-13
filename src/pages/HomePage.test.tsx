@@ -12,6 +12,7 @@ const mockUseSponsors = vi.fn()
 const mockUseTestimonials = vi.fn()
 const mockUseAllSettings = vi.fn()
 const mockUsePrograms = vi.fn()
+const mockUseSuccessStories = vi.fn()
 
 vi.mock('@/hooks/useImpactStats', () => ({
   useImpactStats: () => mockUseImpactStats(),
@@ -39,6 +40,10 @@ vi.mock('@/hooks/useSiteSettings', () => ({
 
 vi.mock('@/hooks/usePrograms', () => ({
   usePrograms: () => mockUsePrograms(),
+}))
+
+vi.mock('@/hooks/useSuccessStories', () => ({
+  useSuccessStories: () => mockUseSuccessStories(),
 }))
 
 function renderHomePage() {
@@ -114,6 +119,19 @@ function setDefaultHookMocks() {
     ],
     isLoading: false,
   })
+  mockUseSuccessStories.mockReturnValue({
+    stories: [
+      {
+        id: 'story-1',
+        title: 'From village field to district finals',
+        summary: 'Grassroots scouting',
+        story: 'Full story',
+        published: true,
+        sortOrder: 1,
+      },
+    ],
+    isLoading: false,
+  })
 }
 
 describe('HomePage', () => {
@@ -125,6 +143,7 @@ describe('HomePage', () => {
     mockUseTestimonials.mockReset()
     mockUseAllSettings.mockReset()
     mockUsePrograms.mockReset()
+    mockUseSuccessStories.mockReset()
   })
 
   it('renders NGO homepage sections without festival blocks', () => {
@@ -265,6 +284,30 @@ describe('HomePage', () => {
     renderHomePage()
 
     expect(screen.queryByRole('heading', { name: 'Our Programs' })).not.toBeInTheDocument()
+  })
+
+  it('hides success stories section when visibility is false', () => {
+    setDefaultHookMocks()
+    mockUseAllSettings.mockReturnValue({
+      settingsMap: {
+        success_stories_visible: 'false',
+        success_stories_title: 'Success Stories',
+      },
+      aboutContent,
+    })
+
+    renderHomePage()
+
+    expect(screen.queryByRole('heading', { name: 'Success Stories' })).not.toBeInTheDocument()
+  })
+
+  it('shows success stories skeleton while loading', () => {
+    setDefaultHookMocks()
+    mockUseSuccessStories.mockReturnValue({ stories: [], isLoading: true })
+
+    renderHomePage()
+
+    expect(screen.getByLabelText('Success Stories loading')).toBeInTheDocument()
   })
 
   it('renders get involved section with register and contact CTAs', () => {

@@ -67,6 +67,7 @@ describe('AdminLayout', () => {
       '/admin/programs',
     )
     expect(screen.getByRole('link', { name: 'Leads' })).toHaveAttribute('href', '/admin/leads')
+    expect(screen.getByRole('link', { name: 'Stories' })).toHaveAttribute('href', '/admin/stories')
     expect(screen.getByRole('link', { name: 'Media' })).toHaveAttribute('href', '/admin/media')
     expect(screen.getByRole('link', { name: 'Gallery' })).toHaveAttribute('href', '/admin/gallery')
     expect(screen.getByRole('link', { name: 'Team' })).toHaveAttribute('href', '/admin/team')

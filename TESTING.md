@@ -273,3 +273,15 @@ For phases 7–11, enable E2E with `RUN_PHASE7_E2E=1` (etc.) after implementing 
 - [x] Admin sidebar Leads link and `/admin/leads` route
 - [x] E2E spec ready: `RUN_PHASE19_E2E=1 npm run verify:phase -- 19`
 - [x] `npm run typecheck`, `lint`, `test:coverage`, `build` all pass
+
+## Phase 20 checklist
+
+- [x] Migration `0016_success_stories.sql` — `success_stories` table with RLS and seed stories
+- [x] `successStories.service.ts` + unit tests (CRUD, reorder, publish update)
+- [x] `useSuccessStories.ts` hook + tests with fixture fallback
+- [x] `SuccessStoriesSection` on homepage after impact stats
+- [x] `StoriesPage` admin — CRUD, reorder, publish toggle + tests
+- [x] Admin sidebar link and `/admin/stories` route
+- [x] `success_stories_visible` / `success_stories_title` section settings
+- [x] E2E spec ready: `RUN_PHASE20_E2E=1 npm run verify:phase -- 20`
+- [x] `npm run typecheck`, `lint`, `test:coverage`, `build` all pass

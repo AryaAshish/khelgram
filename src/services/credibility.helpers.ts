@@ -11,6 +11,7 @@ type CredibilityTable = keyof Pick<
   | 'faq_items'
   | 'impact_stats'
   | 'programs'
+  | 'success_stories'
 >
 
 export async function getNextSortOrder(table: CredibilityTable): Promise<number> {

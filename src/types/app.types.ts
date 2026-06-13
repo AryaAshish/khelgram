@@ -133,6 +133,16 @@ export type Program = {
   ctaUrl?: string
 }
 
+export type SuccessStory = {
+  id: string
+  title: string
+  summary: string
+  story: string
+  imageUrl?: string
+  published: boolean
+  sortOrder: number
+}
+
 export type AboutContent = {
   mission: string
   vision: string

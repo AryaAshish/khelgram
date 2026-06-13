@@ -8,6 +8,7 @@ export type OrgHomeSectionId =
   | 'sponsors'
   | 'testimonials'
   | 'get_involved'
+  | 'success_stories'
   | 'contact'
   | 'footer'
 
@@ -57,6 +58,13 @@ export const orgHomeSections: OrgHomeSectionConfig[] = [
     visibleKey: 'impact_visible',
     titleKey: 'org_impact_title',
     defaultTitle: 'Impact',
+  },
+  {
+    id: 'success_stories',
+    label: 'Success Stories',
+    visibleKey: 'success_stories_visible',
+    titleKey: 'success_stories_title',
+    defaultTitle: 'Success Stories',
   },
   {
     id: 'team',

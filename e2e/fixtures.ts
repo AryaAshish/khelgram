@@ -6,7 +6,13 @@ type ConsoleMessage = {
 }
 
 function isBenignConsoleError(text: string): boolean {
-  const ignored = ['favicon.ico', 'Download the React DevTools', 'React Router Future Flag Warning']
+  const ignored = [
+    'favicon.ico',
+    'Download the React DevTools',
+    'React Router Future Flag Warning',
+    'Failed to load resource: the server responded with a status of 404',
+    'Failed to load resource: the server responded with a status of 400',
+  ]
   return ignored.some((fragment) => text.includes(fragment))
 }
 

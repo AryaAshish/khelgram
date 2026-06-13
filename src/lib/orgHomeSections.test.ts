@@ -9,6 +9,7 @@ describe('orgHomeSections', () => {
       'programs_visible',
       'get_involved_visible',
       'impact_visible',
+      'success_stories_visible',
       'team_visible',
       'contributors_visible',
       'sponsors_visible',

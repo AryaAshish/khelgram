@@ -14,6 +14,8 @@ import { TestimonialCarousel } from '@/components/public/TestimonialCarousel'
 import { useContributors } from '@/hooks/useContributors'
 import { useImpactStats } from '@/hooks/useImpactStats'
 import { usePrograms } from '@/hooks/usePrograms'
+import { SuccessStoriesSection } from '@/components/public/SuccessStoriesSection'
+import { useSuccessStories } from '@/hooks/useSuccessStories'
 import { useAllSettings } from '@/hooks/useSiteSettings'
 import { useSponsors } from '@/hooks/useSponsors'
 import { useTeam } from '@/hooks/useTeam'
@@ -34,6 +36,7 @@ const orgHeroDefaults = {
 export function HomePage() {
   const { impactStats, isLoading: statsLoading } = useImpactStats('org')
   const { programs, isLoading: programsLoading } = usePrograms()
+  const { stories, isLoading: storiesLoading } = useSuccessStories()
   const { members: teamMembers, isLoading: teamLoading } = useTeam()
   const { contributors, isLoading: contributorsLoading } = useContributors()
   const { sponsors, isLoading: sponsorsLoading } = useSponsors()
@@ -52,6 +55,7 @@ export function HomePage() {
   const aboutTitle = sectionTitle(settingsMap, 'org_about_title', 'About Khelgram Foundation')
   const programsTitle = sectionTitle(settingsMap, 'programs_title', 'Our Programs')
   const impactTitle = sectionTitle(settingsMap, 'org_impact_title', 'Impact')
+  const successStoriesTitle = sectionTitle(settingsMap, 'success_stories_title', 'Success Stories')
   const impactSubtitle = settingsMap.org_impact_subtitle
   const teamTitle = sectionTitle(settingsMap, 'team_title', 'Our Team')
   const contributorsTitle = sectionTitle(settingsMap, 'contributors_title', 'Contributors')
@@ -106,6 +110,15 @@ export function HomePage() {
               <SectionSkeleton title={impactTitle} />
             ) : (
               <ImpactStatsBar title={impactTitle} subtitle={impactSubtitle} stats={impactStats} />
+            )}
+          </SectionErrorBoundary>
+        ) : null}
+        {show('success_stories_visible') ? (
+          <SectionErrorBoundary title={successStoriesTitle}>
+            {storiesLoading ? (
+              <SectionSkeleton title={successStoriesTitle} />
+            ) : (
+              <SuccessStoriesSection title={successStoriesTitle} stories={stories} />
             )}
           </SectionErrorBoundary>
         ) : null}
