@@ -1,10 +1,14 @@
-import { Component } from 'react'
+import { Component, createElement } from 'react'
 import { useTranslation } from 'react-i18next'
+import { RegisterBenefitsPanel } from '@/components/public/RegisterBenefitsPanel'
 import { ShareRegistrationLink } from '@/components/public/ShareRegistrationLink'
+import { SectionShell } from '@/components/public/primitives/SectionShell'
+import { SectionHeading } from '@/components/public/primitives/SectionHeading'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import type { RegistrationInput } from '@/types/app.types'
+import { resolveGameEventIcon } from '@/lib/gameEventIcons'
+import type { Game, RegistrationInput } from '@/types/app.types'
 
 export type RegistrationFormLabels = {
   childName: string
@@ -18,12 +22,14 @@ export type RegistrationFormLabels = {
 export type RegistrationFormProps = {
   title: string
   eventOptions: string[]
+  games?: Game[]
   preRegistrationMessage: string
   submitLabel?: string
   labels?: RegistrationFormLabels
   isPreRegistration?: boolean
   isSubmitting?: boolean
   shareUrl?: string
+  showSuccessBanner?: boolean
   onSubmit: (input: RegistrationInput) => void
 }
 
@@ -36,6 +42,28 @@ const initialState: RegistrationFormState = {
   email: '',
   phone: '',
   selectedEvents: [],
+}
+
+function RegistrationSuccessBanner() {
+  return (
+    <div className="register-success-banner" role="status" aria-live="polite">
+      <svg className="register-success-banner__icon" viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="12" r="11" fill="none" stroke="currentColor" strokeWidth="2" />
+        <path
+          className="register-success-banner__check"
+          d="M7 12.5l3 3 7-7"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+        />
+      </svg>
+      <div>
+        <strong>Registration received!</strong>
+        <p>We sent a confirmation to your email. See you at Khel 2026.</p>
+      </div>
+    </div>
+  )
 }
 
 export class RegistrationForm extends Component<RegistrationFormProps, RegistrationFormState> {
@@ -65,6 +93,9 @@ export class RegistrationForm extends Component<RegistrationFormProps, Registrat
     this.setState(initialState)
   }
 
+  private resolveGame = (eventName: string): Game | undefined =>
+    this.props.games?.find((game) => game.name === eventName)
+
   render() {
     const labels = this.props.labels ?? {
       childName: 'Child Name',
@@ -76,90 +107,110 @@ export class RegistrationForm extends Component<RegistrationFormProps, Registrat
     }
 
     return (
-      <section className="registration-section" id="register" style={{ padding: '4rem 0' }}>
-        <div className="container-custom">
-          <h2 style={{ fontSize: '2rem', marginBottom: '1rem' }}>{this.props.title}</h2>
-          {this.props.shareUrl ? (
-            <ShareRegistrationLink formTitle={this.props.title} shareUrl={this.props.shareUrl} />
-          ) : null}
-          {this.props.isPreRegistration ? (
-            <p style={{ marginBottom: '1rem', color: '#059669', fontWeight: 600 }}>
-              {this.props.preRegistrationMessage}
-            </p>
-          ) : null}
-          <form
-            onSubmit={this.handleSubmit}
-            aria-label="Registration form"
-            style={{ maxWidth: '640px' }}
-          >
-            <div style={{ marginBottom: '0.75rem' }}>
-              <Label htmlFor="childName">{labels.childName}</Label>
-              <Input
-                id="childName"
-                value={this.state.childName}
-                onChange={(event) => this.updateField('childName', event.target.value)}
-                required
-              />
-            </div>
-            <div style={{ marginBottom: '0.75rem' }}>
-              <Label htmlFor="age">{labels.age}</Label>
-              <Input
-                id="age"
-                value={this.state.age}
-                onChange={(event) => this.updateField('age', event.target.value)}
-                required
-              />
-            </div>
-            <div style={{ marginBottom: '0.75rem' }}>
-              <Label htmlFor="parentName">{labels.parentName}</Label>
-              <Input
-                id="parentName"
-                value={this.state.parentName}
-                onChange={(event) => this.updateField('parentName', event.target.value)}
-                required
-              />
-            </div>
-            <div style={{ marginBottom: '0.75rem' }}>
-              <Label htmlFor="email">{labels.email}</Label>
-              <Input
-                id="email"
-                type="email"
-                value={this.state.email}
-                onChange={(event) => this.updateField('email', event.target.value)}
-                required
-              />
-            </div>
-            <div style={{ marginBottom: '0.75rem' }}>
-              <Label htmlFor="phone">{labels.phone}</Label>
-              <Input
-                id="phone"
-                value={this.state.phone}
-                onChange={(event) => this.updateField('phone', event.target.value)}
-                required
-              />
-            </div>
-            <fieldset style={{ border: 'none', margin: '0 0 1rem', padding: 0 }}>
-              <legend style={{ fontWeight: 600, marginBottom: '0.5rem' }}>{labels.events}</legend>
-              {this.props.eventOptions.map((eventName) => (
-                <label key={eventName} style={{ display: 'block', marginBottom: '0.5rem' }}>
-                  <input
-                    type="checkbox"
-                    checked={this.state.selectedEvents.includes(eventName)}
-                    onChange={(event) => this.toggleEvent(eventName, event.target.checked)}
-                    style={{ marginRight: '0.5rem' }}
-                  />
-                  {eventName}
-                </label>
-              ))}
-            </fieldset>
-            <Button type="submit" disabled={this.props.isSubmitting}>
-              {this.props.isSubmitting
-                ? 'Submitting...'
-                : (this.props.submitLabel ?? 'Submit Registration')}
-            </Button>
-          </form>
+      <SectionShell variant="festival" className="registration-section" id="register-form">
+        <div className="container-custom register-page-layout">
+          <div className="register-form-column">
+            <SectionHeading title={this.props.title} />
+            {this.props.showSuccessBanner ? <RegistrationSuccessBanner /> : null}
+            {this.props.shareUrl ? (
+              <ShareRegistrationLink formTitle={this.props.title} shareUrl={this.props.shareUrl} />
+            ) : null}
+            {this.props.isPreRegistration ? (
+              <p className="register-pre-message">{this.props.preRegistrationMessage}</p>
+            ) : null}
+            <form
+              onSubmit={this.handleSubmit}
+              aria-label="Registration form"
+              className="register-form"
+            >
+              <div className="register-form__field">
+                <Label htmlFor="childName">{labels.childName}</Label>
+                <Input
+                  id="childName"
+                  value={this.state.childName}
+                  onChange={(event) => this.updateField('childName', event.target.value)}
+                  required
+                />
+              </div>
+              <div className="register-form__field">
+                <Label htmlFor="age">{labels.age}</Label>
+                <Input
+                  id="age"
+                  value={this.state.age}
+                  onChange={(event) => this.updateField('age', event.target.value)}
+                  required
+                />
+              </div>
+              <div className="register-form__field">
+                <Label htmlFor="parentName">{labels.parentName}</Label>
+                <Input
+                  id="parentName"
+                  value={this.state.parentName}
+                  onChange={(event) => this.updateField('parentName', event.target.value)}
+                  required
+                />
+              </div>
+              <div className="register-form__field">
+                <Label htmlFor="email">{labels.email}</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={this.state.email}
+                  onChange={(event) => this.updateField('email', event.target.value)}
+                  required
+                />
+              </div>
+              <div className="register-form__field">
+                <Label htmlFor="phone">{labels.phone}</Label>
+                <Input
+                  id="phone"
+                  value={this.state.phone}
+                  onChange={(event) => this.updateField('phone', event.target.value)}
+                  required
+                />
+              </div>
+              <fieldset className="register-form__events">
+                <legend>{labels.events}</legend>
+                <div className="register-event-chips">
+                  {this.props.eventOptions.map((eventName) => {
+                    const game = this.resolveGame(eventName)
+                    const iconGame = game ?? { name: eventName }
+                    const checked = this.state.selectedEvents.includes(eventName)
+                    const chipId = `event-${eventName.replace(/\s+/g, '-').toLowerCase()}`
+
+                    return (
+                      <label
+                        key={eventName}
+                        htmlFor={chipId}
+                        className={`register-event-chip ${checked ? 'register-event-chip--selected' : ''}`}
+                      >
+                        <input
+                          id={chipId}
+                          type="checkbox"
+                          checked={checked}
+                          onChange={(event) => this.toggleEvent(eventName, event.target.checked)}
+                          className="register-event-chip__input"
+                        />
+                        {createElement(resolveGameEventIcon(iconGame), {
+                          className: 'register-event-chip__icon',
+                          'aria-hidden': true,
+                        })}
+                        <span>{eventName}</span>
+                      </label>
+                    )
+                  })}
+                </div>
+              </fieldset>
+              <Button type="submit" variant="festival" disabled={this.props.isSubmitting}>
+                {this.props.isSubmitting
+                  ? 'Submitting...'
+                  : (this.props.submitLabel ?? 'Submit Registration')}
+              </Button>
+            </form>
+          </div>
+          <RegisterBenefitsPanel />
         </div>
-      </section>
+      </SectionShell>
     )
   }
 }

@@ -1,4 +1,6 @@
 import { Link } from 'react-router-dom'
+import { SectionShell } from '@/components/public/primitives/SectionShell'
+import { SectionHeading } from '@/components/public/primitives/SectionHeading'
 import { Button } from '@/components/ui/button'
 
 export type EventRegisterCtaProps = {
@@ -6,6 +8,7 @@ export type EventRegisterCtaProps = {
   description: string
   buttonLabel: string
   registerPath?: string
+  urgencyCopy?: string
 }
 
 export function EventRegisterCta({
@@ -13,16 +16,16 @@ export function EventRegisterCta({
   description,
   buttonLabel,
   registerPath = '/register',
+  urgencyCopy = 'Spots fill quickly — register your child today.',
 }: EventRegisterCtaProps) {
   return (
-    <section className="event-register-cta" id="register" style={{ padding: '4rem 0' }}>
-      <div className="container-custom" style={{ maxWidth: '720px' }}>
-        <h2 style={{ fontSize: '2rem', marginBottom: '1rem' }}>{title}</h2>
-        <p style={{ color: '#374151', marginBottom: '1.5rem' }}>{description}</p>
+    <SectionShell id="register" variant="festival" className="event-register-cta">
+      <div className="container-custom event-register-cta__inner">
+        <SectionHeading eyebrow={urgencyCopy} title={title} subtitle={description} />
         <Link to={registerPath}>
-          <Button>{buttonLabel}</Button>
+          <Button variant="festival">{buttonLabel}</Button>
         </Link>
       </div>
-    </section>
+    </SectionShell>
   )
 }

@@ -1,4 +1,5 @@
 import React from 'react'
+import { StatCard } from '@/components/public/primitives/StatCard'
 import { calculateTimeLeft, type CountdownParts } from './eventCountdown.logic'
 
 export type EventCountdownProps = {
@@ -46,29 +47,14 @@ export class EventCountdown extends React.Component<EventCountdownProps, EventCo
     ]
 
     return (
-      <div
-        className="event-countdown"
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
-          gap: '0.75rem',
-        }}
-      >
+      <div className="festival-countdown-grid event-countdown">
         {units.map((unit) => (
-          <div
+          <StatCard
             key={unit.label}
-            style={{
-              border: '1px solid #e5e7eb',
-              borderRadius: '0.75rem',
-              padding: '1rem',
-              textAlign: 'center',
-            }}
-          >
-            <p style={{ fontSize: '1.5rem', fontWeight: 800, margin: 0 }}>
-              {String(unit.value).padStart(2, '0')}
-            </p>
-            <p style={{ margin: 0, color: '#6b7280' }}>{unit.label}</p>
-          </div>
+            variant="festival"
+            value={String(unit.value).padStart(2, '0')}
+            label={unit.label}
+          />
         ))}
       </div>
     )

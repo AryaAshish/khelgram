@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { SectionErrorBoundary } from '@/components/SectionErrorBoundary'
 import { PreRegBanner } from '@/components/public/PreRegBanner'
@@ -18,6 +18,7 @@ export function RegisterPage() {
   const { settingsMap } = useAllSettings()
   const eventStatus = settingsMap.event_status ?? 'registration_open'
   const createRegistration = useCreateRegistration(eventStatus)
+  const [showSuccessBanner, setShowSuccessBanner] = useState(false)
   const isPreRegistration = eventStatus === 'pre_registration'
   const registerTitle = settingsMap.khel2026_register_title
   const shareUrl = useMemo(() => getRegistrationShareUrl(), [])
@@ -30,7 +31,11 @@ export function RegisterPage() {
   }, [registerTitle, settingsMap.site_name])
 
   const handleRegistrationSubmit = (input: RegistrationInput) => {
-    createRegistration.mutate(input)
+    createRegistration.mutate(input, {
+      onSuccess: () => {
+        setShowSuccessBanner(true)
+      },
+    })
   }
 
   const eventOptions = games.map((game) => game.name)
@@ -39,6 +44,15 @@ export function RegisterPage() {
     <div className="register-page">
       <SiteHeader siteName={settingsMap.site_name ?? 'Khelgram Foundation'} />
       {isPreRegistration ? <PreRegBanner message={registerPreMessage} /> : null}
+      {registrationOpen ? (
+        <div className="register-back-strip">
+          <div className="container-custom">
+            <Link to="/khel2026" className="register-back-strip__link">
+              ← Back to Khel 2026
+            </Link>
+          </div>
+        </div>
+      ) : null}
       <main style={{ minHeight: '60vh' }}>
         {!registrationOpen ? (
           <section style={{ padding: '4rem 1.5rem', textAlign: 'center' }}>
@@ -60,19 +74,16 @@ export function RegisterPage() {
               <RegistrationFormWithI18n
                 title={registerTitle}
                 eventOptions={eventOptions}
+                games={games}
                 preRegistrationMessage={registerPreMessage}
                 submitLabel={registerSubmitLabel}
                 isPreRegistration={isPreRegistration}
                 isSubmitting={createRegistration.isPending}
                 shareUrl={shareUrl}
+                showSuccessBanner={showSuccessBanner}
                 onSubmit={handleRegistrationSubmit}
               />
             )}
-            <div className="container-custom" style={{ paddingBottom: '2rem' }}>
-              <Link to="/khel2026" style={{ color: '#6b7280', fontWeight: 600 }}>
-                ← Back to Khel 2026
-              </Link>
-            </div>
           </SectionErrorBoundary>
         )}
       </main>

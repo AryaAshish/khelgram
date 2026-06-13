@@ -130,4 +130,17 @@ describe('RegistrationForm', () => {
 
     await i18n.changeLanguage('en')
   })
+
+  it('shows success banner when requested', () => {
+    render(
+      <RegistrationForm
+        {...defaultProps}
+        eventOptions={['Sack Race']}
+        showSuccessBanner
+        onSubmit={vi.fn()}
+      />,
+    )
+
+    expect(screen.getByRole('status')).toHaveTextContent('Registration received!')
+  })
 })

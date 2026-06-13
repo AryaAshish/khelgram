@@ -21,5 +21,6 @@ describe('EventsSection', () => {
     )
 
     expect(screen.getByText('Sack Race')).toBeInTheDocument()
+    expect(document.getElementById('events')).toHaveAttribute('data-variant', 'festival')
   })
 })

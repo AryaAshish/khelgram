@@ -345,3 +345,16 @@ For phases 7–11, enable E2E with `RUN_PHASE7_E2E=1` (etc.) after implementing 
 - [x] Stakeholder icons on `GetInvolvedSection`; credibility sections use elevated cards
 - [x] E2E spec ready: `RUN_PHASE26_E2E=1 npm run verify:phase -- 26`
 - [x] `npm run typecheck`, `lint`, `test:coverage`, `build` all pass
+
+## Phase 27 checklist
+
+- [x] `HeroSection` festival shell with photo, confetti accent, registration pulse dot
+- [x] `EventCountdown` + `CountdownSection` use `StatCard` festival variant
+- [x] `EventCard` sport icons, elevated card, animated capacity bar, status pills
+- [x] `GallerySection` masonry grid with hover zoom and caption overlay
+- [x] `EventRegisterCta` urgency copy and festival gradient band CTA
+- [x] `RegisterPage` split layout, branded back strip, success banner
+- [x] `RegistrationForm` event chips with icons (replacing plain checkboxes)
+- [x] `gameEventIcons.ts` slug/icon map for event visuals
+- [x] E2E spec ready: `RUN_PHASE27_E2E=1 npm run verify:phase -- 27`
+- [x] `npm run typecheck`, `lint`, `test:coverage`, `build` all pass

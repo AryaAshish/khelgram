@@ -18,5 +18,6 @@ describe('EventRegisterCta', () => {
     expect(screen.getByRole('heading', { name: 'Register Your Child' })).toBeInTheDocument()
     expect(screen.getByText('Sign up for Khel 2026')).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Register Now' })).toHaveAttribute('href', '/register')
+    expect(document.getElementById('register')).toHaveAttribute('data-variant', 'festival')
   })
 })

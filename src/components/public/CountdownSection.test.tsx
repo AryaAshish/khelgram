@@ -23,5 +23,6 @@ describe('CountdownSection', () => {
       />,
     )
     expect(screen.getByText('To Be Announced')).toBeInTheDocument()
+    expect(document.getElementById('countdown')).toHaveAttribute('data-variant', 'default')
   })
 })

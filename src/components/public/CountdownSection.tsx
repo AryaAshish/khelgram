@@ -1,4 +1,6 @@
 import { EventCountdown } from '@/components/public/EventCountdown'
+import { SectionShell } from '@/components/public/primitives/SectionShell'
+import { SectionHeading } from '@/components/public/primitives/SectionHeading'
 
 export type CountdownSectionProps = {
   title: string
@@ -8,19 +10,20 @@ export type CountdownSectionProps = {
 
 export function CountdownSection({ title, targetDate, toBeAnnouncedText }: CountdownSectionProps) {
   return (
-    <section
+    <SectionShell
       className="countdown-section"
       aria-label="Event countdown"
-      style={{ padding: '2rem 0' }}
+      variant="default"
+      id="countdown"
     >
       <div className="container-custom">
-        <h2 style={{ fontSize: '1.75rem', marginBottom: '1rem' }}>{title}</h2>
+        <SectionHeading title={title} />
         {targetDate ? (
           <EventCountdown targetDate={targetDate} />
         ) : (
-          <p style={{ fontSize: '1.25rem', fontWeight: 700, margin: 0 }}>{toBeAnnouncedText}</p>
+          <p className="countdown-tba">{toBeAnnouncedText}</p>
         )}
       </div>
-    </section>
+    </SectionShell>
   )
 }

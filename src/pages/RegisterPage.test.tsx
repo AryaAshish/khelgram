@@ -140,14 +140,17 @@ describe('RegisterPage', () => {
     await user.click(screen.getByLabelText('Sack Race'))
     await user.click(screen.getByRole('button', { name: 'Submit Registration' }))
 
-    expect(mutate).toHaveBeenCalledWith({
-      childName: 'Aarav',
-      age: '9',
-      parentName: 'Neha',
-      email: 'neha@example.com',
-      phone: '9999999999',
-      selectedEvents: ['Sack Race'],
-    })
+    expect(mutate).toHaveBeenCalledWith(
+      {
+        childName: 'Aarav',
+        age: '9',
+        parentName: 'Neha',
+        email: 'neha@example.com',
+        phone: '9999999999',
+        selectedEvents: ['Sack Race'],
+      },
+      expect.objectContaining({ onSuccess: expect.any(Function) }),
+    )
   })
 
   it('renders shareable registration form at dedicated route', () => {

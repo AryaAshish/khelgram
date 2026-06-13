@@ -19,7 +19,10 @@ describe('HeroSection', () => {
       />,
     )
 
-    expect(screen.getByText('42 children registered so far')).toBeInTheDocument()
+    expect(screen.getByText(/42/)).toBeInTheDocument()
+    expect(screen.getByText(/children registered so far/)).toBeInTheDocument()
+    expect(document.getElementById('hero')).toHaveAttribute('data-variant', 'festival')
+    expect(screen.getByRole('img')).toBeInTheDocument()
   })
 
   it('renders content and handles CTA clicks', async () => {

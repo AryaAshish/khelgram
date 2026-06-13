@@ -1,3 +1,5 @@
+import { SectionShell } from '@/components/public/primitives/SectionShell'
+import { SectionHeading } from '@/components/public/primitives/SectionHeading'
 import type { GalleryImage } from '@/types/app.types'
 
 export type GallerySectionProps = {
@@ -7,33 +9,28 @@ export type GallerySectionProps = {
 
 export function GallerySection({ title, images }: GallerySectionProps) {
   return (
-    <section className="gallery-section" id="gallery" style={{ padding: '4rem 0' }}>
+    <SectionShell id="gallery" variant="default" className="gallery-section">
       <div className="container-custom">
-        <h2 style={{ fontSize: '2rem', marginBottom: '1rem' }}>{title}</h2>
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-            gap: '0.75rem',
-          }}
-        >
-          {images.map((image) => (
-            <figure key={image.id} style={{ margin: 0 }}>
+        <SectionHeading title={title} />
+        <div className="gallery-masonry">
+          {images.map((image, index) => (
+            <figure
+              key={image.id}
+              className={`gallery-masonry__item ${index % 3 === 0 ? 'gallery-masonry__item--tall' : ''}`}
+            >
               <img
                 src={image.url}
                 alt={image.alt}
                 loading="lazy"
-                style={{
-                  width: '100%',
-                  height: '220px',
-                  objectFit: 'cover',
-                  borderRadius: '0.75rem',
-                }}
+                className="gallery-masonry__image"
               />
+              {image.caption ? (
+                <figcaption className="gallery-masonry__caption">{image.caption}</figcaption>
+              ) : null}
             </figure>
           ))}
         </div>
       </div>
-    </section>
+    </SectionShell>
   )
 }
