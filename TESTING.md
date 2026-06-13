@@ -323,3 +323,13 @@ For phases 7–11, enable E2E with `RUN_PHASE7_E2E=1` (etc.) after implementing 
 - [x] Unit tests: `LanguageToggle`, `localizedSetting`, updated header/get-involved/register tests
 - [x] E2E spec ready: `RUN_PHASE24_E2E=1 npm run verify:phase -- 24`
 - [x] `npm run typecheck`, `lint`, `test:coverage`, `build` all pass
+
+## Phase 25 checklist
+
+- [x] `src/styles/design-tokens.css` — colors, typography, spacing, keyframes, reduced-motion
+- [x] Google Fonts: Fraunces, Source Sans 3, Noto Sans Devanagari in `index.html`
+- [x] Primitives: `SectionShell`, `SectionHeading`, `StatCard` + unit tests
+- [x] `Button` festival/ghost variants; `Card` elevated option; utility classes in `App.css`
+- [x] `OrgHeroSection` wrapped in `SectionShell` with `heading-display`
+- [x] E2E spec ready: `RUN_PHASE25_E2E=1 npm run verify:phase -- 25`
+- [x] `npm run typecheck`, `lint`, `test:coverage`, `build` all pass

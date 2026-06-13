@@ -1,0 +1,107 @@
+:root {
+  /* Brand palette */
+  --color-earth: #166534;
+  --color-earth-light: #22c55e;
+  --color-wheat: #faf6f0;
+  --color-sand: #f5efe6;
+  --color-terracotta: #c2410c;
+  --color-festival: #15803d;
+  --color-festival-bright: #4ade80;
+  --color-saffron: #ea580c;
+  --color-saffron-light: #fed7aa;
+
+  /* Semantic */
+  --color-text: #1f2937;
+  --color-text-muted: #6b7280;
+  --color-text-subtle: #374151;
+  --color-surface: #ffffff;
+  --color-surface-warm: var(--color-wheat);
+  --color-surface-festival: #ecfdf5;
+  --color-border: #e5e7eb;
+  --color-border-soft: rgba(34, 197, 94, 0.15);
+
+  /* Legacy aliases */
+  --primary-green: var(--color-earth-light);
+  --primary-purple: #a855f7;
+  --text-dark: var(--color-text);
+  --white: var(--color-surface);
+
+  /* Typography */
+  --font-display: 'Fraunces', 'Noto Sans Devanagari', Georgia, serif;
+  --font-body: 'Source Sans 3', 'Noto Sans Devanagari', system-ui, sans-serif;
+  --text-display: clamp(2.25rem, 4vw, 3rem);
+  --text-h1: clamp(2rem, 3.5vw, 2.5rem);
+  --text-h2: clamp(1.5rem, 2.5vw, 2rem);
+  --text-h3: 1.125rem;
+  --text-body: 1.0625rem;
+  --text-small: 0.875rem;
+  --leading-tight: 1.2;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.65;
+
+  /* Spacing */
+  --section-padding-y: 4rem;
+  --section-padding-y-lg: 5rem;
+  --container-max: 1280px;
+  --container-padding: 1.5rem;
+
+  /* Radius & shadow */
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06);
+  --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08);
+  --shadow-lg: 0 12px 32px rgba(15, 23, 42, 0.1);
+  --shadow-hover: 0 8px 24px rgba(22, 101, 52, 0.12);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(1.25rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes countUp {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulseSoft {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

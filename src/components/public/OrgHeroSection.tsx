@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
+import { SectionShell } from '@/components/public/primitives/SectionShell'
 import { Button } from '@/components/ui/button'
 
 export type OrgHeroSectionProps = {
@@ -20,15 +21,16 @@ export function OrgHeroSection({
   const { t } = useTranslation()
 
   return (
-    <section className="org-hero-section" id="hero" style={{ padding: '9rem 0 4rem' }}>
+    <SectionShell id="hero" variant="default" heroOffset>
       <div className="container-custom">
-        <h1 style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: '1rem' }}>{title}</h1>
+        <h1 className="heading-display">{title}</h1>
         <p
           style={{
-            fontSize: '1.1rem',
-            color: '#374151',
+            fontSize: 'var(--text-body)',
+            color: 'var(--color-text-subtle)',
             maxWidth: '800px',
             marginBottom: '1.5rem',
+            lineHeight: 'var(--leading-relaxed)',
           }}
         >
           {subtitle}
@@ -40,6 +42,6 @@ export function OrgHeroSection({
           </Link>
         </div>
       </div>
-    </section>
+    </SectionShell>
   )
 }
