@@ -51,7 +51,14 @@ jobs:
       - name: Build
         env:
           VERCEL_PROJECT_ID: ${{ steps.project.outputs.project_id }}
-        run: vercel build ${{ steps.project.outputs.prod_flag }} --token=$VERCEL_TOKEN
+        run: |
+          set -a
+          if [ -f .vercel/.env.production.local ]; then
+            # Vercel pull writes VITE_* vars here; export them for the Vite build.
+            . ./.vercel/.env.production.local
+          fi
+          set +a
+          vercel build ${{ steps.project.outputs.prod_flag }} --token=$VERCEL_TOKEN
 
       - name: Deploy
         env:
