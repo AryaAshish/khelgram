@@ -1,7 +1,9 @@
 import { NavLink, Outlet } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { useSignOut } from '@/hooks/useAuth'
+import { useAdminLeads } from '@/hooks/useLeads'
 import { useRegistrationCount } from '@/hooks/useRegistration'
+import { buildAdminNavGroups } from '@/lib/adminNavGroups'
 
 const navLinkStyle = ({ isActive }: { isActive: boolean }) => ({
   display: 'block',
@@ -16,6 +18,11 @@ const navLinkStyle = ({ isActive }: { isActive: boolean }) => ({
 export function AdminLayout() {
   const signOut = useSignOut()
   const { data: registrationCount = 0 } = useRegistrationCount()
+  const { leads: openLeads } = useAdminLeads({ status: 'new' })
+  const navGroups = buildAdminNavGroups({
+    registrationCount,
+    openLeadsCount: openLeads.length,
+  })
 
   return (
     <div style={{ display: 'grid', gridTemplateColumns: '240px 1fr', minHeight: '100vh' }}>
@@ -27,52 +34,34 @@ export function AdminLayout() {
         }}
       >
         <h1 style={{ fontSize: '1.125rem', marginBottom: '1.5rem' }}>Khelgram Admin</h1>
-        <nav aria-label="Admin navigation" style={{ display: 'grid', gap: '0.25rem' }}>
+        <nav aria-label="Admin navigation" style={{ display: 'grid', gap: '1rem' }}>
           <NavLink to="/admin" end style={navLinkStyle}>
             Dashboard
           </NavLink>
-          <NavLink to="/admin/registrations" style={navLinkStyle}>
-            Registrations ({registrationCount})
-          </NavLink>
-          <NavLink to="/admin/games" style={navLinkStyle}>
-            Games
-          </NavLink>
-          <NavLink to="/admin/content" style={navLinkStyle}>
-            Content
-          </NavLink>
-          <NavLink to="/admin/programs" style={navLinkStyle}>
-            Programs
-          </NavLink>
-          <NavLink to="/admin/leads" style={navLinkStyle}>
-            Leads
-          </NavLink>
-          <NavLink to="/admin/stories" style={navLinkStyle}>
-            Stories
-          </NavLink>
-          <NavLink to="/admin/media" style={navLinkStyle}>
-            Media
-          </NavLink>
-          <NavLink to="/admin/gallery" style={navLinkStyle}>
-            Gallery
-          </NavLink>
-          <NavLink to="/admin/team" style={navLinkStyle}>
-            Team
-          </NavLink>
-          <NavLink to="/admin/contributors" style={navLinkStyle}>
-            Contributors
-          </NavLink>
-          <NavLink to="/admin/sponsors" style={navLinkStyle}>
-            Sponsors
-          </NavLink>
-          <NavLink to="/admin/testimonials" style={navLinkStyle}>
-            Testimonials
-          </NavLink>
-          <NavLink to="/admin/faq" style={navLinkStyle}>
-            FAQ
-          </NavLink>
-          <NavLink to="/admin/impact-stats" style={navLinkStyle}>
-            Impact stats
-          </NavLink>
+          {navGroups.map((group) => (
+            <div key={group.id}>
+              <p
+                style={{
+                  margin: '0 0 0.35rem',
+                  padding: '0 0.75rem',
+                  fontSize: '0.75rem',
+                  fontWeight: 700,
+                  letterSpacing: '0.04em',
+                  textTransform: 'uppercase',
+                  color: '#6b7280',
+                }}
+              >
+                {group.label}
+              </p>
+              <div style={{ display: 'grid', gap: '0.25rem' }}>
+                {group.items.map((item) => (
+                  <NavLink key={item.to} to={item.to} style={navLinkStyle}>
+                    {item.badge !== undefined ? `${item.label} (${item.badge})` : item.label}
+                  </NavLink>
+                ))}
+              </div>
+            </div>
+          ))}
         </nav>
       </aside>
       <div>

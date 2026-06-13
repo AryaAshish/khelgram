@@ -6,6 +6,7 @@ import { AdminLayout } from './AdminLayout'
 
 const mockMutate = vi.fn()
 const mockUseSignOut = vi.fn()
+const mockUseAdminLeads = vi.fn()
 
 vi.mock('@/hooks/useAuth', () => ({
   useSignOut: () => mockUseSignOut(),
@@ -15,8 +16,13 @@ vi.mock('@/hooks/useRegistration', () => ({
   useRegistrationCount: () => ({ data: 7 }),
 }))
 
+vi.mock('@/hooks/useLeads', () => ({
+  useAdminLeads: () => mockUseAdminLeads(),
+}))
+
 describe('AdminLayout', () => {
   beforeEach(() => {
+    mockUseAdminLeads.mockReturnValue({ leads: [{ id: 'lead-1' }] })
     mockUseSignOut.mockReturnValue({
       mutate: mockMutate,
       isPending: false,
@@ -42,7 +48,7 @@ describe('AdminLayout', () => {
     expect(screen.getByRole('button', { name: 'Signing out...' })).toBeDisabled()
   })
 
-  it('renders sidebar links and triggers logout', async () => {
+  it('renders grouped sidebar links and triggers logout', async () => {
     const user = userEvent.setup()
 
     render(
@@ -55,23 +61,15 @@ describe('AdminLayout', () => {
       </MemoryRouter>,
     )
 
-    expect(screen.getByText('Dashboard content')).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Registrations (7)' })).toHaveAttribute(
+    expect(screen.getByText('Organization')).toBeInTheDocument()
+    expect(screen.getByText('Khel 2026')).toBeInTheDocument()
+    expect(screen.getByText('Shared')).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Khel 2026 Registrations (7)' })).toHaveAttribute(
       'href',
       '/admin/registrations',
     )
-    expect(screen.getByRole('link', { name: 'Games' })).toHaveAttribute('href', '/admin/games')
-    expect(screen.getByRole('link', { name: 'Content' })).toHaveAttribute('href', '/admin/content')
-    expect(screen.getByRole('link', { name: 'Programs' })).toHaveAttribute(
-      'href',
-      '/admin/programs',
-    )
-    expect(screen.getByRole('link', { name: 'Leads' })).toHaveAttribute('href', '/admin/leads')
+    expect(screen.getByRole('link', { name: 'Leads (1)' })).toHaveAttribute('href', '/admin/leads')
     expect(screen.getByRole('link', { name: 'Stories' })).toHaveAttribute('href', '/admin/stories')
-    expect(screen.getByRole('link', { name: 'Media' })).toHaveAttribute('href', '/admin/media')
-    expect(screen.getByRole('link', { name: 'Gallery' })).toHaveAttribute('href', '/admin/gallery')
-    expect(screen.getByRole('link', { name: 'Team' })).toHaveAttribute('href', '/admin/team')
-    expect(screen.getByRole('link', { name: 'FAQ' })).toHaveAttribute('href', '/admin/faq')
 
     await user.click(screen.getByRole('button', { name: 'Logout' }))
     expect(mockMutate).toHaveBeenCalled()

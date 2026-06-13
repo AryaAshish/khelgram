@@ -40,7 +40,7 @@ export function RegistrationsPage() {
           flexWrap: 'wrap',
         }}
       >
-        <h2 style={{ fontSize: '1.75rem', margin: 0 }}>Registrations</h2>
+        <h2 style={{ fontSize: '1.75rem', margin: 0 }}>Khel 2026 Registrations</h2>
         <Button
           onClick={() => exportRegistrations.mutate()}
           disabled={exportRegistrations.isPending}
