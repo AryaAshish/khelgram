@@ -18,7 +18,9 @@ import { useAllSettings } from '@/hooks/useSiteSettings'
 import { useSponsors } from '@/hooks/useSponsors'
 import { useTeam } from '@/hooks/useTeam'
 import { useTestimonials } from '@/hooks/useTestimonials'
+import { GetInvolvedSection } from '@/components/public/GetInvolvedSection'
 import { contactContent, footerContent } from '@/fixtures/homePageFixtures'
+import { getInvolvedContent } from '@/lib/getInvolvedContent'
 import { isSectionVisible, sectionTitle } from '@/lib/orgHomeSections'
 
 const orgHeroDefaults = {
@@ -55,6 +57,8 @@ export function HomePage() {
   const sponsorsTitle = sectionTitle(settingsMap, 'sponsors_title', 'Sponsors')
   const testimonialsTitle = sectionTitle(settingsMap, 'testimonials_title', 'Testimonials')
   const contactTitle = sectionTitle(settingsMap, 'contact_title', 'Contact')
+  const getInvolvedTitle = sectionTitle(settingsMap, 'org_get_involved_title', 'Get Involved')
+  const getInvolved = getInvolvedContent(settingsMap)
 
   const orgHeroTitle = sectionTitle(settingsMap, 'org_hero_title', orgHeroDefaults.title)
   const orgHeroSubtitle = settingsMap.org_hero_subtitle ?? orgHeroDefaults.subtitle
@@ -88,6 +92,11 @@ export function HomePage() {
             ) : (
               <ProgramsSection title={programsTitle} programs={programs} />
             )}
+          </SectionErrorBoundary>
+        ) : null}
+        {show('get_involved_visible') ? (
+          <SectionErrorBoundary title={getInvolvedTitle}>
+            <GetInvolvedSection content={getInvolved} showExpandedLink />
           </SectionErrorBoundary>
         ) : null}
         {show('impact_visible') ? (

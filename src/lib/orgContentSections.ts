@@ -53,6 +53,99 @@ export const orgContentSections: ContentSection[] = [
     ],
   },
   {
+    id: 'org_get_involved',
+    label: 'Get Involved',
+    saveLabel: 'Save get involved content',
+    successMessage: 'Get involved content saved',
+    fields: [
+      { key: 'org_get_involved_title', label: 'Section heading', section: 'org_get_involved' },
+      {
+        key: 'org_get_involved_parents_title',
+        label: 'Parents card title',
+        section: 'org_get_involved',
+      },
+      {
+        key: 'org_get_involved_parents_description',
+        label: 'Parents card description',
+        section: 'org_get_involved',
+        multiline: true,
+      },
+      {
+        key: 'org_get_involved_parents_cta_label',
+        label: 'Parents button label',
+        section: 'org_get_involved',
+      },
+      {
+        key: 'org_get_involved_parents_cta_url',
+        label: 'Parents button URL',
+        section: 'org_get_involved',
+      },
+      {
+        key: 'org_get_involved_schools_title',
+        label: 'Schools card title',
+        section: 'org_get_involved',
+      },
+      {
+        key: 'org_get_involved_schools_description',
+        label: 'Schools card description',
+        section: 'org_get_involved',
+        multiline: true,
+      },
+      {
+        key: 'org_get_involved_schools_cta_label',
+        label: 'Schools button label',
+        section: 'org_get_involved',
+      },
+      {
+        key: 'org_get_involved_schools_cta_url',
+        label: 'Schools button URL',
+        section: 'org_get_involved',
+      },
+      {
+        key: 'org_get_involved_partners_title',
+        label: 'Partners card title',
+        section: 'org_get_involved',
+      },
+      {
+        key: 'org_get_involved_partners_description',
+        label: 'Partners card description',
+        section: 'org_get_involved',
+        multiline: true,
+      },
+      {
+        key: 'org_get_involved_partners_cta_label',
+        label: 'Partners button label',
+        section: 'org_get_involved',
+      },
+      {
+        key: 'org_get_involved_partners_cta_url',
+        label: 'Partners button URL',
+        section: 'org_get_involved',
+      },
+      {
+        key: 'org_get_involved_volunteers_title',
+        label: 'Volunteers card title',
+        section: 'org_get_involved',
+      },
+      {
+        key: 'org_get_involved_volunteers_description',
+        label: 'Volunteers card description',
+        section: 'org_get_involved',
+        multiline: true,
+      },
+      {
+        key: 'org_get_involved_volunteers_cta_label',
+        label: 'Volunteers button label',
+        section: 'org_get_involved',
+      },
+      {
+        key: 'org_get_involved_volunteers_cta_url',
+        label: 'Volunteers button URL',
+        section: 'org_get_involved',
+      },
+    ],
+  },
+  {
     id: 'org_contact',
     label: 'Contact',
     saveLabel: 'Save contact',

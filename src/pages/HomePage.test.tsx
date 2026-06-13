@@ -267,6 +267,35 @@ describe('HomePage', () => {
     expect(screen.queryByRole('heading', { name: 'Our Programs' })).not.toBeInTheDocument()
   })
 
+  it('renders get involved section with register and contact CTAs', () => {
+    setDefaultHookMocks()
+    renderHomePage()
+
+    expect(screen.getByRole('heading', { name: 'Get Involved' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Register your child' })).toHaveAttribute(
+      'href',
+      '/register',
+    )
+    expect(screen.getByRole('link', { name: 'View all ways to help' })).toHaveAttribute(
+      'href',
+      '/get-involved',
+    )
+  })
+
+  it('hides get involved section when visibility is false', () => {
+    setDefaultHookMocks()
+    mockUseAllSettings.mockReturnValue({
+      settingsMap: {
+        get_involved_visible: 'false',
+      },
+      aboutContent,
+    })
+
+    renderHomePage()
+
+    expect(screen.queryByRole('heading', { name: 'Get Involved' })).not.toBeInTheDocument()
+  })
+
   it('renders custom impact title from settings', () => {
     setDefaultHookMocks()
     mockUseAllSettings.mockReturnValue({

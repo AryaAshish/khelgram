@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AdminLayout } from '@/components/admin/AdminLayout'
 import { RequireAuth } from '@/components/admin/RequireAuth'
+import { GetInvolvedPage } from '@/pages/GetInvolvedPage'
 import { HomePage } from '@/pages/HomePage'
 import { Khel2026Page } from '@/pages/Khel2026Page'
 import { RegisterPage } from '@/pages/RegisterPage'
@@ -78,6 +79,7 @@ export default function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/khel2026" element={<Khel2026Page />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/get-involved" element={<GetInvolvedPage />} />
         <Route
           path="/admin/login"
           element={

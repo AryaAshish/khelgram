@@ -44,6 +44,14 @@ export const orgHomeSections: OrgHomeSectionConfig[] = [
     defaultTitle: 'Our Programs',
   },
   {
+    id: 'get_involved',
+    label: 'Get Involved',
+    visibleKey: 'get_involved_visible',
+    titleKey: 'org_get_involved_title',
+    defaultTitle: 'Get Involved',
+    titleContentTabId: 'org_get_involved',
+  },
+  {
     id: 'impact',
     label: 'Impact',
     visibleKey: 'impact_visible',
@@ -77,14 +85,6 @@ export const orgHomeSections: OrgHomeSectionConfig[] = [
     visibleKey: 'testimonials_visible',
     titleKey: 'testimonials_title',
     defaultTitle: 'Testimonials',
-  },
-  {
-    id: 'get_involved',
-    label: 'Get Involved',
-    visibleKey: 'get_involved_visible',
-    titleKey: 'org_get_involved_title',
-    defaultTitle: 'Get Involved',
-    titleContentTabId: 'org_get_involved',
   },
   {
     id: 'contact',
