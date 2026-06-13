@@ -57,12 +57,15 @@ export type GalleryImageDraft = {
   sortOrder: number
 }
 
+export type ImpactStatScope = 'org' | 'event'
+
 export type ImpactStat = {
   id: string
   statKey?: string
   value: string
   label: string
   sortOrder?: number
+  scope?: ImpactStatScope
 }
 
 export type TeamMember = {

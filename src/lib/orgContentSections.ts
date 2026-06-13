@@ -36,6 +36,20 @@ export const orgContentSections: ContentSection[] = [
     ],
   },
   {
+    id: 'org_impact',
+    label: 'Impact',
+    saveLabel: 'Save org impact copy',
+    successMessage: 'Organization impact copy saved',
+    fields: [
+      {
+        key: 'org_impact_subtitle',
+        label: 'Section subtitle',
+        section: 'org_impact',
+        multiline: true,
+      },
+    ],
+  },
+  {
     id: 'org_about',
     label: 'About',
     saveLabel: 'Save org about',

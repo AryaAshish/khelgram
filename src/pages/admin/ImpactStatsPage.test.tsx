@@ -36,7 +36,22 @@ describe('ImpactStatsPage', () => {
     await user.type(screen.getByLabelText('Value'), '100+')
     await user.type(screen.getByLabelText('Label'), 'Schools')
     await user.click(screen.getByRole('button', { name: 'Add stat' }))
-    expect(mockAdd).toHaveBeenCalled()
+    expect(mockAdd).toHaveBeenCalledWith(
+      expect.objectContaining({
+        value: '100+',
+        label: 'Schools',
+        scope: 'org',
+      }),
+    )
+  })
+
+  it('switches to event scope tab', async () => {
+    const user = userEvent.setup()
+    render(<ImpactStatsPage />)
+    await user.click(screen.getByRole('button', { name: 'Khel 2026 event' }))
+    expect(
+      screen.getByRole('heading', { name: 'Khel 2026 event impact stats' }),
+    ).toBeInTheDocument()
   })
 
   it('deletes and reorders impact stats', async () => {

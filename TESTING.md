@@ -251,3 +251,13 @@ For phases 7–11, enable E2E with `RUN_PHASE7_E2E=1` (etc.) after implementing 
 - [x] Unit tests: `getInvolvedContent`, `GetInvolvedSection`, `GetInvolvedPage`, `HomePage`
 - [x] E2E spec ready: `RUN_PHASE17_E2E=1 npm run verify:phase -- 17`
 - [x] `npm run typecheck`, `lint`, `test:coverage`, `build` all pass
+
+## Phase 18 checklist
+
+- [x] Migration `0014_ngo_impact_stats.sql` — `scope` column, NGO metric reseed, `org_impact_subtitle`
+- [x] `useImpactStats(scope)` filters org vs event stats with scoped fallbacks
+- [x] `ImpactStatsBar` optional subtitle; homepage uses `org_impact_subtitle`
+- [x] Admin Impact stats page — org/event scope tabs and relabeled headings
+- [x] Unit tests updated for service, hook, bar, admin page, homepage
+- [x] E2E spec ready: `RUN_PHASE18_E2E=1 npm run verify:phase -- 18`
+- [x] `npm run typecheck`, `lint`, `test:coverage`, `build` all pass

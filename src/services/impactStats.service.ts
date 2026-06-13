@@ -1,12 +1,12 @@
 import { supabase } from '@/lib/supabase'
 import { SettingsError } from '@/lib/errors'
 import { deleteRow, getNextSortOrder, reorderRows } from '@/services/credibility.helpers'
-import type { ImpactStat } from '@/types/app.types'
+import type { ImpactStat, ImpactStatScope } from '@/types/app.types'
 import type { Database } from '@/types/database.types'
 
 type ImpactStatRow = Pick<
   Database['public']['Tables']['impact_stats']['Row'],
-  'id' | 'stat_key' | 'value' | 'label' | 'sort_order'
+  'id' | 'stat_key' | 'value' | 'label' | 'sort_order' | 'scope'
 >
 
 function mapImpactStat(row: ImpactStatRow): ImpactStat {
@@ -16,13 +16,15 @@ function mapImpactStat(row: ImpactStatRow): ImpactStat {
     value: row.value,
     label: row.label,
     sortOrder: row.sort_order,
+    scope: row.scope as ImpactStatScope,
   }
 }
 
-export async function getImpactStats(): Promise<ImpactStat[]> {
+export async function getImpactStats(scope: ImpactStatScope = 'org'): Promise<ImpactStat[]> {
   const { data, error } = await supabase
     .from('impact_stats')
-    .select('id, stat_key, value, label, sort_order')
+    .select('id, stat_key, value, label, sort_order, scope')
+    .eq('scope', scope)
     .order('sort_order')
 
   if (error) {
@@ -36,6 +38,7 @@ export async function addImpactStat(input: {
   value: string
   label: string
   statKey?: string
+  scope?: ImpactStatScope
 }): Promise<ImpactStat> {
   const id = crypto.randomUUID()
   const sortOrder = await getNextSortOrder('impact_stats')
@@ -48,8 +51,9 @@ export async function addImpactStat(input: {
       label: input.label,
       stat_key: input.statKey ?? null,
       sort_order: sortOrder,
+      scope: input.scope ?? 'org',
     })
-    .select('id, stat_key, value, label, sort_order')
+    .select('id, stat_key, value, label, sort_order, scope')
     .single()
 
   if (error) {

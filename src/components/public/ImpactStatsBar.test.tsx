@@ -32,4 +32,16 @@ describe('ImpactStatsBar', () => {
 
     expect(screen.getByRole('heading', { name: 'Our Impact' })).toBeInTheDocument()
   })
+
+  it('renders an optional subtitle', () => {
+    render(
+      <ImpactStatsBar
+        title="Impact"
+        subtitle="Grassroots outcomes across rural India."
+        stats={[{ id: 'one', value: '120+', label: 'Villages Reached' }]}
+      />,
+    )
+
+    expect(screen.getByText('Grassroots outcomes across rural India.')).toBeInTheDocument()
+  })
 })

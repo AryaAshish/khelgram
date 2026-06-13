@@ -271,6 +271,7 @@ export type Database = {
         Row: {
           id: string
           label: string
+          scope: string
           sort_order: number
           stat_key: string | null
           updated_at: string
@@ -279,6 +280,7 @@ export type Database = {
         Insert: {
           id: string
           label: string
+          scope?: string
           sort_order?: number
           stat_key?: string | null
           updated_at?: string
@@ -287,6 +289,7 @@ export type Database = {
         Update: {
           id?: string
           label?: string
+          scope?: string
           sort_order?: number
           stat_key?: string | null
           updated_at?: string

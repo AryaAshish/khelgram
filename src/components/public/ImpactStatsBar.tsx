@@ -2,14 +2,20 @@ import type { ImpactStat } from '@/types/app.types'
 
 export type ImpactStatsBarProps = {
   title?: string
+  subtitle?: string
   stats: ImpactStat[]
 }
 
-export function ImpactStatsBar({ title = 'Impact', stats }: ImpactStatsBarProps) {
+export function ImpactStatsBar({ title = 'Impact', subtitle, stats }: ImpactStatsBarProps) {
   return (
     <section className="impact-stats-bar" id="impact" style={{ padding: '3rem 0' }}>
       <div className="container-custom">
-        <h2 style={{ fontSize: '1.75rem', marginBottom: '1.5rem' }}>{title}</h2>
+        <h2 style={{ fontSize: '1.75rem', marginBottom: subtitle ? '0.5rem' : '1.5rem' }}>
+          {title}
+        </h2>
+        {subtitle ? (
+          <p style={{ color: '#6b7280', marginTop: 0, marginBottom: '1.5rem' }}>{subtitle}</p>
+        ) : null}
         <div
           style={{
             display: 'grid',

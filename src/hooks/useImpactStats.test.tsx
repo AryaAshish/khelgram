@@ -23,24 +23,35 @@ describe('useImpactStats', () => {
   it('returns DB impact stats when available', async () => {
     vi.mocked(impactStatsService.getImpactStats).mockResolvedValue([
       {
-        id: 'children',
-        value: '500+',
-        label: 'Children Participating',
+        id: 'org-villages',
+        value: '120+',
+        label: 'Villages Reached',
+        scope: 'org',
       },
     ])
 
-    const { result } = renderHook(() => useImpactStats(), { wrapper: createWrapper() })
+    const { result } = renderHook(() => useImpactStats('org'), { wrapper: createWrapper() })
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
 
-    expect(result.current.impactStats[0]?.id).toBe('children')
+    expect(result.current.impactStats[0]?.id).toBe('org-villages')
+    expect(impactStatsService.getImpactStats).toHaveBeenCalledWith('org')
   })
 
-  it('returns fixture fallback when DB returns empty', async () => {
+  it('returns event fixture fallback when DB returns empty', async () => {
     vi.mocked(impactStatsService.getImpactStats).mockResolvedValue([])
 
-    const { result } = renderHook(() => useImpactStats(), { wrapper: createWrapper() })
+    const { result } = renderHook(() => useImpactStats('event'), { wrapper: createWrapper() })
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
 
-    expect(result.current.impactStats.length).toBeGreaterThan(0)
+    expect(result.current.impactStats[0]?.label).toBe('Children Participating')
+  })
+
+  it('returns org fixture fallback when DB returns empty', async () => {
+    vi.mocked(impactStatsService.getImpactStats).mockResolvedValue([])
+
+    const { result } = renderHook(() => useImpactStats('org'), { wrapper: createWrapper() })
+    await waitFor(() => expect(result.current.isSuccess).toBe(true))
+
+    expect(result.current.impactStats[0]?.label).toBe('Villages Reached')
   })
 })

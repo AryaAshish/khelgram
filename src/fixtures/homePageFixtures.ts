@@ -101,12 +101,22 @@ export const galleryImages: GalleryImage[] = [
   },
 ]
 
-export const impactStats: ImpactStat[] = [
-  { id: 'children', value: '500+', label: 'Children Participating' },
-  { id: 'games', value: '15+', label: 'Games & Activities' },
-  { id: 'volunteers', value: '80+', label: 'Community Volunteers' },
-  { id: 'schools', value: '20+', label: 'Schools Represented' },
+export const orgImpactStats: ImpactStat[] = [
+  { id: 'org-villages', value: '120+', label: 'Villages Reached', scope: 'org' },
+  { id: 'org-athletes', value: '2,500+', label: 'Athletes in Programs', scope: 'org' },
+  { id: 'org-equipment', value: '800+', label: 'Equipment Kits Provided', scope: 'org' },
+  { id: 'org-girls', value: '45%', label: 'Girls Participating', scope: 'org' },
 ]
+
+export const eventImpactStats: ImpactStat[] = [
+  { id: 'children', value: '500+', label: 'Children Participating', scope: 'event' },
+  { id: 'games', value: '15+', label: 'Games & Activities', scope: 'event' },
+  { id: 'volunteers', value: '80+', label: 'Community Volunteers', scope: 'event' },
+  { id: 'schools', value: '20+', label: 'Schools Represented', scope: 'event' },
+]
+
+/** @deprecated Use orgImpactStats or eventImpactStats */
+export const impactStats = orgImpactStats
 
 export const aboutContent: AboutContent = {
   mission:

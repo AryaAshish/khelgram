@@ -51,7 +51,7 @@ function renderHomePage() {
 
 function setDefaultHookMocks() {
   mockUseImpactStats.mockReturnValue({
-    impactStats: [{ id: 'children', value: '500+', label: 'Children Participating' }],
+    impactStats: [{ id: 'org-villages', value: '120+', label: 'Villages Reached', sortOrder: 0 }],
     isLoading: false,
   })
   mockUseTeam.mockReturnValue({
@@ -301,6 +301,7 @@ describe('HomePage', () => {
     mockUseAllSettings.mockReturnValue({
       settingsMap: {
         org_impact_title: 'Community Impact',
+        org_impact_subtitle: 'Grassroots sports outcomes.',
       },
       aboutContent,
     })
@@ -308,6 +309,7 @@ describe('HomePage', () => {
     renderHomePage()
 
     expect(screen.getByRole('heading', { name: 'Community Impact' })).toBeInTheDocument()
+    expect(screen.getByText('Grassroots sports outcomes.')).toBeInTheDocument()
   })
 
   it('shows credibility section skeletons while loading', () => {

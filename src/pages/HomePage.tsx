@@ -32,7 +32,7 @@ const orgHeroDefaults = {
 }
 
 export function HomePage() {
-  const { impactStats, isLoading: statsLoading } = useImpactStats()
+  const { impactStats, isLoading: statsLoading } = useImpactStats('org')
   const { programs, isLoading: programsLoading } = usePrograms()
   const { members: teamMembers, isLoading: teamLoading } = useTeam()
   const { contributors, isLoading: contributorsLoading } = useContributors()
@@ -52,6 +52,7 @@ export function HomePage() {
   const aboutTitle = sectionTitle(settingsMap, 'org_about_title', 'About Khelgram Foundation')
   const programsTitle = sectionTitle(settingsMap, 'programs_title', 'Our Programs')
   const impactTitle = sectionTitle(settingsMap, 'org_impact_title', 'Impact')
+  const impactSubtitle = settingsMap.org_impact_subtitle
   const teamTitle = sectionTitle(settingsMap, 'team_title', 'Our Team')
   const contributorsTitle = sectionTitle(settingsMap, 'contributors_title', 'Contributors')
   const sponsorsTitle = sectionTitle(settingsMap, 'sponsors_title', 'Sponsors')
@@ -104,7 +105,7 @@ export function HomePage() {
             {statsLoading ? (
               <SectionSkeleton title={impactTitle} />
             ) : (
-              <ImpactStatsBar title={impactTitle} stats={impactStats} />
+              <ImpactStatsBar title={impactTitle} subtitle={impactSubtitle} stats={impactStats} />
             )}
           </SectionErrorBoundary>
         ) : null}

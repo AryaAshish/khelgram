@@ -194,6 +194,7 @@ describe('credibility admin onAdd defaults', () => {
       value: '',
       label: '',
       statKey: undefined,
+      scope: 'org',
     })
   })
 })

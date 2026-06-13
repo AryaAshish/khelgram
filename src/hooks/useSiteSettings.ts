@@ -35,6 +35,7 @@ const fallbackAllSettings: Record<string, string> = {
     'A nation where every child in every village can play, compete, and grow through sport with dignity and support.',
   org_about_values: 'Grassroots First\nInclusive Play\nCommunity Partnership\nLong-term Nurturing',
   org_impact_title: 'Impact',
+  org_impact_subtitle: 'Long-term grassroots sports outcomes across rural communities.',
   org_get_involved_title: 'Get Involved',
   org_get_involved_parents_title: 'Parents',
   org_get_involved_parents_description:

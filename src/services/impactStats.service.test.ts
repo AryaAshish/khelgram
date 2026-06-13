@@ -27,6 +27,7 @@ vi.mock('@/services/credibility.helpers', () => ({
 function createQueryBuilder(result: { data: unknown; error: { message: string } | null }) {
   return {
     select: vi.fn().mockReturnThis(),
+    eq: vi.fn().mockReturnThis(),
     order: vi.fn().mockResolvedValue(result),
   }
 }
@@ -40,7 +41,36 @@ describe('impactStats.service', () => {
     vi.stubGlobal('crypto', { randomUUID: () => 'test-id' })
   })
 
-  it('returns mapped impact stats', async () => {
+  it('returns mapped impact stats for org scope by default', async () => {
+    const builder = createQueryBuilder({
+      data: [
+        {
+          id: 'org-villages',
+          stat_key: 'villages_reached',
+          value: '120+',
+          label: 'Villages Reached',
+          sort_order: 1,
+          scope: 'org',
+        },
+      ],
+      error: null,
+    })
+    mockFrom.mockReturnValue(builder)
+
+    await expect(getImpactStats('org')).resolves.toEqual([
+      {
+        id: 'org-villages',
+        statKey: 'villages_reached',
+        value: '120+',
+        label: 'Villages Reached',
+        sortOrder: 1,
+        scope: 'org',
+      },
+    ])
+    expect(builder.eq).toHaveBeenCalledWith('scope', 'org')
+  })
+
+  it('filters impact stats by event scope', async () => {
     const builder = createQueryBuilder({
       data: [
         {
@@ -48,20 +78,25 @@ describe('impactStats.service', () => {
           stat_key: 'children_participating',
           value: '500+',
           label: 'Children Participating',
+          sort_order: 1,
+          scope: 'event',
         },
       ],
       error: null,
     })
     mockFrom.mockReturnValue(builder)
 
-    await expect(getImpactStats()).resolves.toEqual([
+    await expect(getImpactStats('event')).resolves.toEqual([
       {
         id: 'children',
         statKey: 'children_participating',
         value: '500+',
         label: 'Children Participating',
+        sortOrder: 1,
+        scope: 'event',
       },
     ])
+    expect(builder.eq).toHaveBeenCalledWith('scope', 'event')
   })
 
   it('maps nullable stat key to undefined', async () => {
@@ -72,18 +107,22 @@ describe('impactStats.service', () => {
           stat_key: null,
           value: '20+',
           label: 'Schools Represented',
+          sort_order: 4,
+          scope: 'event',
         },
       ],
       error: null,
     })
     mockFrom.mockReturnValue(builder)
 
-    await expect(getImpactStats()).resolves.toEqual([
+    await expect(getImpactStats('event')).resolves.toEqual([
       {
         id: 'schools',
         statKey: undefined,
         value: '20+',
         label: 'Schools Represented',
+        sortOrder: 4,
+        scope: 'event',
       },
     ])
   })
@@ -118,6 +157,7 @@ describe('impactStats.service', () => {
           value: '20+',
           label: 'Schools',
           sort_order: 1,
+          scope: 'org',
         },
         error: null,
       }),
@@ -132,7 +172,33 @@ describe('impactStats.service', () => {
       value: '20+',
       label: 'Schools',
       sortOrder: 1,
+      scope: 'org',
     })
+  })
+
+  it('adds an event-scoped impact stat', async () => {
+    mockGetNextSortOrder.mockResolvedValue(2)
+    const builder = {
+      select: vi.fn().mockReturnThis(),
+      order: vi.fn(),
+      insert: vi.fn().mockReturnThis(),
+      single: vi.fn().mockResolvedValue({
+        data: {
+          id: 'test-id',
+          stat_key: null,
+          value: '500+',
+          label: 'Children Participating',
+          sort_order: 2,
+          scope: 'event',
+        },
+        error: null,
+      }),
+    }
+    mockFrom.mockReturnValue(builder)
+
+    await expect(
+      addImpactStat({ value: '500+', label: 'Children Participating', scope: 'event' }),
+    ).resolves.toMatchObject({ scope: 'event' })
   })
 
   it('throws SettingsError when add fails', async () => {
