@@ -2,7 +2,7 @@ import { useEffect, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { SectionErrorBoundary } from '@/components/SectionErrorBoundary'
 import { PreRegBanner } from '@/components/public/PreRegBanner'
-import { RegistrationForm } from '@/components/public/RegistrationForm'
+import { RegistrationFormWithI18n } from '@/components/public/RegistrationForm'
 import { SectionSkeleton } from '@/components/public/SectionSkeleton'
 import { SiteFooter } from '@/components/public/SiteFooter'
 import { SiteHeader } from '@/components/public/SiteHeader'
@@ -57,7 +57,7 @@ export function RegisterPage() {
             {gamesLoading ? (
               <SectionSkeleton title={registerTitle} />
             ) : (
-              <RegistrationForm
+              <RegistrationFormWithI18n
                 title={registerTitle}
                 eventOptions={eventOptions}
                 preRegistrationMessage={registerPreMessage}

@@ -1,7 +1,8 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
-import { RegistrationForm } from './RegistrationForm'
+import i18n from '@/i18n'
+import { RegistrationForm, RegistrationFormWithI18n } from './RegistrationForm'
 
 const defaultProps = {
   title: 'Register Your Child',
@@ -93,5 +94,40 @@ describe('RegistrationForm', () => {
     expect(onSubmit).toHaveBeenCalledWith(
       expect.objectContaining({ selectedEvents: ['Relay Race'] }),
     )
+  })
+
+  it('uses default submit label when submitLabel is omitted', async () => {
+    const user = userEvent.setup()
+    const onSubmit = vi.fn()
+
+    render(
+      <RegistrationForm
+        {...defaultProps}
+        submitLabel={undefined}
+        eventOptions={['Sack Race']}
+        onSubmit={onSubmit}
+      />,
+    )
+
+    await user.click(screen.getByRole('button', { name: 'Submit Registration' }))
+    expect(onSubmit).not.toHaveBeenCalled()
+  })
+
+  it('renders Hindi labels via RegistrationFormWithI18n', async () => {
+    await i18n.changeLanguage('hi')
+
+    render(
+      <RegistrationFormWithI18n
+        title={defaultProps.title}
+        preRegistrationMessage={defaultProps.preRegistrationMessage}
+        eventOptions={['Sack Race']}
+        onSubmit={vi.fn()}
+      />,
+    )
+
+    expect(screen.getByText('बच्चे का नाम')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'पंजीकरण जमा करें' })).toBeInTheDocument()
+
+    await i18n.changeLanguage('en')
   })
 })

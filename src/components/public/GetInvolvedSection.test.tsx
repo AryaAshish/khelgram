@@ -62,8 +62,8 @@ describe('GetInvolvedSection', () => {
             title: 'Get Involved',
             cards: [
               {
-                id: 'partners',
-                title: 'Partners',
+                id: 'donors',
+                title: 'Donors',
                 description: 'Support our work.',
                 buttonLabel: 'Email us',
                 buttonUrl: 'mailto:hello@khelgram.org',

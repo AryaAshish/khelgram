@@ -16,7 +16,7 @@ describe('SiteHeader', () => {
     expect(screen.getByRole('link', { name: 'Impact' })).toHaveAttribute('href', '#impact')
     expect(screen.getByRole('link', { name: 'Khel2026' })).toHaveAttribute('href', '/khel2026')
     expect(screen.getByRole('link', { name: 'Contact' })).toHaveAttribute('href', '#contact')
-    expect(screen.getByRole('link', { name: 'Admin sign in' })).toHaveAttribute('href', '/admin')
+    expect(screen.getByRole('link', { name: 'Admin' })).toHaveAttribute('href', '/admin')
   })
 
   it('links logo to homepage', () => {

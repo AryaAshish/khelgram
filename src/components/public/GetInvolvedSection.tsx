@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import type { GetInvolvedContent } from '@/lib/getInvolvedContent'
 
@@ -24,6 +25,19 @@ function InvolvedCardLink({ buttonLabel, buttonUrl }: { buttonLabel: string; but
 }
 
 export function GetInvolvedSection({ content, showExpandedLink = false }: GetInvolvedSectionProps) {
+  const { t } = useTranslation()
+
+  const localizedButtonLabel = (cardId: string, label: string) => {
+    const keyMap: Record<string, string> = {
+      parents: 'getInvolved.parentsCta',
+      schools: 'getInvolved.schoolsCta',
+      partners: 'getInvolved.partnerCta',
+      volunteers: 'getInvolved.volunteerCta',
+    }
+    const key = keyMap[cardId]
+    return key ? t(key) : label
+  }
+
   return (
     <section className="get-involved-section" id="get-involved" style={{ padding: '4rem 0' }}>
       <div className="container-custom">
@@ -64,7 +78,10 @@ export function GetInvolvedSection({ content, showExpandedLink = false }: GetInv
             >
               <h3 style={{ margin: 0, fontSize: '1.125rem' }}>{card.title}</h3>
               <p style={{ margin: 0, color: '#6b7280' }}>{card.description}</p>
-              <InvolvedCardLink buttonLabel={card.buttonLabel} buttonUrl={card.buttonUrl} />
+              <InvolvedCardLink
+                buttonLabel={localizedButtonLabel(card.id, card.buttonLabel)}
+                buttonUrl={card.buttonUrl}
+              />
             </article>
           ))}
         </div>

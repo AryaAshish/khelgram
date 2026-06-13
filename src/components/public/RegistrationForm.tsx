@@ -1,15 +1,26 @@
 import { Component } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ShareRegistrationLink } from '@/components/public/ShareRegistrationLink'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import type { RegistrationInput } from '@/types/app.types'
 
+export type RegistrationFormLabels = {
+  childName: string
+  age: string
+  parentName: string
+  email: string
+  phone: string
+  events: string
+}
+
 export type RegistrationFormProps = {
   title: string
   eventOptions: string[]
   preRegistrationMessage: string
-  submitLabel: string
+  submitLabel?: string
+  labels?: RegistrationFormLabels
   isPreRegistration?: boolean
   isSubmitting?: boolean
   shareUrl?: string
@@ -55,6 +66,15 @@ export class RegistrationForm extends Component<RegistrationFormProps, Registrat
   }
 
   render() {
+    const labels = this.props.labels ?? {
+      childName: 'Child Name',
+      age: 'Age',
+      parentName: 'Parent Name',
+      email: 'Email',
+      phone: 'Phone',
+      events: 'Select Events',
+    }
+
     return (
       <section className="registration-section" id="register" style={{ padding: '4rem 0' }}>
         <div className="container-custom">
@@ -73,7 +93,7 @@ export class RegistrationForm extends Component<RegistrationFormProps, Registrat
             style={{ maxWidth: '640px' }}
           >
             <div style={{ marginBottom: '0.75rem' }}>
-              <Label htmlFor="childName">Child Name</Label>
+              <Label htmlFor="childName">{labels.childName}</Label>
               <Input
                 id="childName"
                 value={this.state.childName}
@@ -82,7 +102,7 @@ export class RegistrationForm extends Component<RegistrationFormProps, Registrat
               />
             </div>
             <div style={{ marginBottom: '0.75rem' }}>
-              <Label htmlFor="age">Age</Label>
+              <Label htmlFor="age">{labels.age}</Label>
               <Input
                 id="age"
                 value={this.state.age}
@@ -91,7 +111,7 @@ export class RegistrationForm extends Component<RegistrationFormProps, Registrat
               />
             </div>
             <div style={{ marginBottom: '0.75rem' }}>
-              <Label htmlFor="parentName">Parent Name</Label>
+              <Label htmlFor="parentName">{labels.parentName}</Label>
               <Input
                 id="parentName"
                 value={this.state.parentName}
@@ -100,7 +120,7 @@ export class RegistrationForm extends Component<RegistrationFormProps, Registrat
               />
             </div>
             <div style={{ marginBottom: '0.75rem' }}>
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">{labels.email}</Label>
               <Input
                 id="email"
                 type="email"
@@ -110,7 +130,7 @@ export class RegistrationForm extends Component<RegistrationFormProps, Registrat
               />
             </div>
             <div style={{ marginBottom: '0.75rem' }}>
-              <Label htmlFor="phone">Phone</Label>
+              <Label htmlFor="phone">{labels.phone}</Label>
               <Input
                 id="phone"
                 value={this.state.phone}
@@ -119,7 +139,7 @@ export class RegistrationForm extends Component<RegistrationFormProps, Registrat
               />
             </div>
             <fieldset style={{ border: 'none', margin: '0 0 1rem', padding: 0 }}>
-              <legend style={{ fontWeight: 600, marginBottom: '0.5rem' }}>Select Events</legend>
+              <legend style={{ fontWeight: 600, marginBottom: '0.5rem' }}>{labels.events}</legend>
               {this.props.eventOptions.map((eventName) => (
                 <label key={eventName} style={{ display: 'block', marginBottom: '0.5rem' }}>
                   <input
@@ -133,11 +153,32 @@ export class RegistrationForm extends Component<RegistrationFormProps, Registrat
               ))}
             </fieldset>
             <Button type="submit" disabled={this.props.isSubmitting}>
-              {this.props.isSubmitting ? 'Submitting...' : this.props.submitLabel}
+              {this.props.isSubmitting
+                ? 'Submitting...'
+                : (this.props.submitLabel ?? 'Submit Registration')}
             </Button>
           </form>
         </div>
       </section>
     )
   }
+}
+
+export function RegistrationFormWithI18n(props: Omit<RegistrationFormProps, 'labels'>) {
+  const { t } = useTranslation()
+
+  return (
+    <RegistrationForm
+      {...props}
+      labels={{
+        childName: t('register.childName'),
+        age: t('register.age'),
+        parentName: t('register.parentName'),
+        email: t('register.email'),
+        phone: t('register.phone'),
+        events: t('register.events'),
+      }}
+      submitLabel={props.submitLabel || t('register.submit')}
+    />
+  )
 }

@@ -1,11 +1,12 @@
+import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 
 export type OrgHeroSectionProps = {
   title: string
   subtitle: string
-  primaryCta: string
-  secondaryCta: string
+  primaryCta?: string
+  secondaryCta?: string
   onPrimaryClick: () => void
 }
 
@@ -16,6 +17,8 @@ export function OrgHeroSection({
   secondaryCta,
   onPrimaryClick,
 }: OrgHeroSectionProps) {
+  const { t } = useTranslation()
+
   return (
     <section className="org-hero-section" id="hero" style={{ padding: '9rem 0 4rem' }}>
       <div className="container-custom">
@@ -31,9 +34,9 @@ export function OrgHeroSection({
           {subtitle}
         </p>
         <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-          <Button onClick={onPrimaryClick}>{primaryCta}</Button>
+          <Button onClick={onPrimaryClick}>{primaryCta || t('hero.primaryCta')}</Button>
           <Link to="/khel2026">
-            <Button variant="outline">{secondaryCta}</Button>
+            <Button variant="outline">{secondaryCta || t('hero.secondaryCta')}</Button>
           </Link>
         </div>
       </div>
