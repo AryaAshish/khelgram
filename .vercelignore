@@ -1,0 +1,10 @@
+node_modules
+coverage
+playwright-report
+test-results
+.git
+.agents
+e2e
+supabase/.temp
+*.md
+!README.md

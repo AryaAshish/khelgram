@@ -2,10 +2,10 @@
 
 Branch-based deployments:
 
-| Branch | Environment | Vercel project    | URL                         |
-| ------ | ----------- | ----------------- | --------------------------- |
-| `main` | Production  | `khelgram` (prod) | your production domain      |
-| `dev`  | Development | `khelgram-dev`    | dev preview / custom domain |
+| Branch | Environment | Vercel project    | URL                             |
+| ------ | ----------- | ----------------- | ------------------------------- |
+| `main` | Production  | `khelgram` (prod) | https://khelgram.vercel.app     |
+| `dev`  | Development | `khelgram-dev`    | https://khelgram-dev.vercel.app |
 
 Merging (or pushing) to `main` deploys production. Merging to `dev` deploys the dev environment.
 
