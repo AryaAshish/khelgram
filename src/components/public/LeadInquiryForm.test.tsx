@@ -31,6 +31,7 @@ describe('LeadInquiryForm', () => {
     )
 
     expect(screen.getByRole('heading', { name: 'Partner with us' })).toBeInTheDocument()
+    expect(screen.getByText(/Share sponsorship/)).toBeInTheDocument()
     expect(screen.getByLabelText('Organization')).toBeInTheDocument()
     expect(document.getElementById('partner-inquiry')).toBeInTheDocument()
   })
@@ -46,6 +47,7 @@ describe('LeadInquiryForm', () => {
 
     expect(screen.queryByLabelText('Organization')).not.toBeInTheDocument()
     expect(document.getElementById('volunteer-signup')).toBeInTheDocument()
+    expect(screen.getByText(/Flexible weekend/)).toBeInTheDocument()
   })
 
   it('submits volunteer form values', async () => {

@@ -86,6 +86,7 @@ describe('GetInvolvedPage', () => {
     )
 
     expect(screen.getByRole('heading', { name: 'Get Involved' })).toBeInTheDocument()
+    expect(screen.getByRole('tab', { name: 'Parents' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Register your child' })).toHaveAttribute(
       'href',
       '/register',
@@ -126,7 +127,7 @@ describe('GetInvolvedPage', () => {
       </MemoryRouter>,
     )
 
-    expect(screen.getByText('Khelgram Foundation')).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Khelgram Foundation' })).toBeInTheDocument()
     expect(document.title).toBe('Join Us | Khelgram Foundation')
     expect(screen.getByText(footerContent.description)).toBeInTheDocument()
     expect(screen.getByText(footerContent.copyright)).toBeInTheDocument()

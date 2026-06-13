@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { GetInvolvedSection } from '@/components/public/GetInvolvedSection'
+import { GetInvolvedTabs } from '@/components/public/GetInvolvedTabs'
 import { LeadInquiryForm } from '@/components/public/LeadInquiryForm'
 import { SiteFooter } from '@/components/public/SiteFooter'
 import { SiteHeader } from '@/components/public/SiteHeader'
@@ -25,6 +26,11 @@ export function GetInvolvedPage() {
     <div className="get-involved-page">
       <SiteHeader siteName={settingsMap.site_name ?? 'Khelgram Foundation'} />
       <main style={{ minHeight: '60vh' }}>
+        <section className="get-involved-page__intro">
+          <div className="container-custom">
+            <GetInvolvedTabs />
+          </div>
+        </section>
         <GetInvolvedSection content={content} />
         <LeadInquiryForm
           type="partner"

@@ -1,8 +1,10 @@
-import { useState } from 'react'
+import { createElement, useState } from 'react'
+import { Handshake, Heart } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useSubmitLead } from '@/hooks/useLeads'
+import { SectionShell } from '@/components/public/primitives/SectionShell'
 import type { InquiryLeadType } from '@/types/app.types'
 
 export type LeadInquiryFormProps = {
@@ -20,6 +22,30 @@ const emptyForm = {
   message: '',
 }
 
+const formMeta: Record<
+  InquiryLeadType,
+  { icon: typeof Handshake; accent: string; bullets: string[] }
+> = {
+  partner: {
+    icon: Handshake,
+    accent: '#b45309',
+    bullets: [
+      'Share sponsorship, equipment, or outreach support',
+      'We respond within 3–5 working days',
+      'Tell us your organization and goals',
+    ],
+  },
+  volunteer: {
+    icon: Heart,
+    accent: '#be185d',
+    bullets: [
+      'Help at Khel 2026, training camps, or village sports days',
+      'Flexible weekend and event-day roles',
+      'No prior coaching experience required',
+    ],
+  },
+}
+
 export function LeadInquiryForm({
   type,
   title,
@@ -29,6 +55,7 @@ export function LeadInquiryForm({
   const submitLead = useSubmitLead(type)
   const [form, setForm] = useState(emptyForm)
   const sectionId = type === 'partner' ? 'partner-inquiry' : 'volunteer-signup'
+  const meta = formMeta[type]
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -37,21 +64,27 @@ export function LeadInquiryForm({
   }
 
   return (
-    <section
-      id={sectionId}
-      aria-label={title}
-      style={{
-        padding: '2rem 0',
-        borderTop: '1px solid #e5e7eb',
-      }}
-    >
-      <div className="container-custom" style={{ maxWidth: '720px' }}>
-        <h2 style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>{title}</h2>
-        <p style={{ color: '#6b7280', marginBottom: '1.25rem' }}>{description}</p>
+    <SectionShell id={sectionId} variant="warm" className="lead-inquiry-form">
+      <div className="container-custom lead-inquiry-form__inner">
+        <div
+          className="lead-inquiry-form__header"
+          style={{ '--lead-accent': meta.accent } as React.CSSProperties}
+        >
+          {createElement(meta.icon, { className: 'lead-inquiry-form__icon', 'aria-hidden': true })}
+          <div>
+            <h2>{title}</h2>
+            <p>{description}</p>
+          </div>
+        </div>
+        <ul className="lead-inquiry-form__bullets">
+          {meta.bullets.map((bullet) => (
+            <li key={bullet}>{bullet}</li>
+          ))}
+        </ul>
         <form
           onSubmit={handleSubmit}
           aria-label={`${title} form`}
-          style={{ display: 'grid', gap: '0.75rem' }}
+          className="lead-inquiry-form__fields"
         >
           <div>
             <Label htmlFor={`${sectionId}-name`}>Name</Label>
@@ -109,12 +142,7 @@ export function LeadInquiryForm({
               }
               required
               rows={4}
-              style={{
-                width: '100%',
-                padding: '0.5rem',
-                borderRadius: '0.5rem',
-                border: '1px solid #d1d5db',
-              }}
+              className="lead-inquiry-form__textarea"
             />
           </div>
           <Button type="submit" disabled={submitLead.isPending}>
@@ -122,6 +150,6 @@ export function LeadInquiryForm({
           </Button>
         </form>
       </div>
-    </section>
+    </SectionShell>
   )
 }

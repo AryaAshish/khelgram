@@ -8,37 +8,25 @@ export function LanguageToggle() {
   }
 
   return (
-    <div
-      aria-label={t('language.toggleLabel')}
-      style={{ display: 'flex', gap: '0.35rem', alignItems: 'center' }}
-    >
+    <div className="language-toggle" aria-label={t('language.toggleLabel')} role="group">
       <button
         type="button"
+        className={`language-toggle__pill ${i18n.language === 'en' ? 'language-toggle__pill--active' : ''}`}
         onClick={() => setLanguage('en')}
         aria-pressed={i18n.language === 'en'}
-        style={{
-          border: '1px solid #d1d5db',
-          borderRadius: '0.5rem',
-          padding: '0.25rem 0.5rem',
-          background: i18n.language === 'en' ? '#e5e7eb' : '#fff',
-          cursor: 'pointer',
-        }}
       >
-        {t('language.english')}
+        EN
       </button>
+      <span className="language-toggle__divider" aria-hidden="true">
+        |
+      </span>
       <button
         type="button"
+        className={`language-toggle__pill ${i18n.language === 'hi' ? 'language-toggle__pill--active' : ''}`}
         onClick={() => setLanguage('hi')}
         aria-pressed={i18n.language === 'hi'}
-        style={{
-          border: '1px solid #d1d5db',
-          borderRadius: '0.5rem',
-          padding: '0.25rem 0.5rem',
-          background: i18n.language === 'hi' ? '#e5e7eb' : '#fff',
-          cursor: 'pointer',
-        }}
       >
-        {t('language.hindi')}
+        हिं
       </button>
     </div>
   )

@@ -358,3 +358,15 @@ For phases 7–11, enable E2E with `RUN_PHASE7_E2E=1` (etc.) after implementing 
 - [x] `gameEventIcons.ts` slug/icon map for event visuals
 - [x] E2E spec ready: `RUN_PHASE27_E2E=1 npm run verify:phase -- 27`
 - [x] `npm run typecheck`, `lint`, `test:coverage`, `build` all pass
+
+## Phase 28 checklist
+
+- [x] `SiteHeader` mobile hamburger nav + festival Khel 2026 pill CTA
+- [x] `LanguageToggle` EN | हिं script pill styling
+- [x] Brand wordmark SVG in `public/brand/`
+- [x] `SiteFooter` 3-column layout with quick links and contact placeholders
+- [x] `GetInvolvedTabs` segmented control with scroll-to-section behavior
+- [x] `LeadInquiryForm` partner/volunteer visual differentiation with helper bullets
+- [x] `StickyMobileCta` on NGO homepage after hero scroll
+- [x] E2E spec ready: `RUN_PHASE28_E2E=1 npm run verify:phase -- 28`
+- [x] `npm run typecheck`, `lint`, `test:coverage`, `build` all pass

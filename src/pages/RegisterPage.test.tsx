@@ -77,7 +77,7 @@ describe('RegisterPage', () => {
     render(<RegisterPage />, { wrapper: createWrapper() })
 
     expect(screen.getByRole('heading', { name: 'Register Your Child' })).toBeInTheDocument()
-    expect(screen.getByText('Khelgram Foundation')).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Khelgram Foundation' })).toBeInTheDocument()
     expect(
       screen.getByText(
         'Khelgram Foundation empowers children through sports, confidence building, and community-driven events.',

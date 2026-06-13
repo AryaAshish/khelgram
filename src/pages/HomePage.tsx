@@ -7,6 +7,7 @@ import { ContributorsGrid } from '@/components/public/ContributorsGrid'
 import { ImpactStatsBar } from '@/components/public/ImpactStatsBar'
 import { OrgHeroSection } from '@/components/public/OrgHeroSection'
 import { SectionSkeleton } from '@/components/public/SectionSkeleton'
+import { StickyMobileCta } from '@/components/public/StickyMobileCta'
 import { SiteFooter } from '@/components/public/SiteFooter'
 import { SiteHeader } from '@/components/public/SiteHeader'
 import { SponsorWall } from '@/components/public/SponsorWall'
@@ -211,6 +212,7 @@ export function HomePage() {
           />
         ) : null}
       </main>
+      <StickyMobileCta donateHref={supportContent.donateUrl} />
       {show('footer_visible') ? (
         <SiteFooter
           description={settingsMap.footer_description ?? footerContent.description}
