@@ -12,6 +12,15 @@ export function useCountUp(value: string, durationMs = 1200) {
       return
     }
 
+    const prefersReducedMotion =
+      typeof window !== 'undefined' &&
+      typeof window.matchMedia === 'function' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+    if (prefersReducedMotion) {
+      return
+    }
+
     const element = ref.current
     if (!element || hasAnimated.current || typeof IntersectionObserver === 'undefined') {
       return

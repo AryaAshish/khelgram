@@ -370,3 +370,14 @@ For phases 7–11, enable E2E with `RUN_PHASE7_E2E=1` (etc.) after implementing 
 - [x] `StickyMobileCta` on NGO homepage after hero scroll
 - [x] E2E spec ready: `RUN_PHASE28_E2E=1 npm run verify:phase -- 28`
 - [x] `npm run typecheck`, `lint`, `test:coverage`, `build` all pass
+
+## Phase 29 checklist
+
+- [x] `useInView` hook + `RevealOnScroll` primitive for first-enter animations
+- [x] Program cards use staggered `slideUp` reveals
+- [x] `TestimonialCarousel` auto-advance with prev/next and dot controls
+- [x] `GallerySection` click-to-expand lightbox with ESC close
+- [x] `useCountUp` respects `prefers-reduced-motion`
+- [x] Hindi typography tokens (`:lang(hi)`) in design tokens
+- [x] E2E spec ready: `RUN_PHASE29_E2E=1 npm run verify:phase -- 29`
+- [x] `npm run typecheck`, `lint`, `test:coverage`, `build` all pass

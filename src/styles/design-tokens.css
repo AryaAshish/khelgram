@@ -39,6 +39,10 @@
   --leading-normal: 1.5;
   --leading-relaxed: 1.65;
 
+  /* Hindi typography adjustments */
+  --text-hi-body: 1.125rem;
+  --text-hi-leading: 1.7;
+
   /* Spacing */
   --section-padding-y: 4rem;
   --section-padding-y-lg: 5rem;
@@ -104,4 +108,14 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+:lang(hi) {
+  font-size: var(--text-hi-body);
+  line-height: var(--text-hi-leading);
+}
+
+:lang(hi) .heading-display,
+:lang(hi) .section-heading__title {
+  line-height: 1.35;
 }

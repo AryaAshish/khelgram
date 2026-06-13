@@ -41,6 +41,13 @@ describe('useCountUp', () => {
       'IntersectionObserver',
       MockIntersectionObserver as unknown as typeof IntersectionObserver,
     )
+    vi.stubGlobal('matchMedia', (query: string) => ({
+      matches: false,
+      media: query,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    }))
     vi.spyOn(performance, 'now').mockImplementation(() => now)
     vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => {
       rafQueue.push(cb)
@@ -136,5 +143,19 @@ describe('useCountUp', () => {
   it('handles comma-separated numeric values', () => {
     render(<Probe value="2,500+" />)
     expect(screen.getByText('2,500+')).toBeInTheDocument()
+  })
+
+  it('skips animation when reduced motion is preferred', () => {
+    vi.stubGlobal('matchMedia', (query: string) => ({
+      matches: query.includes('prefers-reduced-motion'),
+      media: query,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    }))
+
+    render(<Probe value="75" />)
+    expect(screen.getByText('75')).toBeInTheDocument()
+    expect(MockIntersectionObserver.instances).toHaveLength(0)
   })
 })

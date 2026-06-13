@@ -1,4 +1,5 @@
 import { programPillarLabel, programPillarVisuals } from '@/lib/programPillars'
+import { RevealOnScroll } from '@/components/public/primitives/RevealOnScroll'
 import { SectionShell } from '@/components/public/primitives/SectionShell'
 import { SectionHeading } from '@/components/public/primitives/SectionHeading'
 import type { Program } from '@/types/app.types'
@@ -20,38 +21,39 @@ export function ProgramsSection({ title, programs }: ProgramsSectionProps) {
             gap: '1rem',
           }}
         >
-          {programs.map((program) => {
+          {programs.map((program, index) => {
             const visual = programPillarVisuals[program.pillar]
             const Icon = visual.icon
 
             return (
-              <article
-                key={program.id}
-                className="program-card"
-                style={
-                  {
-                    '--pillar-accent': visual.accent,
-                    '--pillar-border': visual.border,
-                  } as React.CSSProperties
-                }
-              >
-                <div className="program-card__header">
-                  <h3 style={{ margin: 0, fontSize: '1.125rem' }}>{program.title}</h3>
-                  <Icon className="program-card__icon" size={22} aria-hidden />
-                </div>
-                <p className="program-card__pillar">{programPillarLabel(program.pillar)}</p>
-                <p style={{ margin: 0, color: 'var(--color-text-muted)', fontSize: '0.95rem' }}>
-                  {program.description}
-                </p>
-                {program.ctaLabel && program.ctaUrl ? (
-                  <a
-                    href={program.ctaUrl}
-                    style={{ color: visual.accent, fontWeight: 600, textDecoration: 'none' }}
-                  >
-                    {program.ctaLabel}
-                  </a>
-                ) : null}
-              </article>
+              <RevealOnScroll key={program.id} delayMs={index * 80}>
+                <article
+                  className="program-card"
+                  style={
+                    {
+                      '--pillar-accent': visual.accent,
+                      '--pillar-border': visual.border,
+                    } as React.CSSProperties
+                  }
+                >
+                  <div className="program-card__header">
+                    <h3 style={{ margin: 0, fontSize: '1.125rem' }}>{program.title}</h3>
+                    <Icon className="program-card__icon" size={22} aria-hidden />
+                  </div>
+                  <p className="program-card__pillar">{programPillarLabel(program.pillar)}</p>
+                  <p style={{ margin: 0, color: 'var(--color-text-muted)', fontSize: '0.95rem' }}>
+                    {program.description}
+                  </p>
+                  {program.ctaLabel && program.ctaUrl ? (
+                    <a
+                      href={program.ctaUrl}
+                      style={{ color: visual.accent, fontWeight: 600, textDecoration: 'none' }}
+                    >
+                      {program.ctaLabel}
+                    </a>
+                  ) : null}
+                </article>
+              </RevealOnScroll>
             )
           })}
         </div>
