@@ -50,13 +50,13 @@ const fallbackAllSettings: Record<string, string> = {
   org_get_involved_partners_title: 'Partners',
   org_get_involved_partners_description:
     'Support equipment, coaching, and village outreach with your organization.',
-  org_get_involved_partners_cta_label: 'Contact us',
-  org_get_involved_partners_cta_url: '#contact',
+  org_get_involved_partners_cta_label: 'Partner with us',
+  org_get_involved_partners_cta_url: '/get-involved#partner-inquiry',
   org_get_involved_volunteers_title: 'Volunteers',
   org_get_involved_volunteers_description:
     'Help at events, training camps, and community sports days.',
-  org_get_involved_volunteers_cta_label: 'Contact us',
-  org_get_involved_volunteers_cta_url: '#contact',
+  org_get_involved_volunteers_cta_label: 'Sign up to volunteer',
+  org_get_involved_volunteers_cta_url: '/get-involved#volunteer-signup',
   programs_title: 'Our Programs',
   programs_visible: 'true',
   get_involved_visible: 'true',

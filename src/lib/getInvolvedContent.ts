@@ -32,15 +32,15 @@ const defaultCards: GetInvolvedCard[] = [
     id: 'partners',
     title: 'Partners',
     description: 'Support equipment, coaching, and village outreach with your organization.',
-    buttonLabel: 'Contact us',
-    buttonUrl: '#contact',
+    buttonLabel: 'Partner with us',
+    buttonUrl: '/get-involved#partner-inquiry',
   },
   {
     id: 'volunteers',
     title: 'Volunteers',
     description: 'Help at events, training camps, and community sports days.',
-    buttonLabel: 'Contact us',
-    buttonUrl: '#contact',
+    buttonLabel: 'Sign up to volunteer',
+    buttonUrl: '/get-involved#volunteer-signup',
   },
 ]
 

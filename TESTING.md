@@ -261,3 +261,15 @@ For phases 7–11, enable E2E with `RUN_PHASE7_E2E=1` (etc.) after implementing 
 - [x] Unit tests updated for service, hook, bar, admin page, homepage
 - [x] E2E spec ready: `RUN_PHASE18_E2E=1 npm run verify:phase -- 18`
 - [x] `npm run typecheck`, `lint`, `test:coverage`, `build` all pass
+
+## Phase 19 checklist
+
+- [x] Migration `0015_inquiry_leads.sql` — `inquiry_leads` table with RLS (anon insert, admin read)
+- [x] `leads.service.ts` + unit tests (submit, list, filter, CSV formatting)
+- [x] `useLeads.ts` hook + tests (`useSubmitLead`, `useAdminLeads`, `useExportLeads`)
+- [x] Partner/Volunteer inquiry forms on `GetInvolvedPage` (`#partner-inquiry`, `#volunteer-signup`)
+- [x] Admin `LeadsPage` — list, filter, export CSV + tests
+- [x] Get involved CTAs updated: partners/volunteers → `/get-involved#partner-inquiry` and `#volunteer-signup`
+- [x] Admin sidebar Leads link and `/admin/leads` route
+- [x] E2E spec ready: `RUN_PHASE19_E2E=1 npm run verify:phase -- 19`
+- [x] `npm run typecheck`, `lint`, `test:coverage`, `build` all pass

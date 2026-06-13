@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { GetInvolvedSection } from '@/components/public/GetInvolvedSection'
+import { LeadInquiryForm } from '@/components/public/LeadInquiryForm'
 import { SiteFooter } from '@/components/public/SiteFooter'
 import { SiteHeader } from '@/components/public/SiteHeader'
 import { useAllSettings } from '@/hooks/useSiteSettings'
@@ -10,6 +11,8 @@ import { isSectionVisible } from '@/lib/homepageSections'
 export function GetInvolvedPage() {
   const { settingsMap } = useAllSettings()
   const content = getInvolvedContent(settingsMap)
+  const partnersCard = content.cards.find((card) => card.id === 'partners')
+  const volunteersCard = content.cards.find((card) => card.id === 'volunteers')
 
   useEffect(() => {
     document.title = `${content.title} | ${settingsMap.site_name ?? 'Khelgram Foundation'}`
@@ -20,6 +23,23 @@ export function GetInvolvedPage() {
       <SiteHeader siteName={settingsMap.site_name ?? 'Khelgram Foundation'} />
       <main style={{ minHeight: '60vh' }}>
         <GetInvolvedSection content={content} />
+        <LeadInquiryForm
+          type="partner"
+          title={partnersCard?.title ?? 'Partners'}
+          description={
+            partnersCard?.description ??
+            'Tell us how your organization can support grassroots sports programs.'
+          }
+          showOrganization
+        />
+        <LeadInquiryForm
+          type="volunteer"
+          title={volunteersCard?.title ?? 'Volunteers'}
+          description={
+            volunteersCard?.description ??
+            'Share your availability and interests for upcoming events and camps.'
+          }
+        />
       </main>
       {isSectionVisible(settingsMap, 'footer_visible') ? (
         <SiteFooter

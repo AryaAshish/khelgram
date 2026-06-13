@@ -16,6 +16,14 @@ describe('getInvolvedContent', () => {
       id: 'schools',
       buttonUrl: '#contact',
     })
+    expect(content.cards[2]).toMatchObject({
+      id: 'partners',
+      buttonUrl: '/get-involved#partner-inquiry',
+    })
+    expect(content.cards[3]).toMatchObject({
+      id: 'volunteers',
+      buttonUrl: '/get-involved#volunteer-signup',
+    })
   })
 
   it('merges CMS overrides for title and card fields', () => {

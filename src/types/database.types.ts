@@ -267,6 +267,42 @@ export type Database = {
         }
         Relationships: []
       }
+      inquiry_leads: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          message: string
+          name: string
+          organization: string | null
+          phone: string | null
+          status: string
+          type: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id: string
+          message?: string
+          name: string
+          organization?: string | null
+          phone?: string | null
+          status?: string
+          type: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string
+          name?: string
+          organization?: string | null
+          phone?: string | null
+          status?: string
+          type?: string
+        }
+        Relationships: []
+      }
       impact_stats: {
         Row: {
           id: string

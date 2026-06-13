@@ -175,3 +175,25 @@ export type RegistrationFilters = {
   gameId?: string
   status?: RegistrationStatus | ''
 }
+
+export type InquiryLeadType = 'partner' | 'volunteer'
+
+export type InquiryLeadStatus = 'new' | 'contacted' | 'closed'
+
+export type InquiryLead = {
+  id: string
+  type: InquiryLeadType
+  name: string
+  email: string
+  phone?: string
+  organization?: string
+  message: string
+  status: InquiryLeadStatus
+  createdAt: string
+}
+
+export type InquiryLeadFilters = {
+  search?: string
+  type?: InquiryLeadType | ''
+  status?: InquiryLeadStatus | ''
+}

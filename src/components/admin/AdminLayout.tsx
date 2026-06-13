@@ -43,6 +43,9 @@ export function AdminLayout() {
           <NavLink to="/admin/programs" style={navLinkStyle}>
             Programs
           </NavLink>
+          <NavLink to="/admin/leads" style={navLinkStyle}>
+            Leads
+          </NavLink>
           <NavLink to="/admin/media" style={navLinkStyle}>
             Media
           </NavLink>

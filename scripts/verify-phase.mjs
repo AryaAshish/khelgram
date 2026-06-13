@@ -54,7 +54,7 @@ if (runPhaseE2e) {
       run('npx', ['playwright', 'test', 'e2e/phases/mobile-health.spec.ts'])
     }
   } else {
-    run('npx', ['playwright', 'test', `e2e/phases/phase${phaseNumber}-*.spec.ts`], {
+    run('npx', ['playwright', 'test', `e2e/phases/phase${phaseNumber}-.*.spec.ts`], {
       [`RUN_PHASE${phaseNumber}_E2E`]: '1',
     })
   }
