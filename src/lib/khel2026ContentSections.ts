@@ -40,6 +40,12 @@ export const khel2026ContentSections: ContentSection[] = [
       { key: 'khel2026_hero_secondary_cta', label: 'Secondary CTA', section: 'khel2026' },
       { key: 'khel2026_hero_event_date_label', label: 'Event date label', section: 'khel2026' },
       { key: 'khel2026_hero_event_date', label: 'Event date text', section: 'khel2026' },
+      {
+        key: 'khel2026_hero_image',
+        label: 'Hero image',
+        section: 'khel2026',
+        type: 'image',
+      },
     ],
   },
   {

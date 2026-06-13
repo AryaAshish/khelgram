@@ -8,7 +8,7 @@ export type ContentField = {
   label: string
   section: string
   multiline?: boolean
-  type?: 'text' | 'select' | 'checkbox'
+  type?: 'text' | 'select' | 'checkbox' | 'image'
   options?: ContentFieldOption[]
 }
 

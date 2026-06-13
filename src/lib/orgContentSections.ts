@@ -33,6 +33,12 @@ export const orgContentSections: ContentSection[] = [
       { key: 'org_hero_subtitle', label: 'Hero subtitle', section: 'org', multiline: true },
       { key: 'org_hero_primary_cta', label: 'Primary CTA', section: 'org' },
       { key: 'org_hero_secondary_cta', label: 'Secondary CTA', section: 'org' },
+      {
+        key: 'org_hero_image',
+        label: 'Hero image',
+        section: 'org',
+        type: 'image',
+      },
     ],
   },
   {
@@ -63,6 +69,12 @@ export const orgContentSections: ContentSection[] = [
         label: 'Values (one per line)',
         section: 'org_about',
         multiline: true,
+      },
+      {
+        key: 'org_about_image',
+        label: 'About section image',
+        section: 'org_about',
+        type: 'image',
       },
     ],
   },

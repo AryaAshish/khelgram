@@ -1,8 +1,10 @@
 import { useMemo, useState } from 'react'
 import { toast } from 'sonner'
+import { ImagePicker } from '@/components/admin/ImagePicker'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { useMediaLibrary } from '@/hooks/useMediaLibrary'
 import { useAllSettings, useUpdateSectionSettings } from '@/hooks/useSiteSettings'
 import { contentGroups, type ContentGroup, type ContentSection } from '@/lib/contentSections'
 
@@ -49,6 +51,8 @@ function ContentSectionEditor({
   onSave,
 }: ContentSectionEditorProps) {
   const [draftValues, setDraftValues] = useState(() => buildSectionValues(section, settingsMap))
+  const [imagePickerKey, setImagePickerKey] = useState<string | null>(null)
+  const { data: assets = [], isLoading: assetsLoading } = useMediaLibrary()
 
   const handleSave = async () => {
     const payload = section.fields.map((field) => ({
@@ -87,6 +91,39 @@ function ContentSectionEditor({
               />
               <span>{field.label}</span>
             </label>
+          ) : field.type === 'image' ? (
+            <>
+              <Label htmlFor={field.key}>{field.label}</Label>
+              <Input
+                id={field.key}
+                value={draftValues[field.key] ?? ''}
+                onChange={(event) =>
+                  setDraftValues((previous) => ({
+                    ...previous,
+                    [field.key]: event.target.value,
+                  }))
+                }
+                placeholder="Image URL (or choose from media library)"
+              />
+              <div
+                style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem', flexWrap: 'wrap' }}
+              >
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setImagePickerKey(field.key)}
+                >
+                  Choose from library
+                </Button>
+                {draftValues[field.key] ? (
+                  <img
+                    src={draftValues[field.key]}
+                    alt=""
+                    style={{ width: 72, height: 48, objectFit: 'cover', borderRadius: '0.375rem' }}
+                  />
+                ) : null}
+              </div>
+            </>
           ) : (
             <>
               <Label htmlFor={field.key}>{field.label}</Label>
@@ -153,6 +190,21 @@ function ContentSectionEditor({
       <Button onClick={() => void handleSave()} disabled={isPending}>
         {isPending ? 'Saving...' : section.saveLabel}
       </Button>
+
+      {imagePickerKey ? (
+        <ImagePicker
+          assets={assets}
+          isLoading={assetsLoading}
+          onClose={() => setImagePickerKey(null)}
+          onSelect={(asset) => {
+            setDraftValues((previous) => ({
+              ...previous,
+              [imagePickerKey]: asset.url,
+            }))
+            setImagePickerKey(null)
+          }}
+        />
+      ) : null}
     </div>
   )
 }

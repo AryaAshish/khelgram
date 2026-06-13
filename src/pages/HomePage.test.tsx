@@ -159,6 +159,24 @@ describe('HomePage', () => {
     expect(screen.queryByText('Register Your Child')).not.toBeInTheDocument()
   })
 
+  it('uses CMS org hero image when configured', () => {
+    setDefaultHookMocks()
+    mockUseAllSettings.mockReturnValue({
+      settingsMap: {
+        site_name: 'Khelgram Foundation',
+        org_hero_image: 'https://cms.example/custom-hero.jpg',
+      },
+      aboutContent,
+    })
+
+    renderHomePage()
+
+    expect(screen.getByRole('img', { name: /Children celebrating/ })).toHaveAttribute(
+      'src',
+      'https://cms.example/custom-hero.jpg',
+    )
+  })
+
   it('shows Khel2026 nav link and secondary hero CTA', () => {
     setDefaultHookMocks()
     renderHomePage()

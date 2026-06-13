@@ -38,6 +38,20 @@ vi.mock('@/hooks/useSiteSettings', () => ({
   useUpdateSectionSettings: () => mockUseUpdateSectionSettings(),
 }))
 
+vi.mock('@/hooks/useMediaLibrary', () => ({
+  useMediaLibrary: () => ({
+    data: [
+      {
+        id: 'asset-1',
+        url: 'https://cdn.example.org/hero.jpg',
+        alt: 'Hero from library',
+        path: 'hero.jpg',
+      },
+    ],
+    isLoading: false,
+  }),
+}))
+
 function createWrapper() {
   const queryClient = new QueryClient()
   return function Wrapper({ children }: { children: ReactNode }) {
@@ -55,6 +69,23 @@ describe('ContentPage', () => {
       mutateAsync: mockMutateAsync,
       isPending: false,
     })
+  })
+
+  it('renders hero image field with media library picker', () => {
+    render(<ContentPage />, { wrapper: createWrapper() })
+
+    expect(screen.getByLabelText('Hero image')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Choose from library' })).toBeInTheDocument()
+  })
+
+  it('selects hero image from media library', async () => {
+    const user = userEvent.setup()
+    render(<ContentPage />, { wrapper: createWrapper() })
+
+    await user.click(screen.getByRole('button', { name: 'Choose from library' }))
+    await user.click(screen.getByRole('button', { name: /hero.jpg/i }))
+
+    expect(screen.getByLabelText('Hero image')).toHaveValue('https://cdn.example.org/hero.jpg')
   })
 
   it('renders organization hero fields and saves org copy', async () => {

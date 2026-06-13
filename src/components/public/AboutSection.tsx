@@ -6,9 +6,16 @@ import { visualAssets } from '@/fixtures/visualAssets'
 export type AboutSectionProps = {
   title: string
   content: AboutContent
+  imageUrl?: string
+  imageAlt?: string
 }
 
-export function AboutSection({ title, content }: AboutSectionProps) {
+export function AboutSection({
+  title,
+  content,
+  imageUrl = visualAssets.aboutCommunity.url,
+  imageAlt = visualAssets.aboutCommunity.alt,
+}: AboutSectionProps) {
   return (
     <SectionShell id="about" variant="warm">
       <div className="container-custom about-grid">
@@ -22,12 +29,7 @@ export function AboutSection({ title, content }: AboutSectionProps) {
           </p>
         </div>
         <div>
-          <img
-            src={visualAssets.aboutCommunity.url}
-            alt={visualAssets.aboutCommunity.alt}
-            className="about-image"
-            loading="lazy"
-          />
+          <img src={imageUrl} alt={imageAlt} className="about-image" loading="lazy" />
           <p style={{ margin: '1rem 0 0.5rem', fontWeight: 700 }}>Values</p>
           <ul className="about-values" aria-label="Organization values">
             {content.values.map((value) => (

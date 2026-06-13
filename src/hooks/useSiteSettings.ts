@@ -28,12 +28,14 @@ const fallbackAllSettings: Record<string, string> = {
     'Khelgram Foundation discovers and nurtures grassroots talent in villages and underserved communities through sports programs, training, and inclusive events.',
   org_hero_primary_cta: 'Our impact',
   org_hero_secondary_cta: 'Khel 2026',
+  org_hero_image: '',
   org_about_title: 'About Khelgram Foundation',
   org_about_mission:
     'To discover, train, and champion sporting talent in rural India — building confidence, health, and opportunity village by village.',
   org_about_vision:
     'A nation where every child in every village can play, compete, and grow through sport with dignity and support.',
   org_about_values: 'Grassroots First\nInclusive Play\nCommunity Partnership\nLong-term Nurturing',
+  org_about_image: '',
   org_impact_title: 'Impact',
   org_impact_subtitle: 'Long-term grassroots sports outcomes across rural communities.',
   org_get_involved_title: 'Get Involved',
@@ -78,6 +80,7 @@ const fallbackAllSettings: Record<string, string> = {
   khel2026_hero_secondary_cta: heroContent.secondaryCta,
   khel2026_hero_event_date_label: heroContent.eventDateLabel,
   khel2026_hero_event_date: heroContent.eventDate,
+  khel2026_hero_image: '',
   khel2026_countdown_title: 'Countdown to Festival Day',
   khel2026_countdown_tba_text: 'To Be Announced',
   khel2026_events_title: 'Festival Events',

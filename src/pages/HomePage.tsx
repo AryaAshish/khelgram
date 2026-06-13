@@ -30,6 +30,7 @@ import { getSupportContent } from '@/lib/supportContent'
 import { parseOrgRegions } from '@/lib/orgRegions'
 import { getInvolvedContent } from '@/lib/getInvolvedContent'
 import { localizedSetting } from '@/lib/localizedSetting'
+import { resolveHeroVisual } from '@/lib/heroVisuals'
 import { isSectionVisible, sectionTitle } from '@/lib/orgHomeSections'
 
 const orgHeroDefaults = {
@@ -73,6 +74,8 @@ export function HomePage() {
   const getInvolvedTitle = sectionTitle(settingsMap, 'org_get_involved_title', 'Get Involved')
   const getInvolved = getInvolvedContent(settingsMap)
   const supportContent = getSupportContent(settingsMap)
+  const orgHeroVisual = resolveHeroVisual(settingsMap, 'org_hero_image')
+  const aboutVisual = resolveHeroVisual(settingsMap, 'org_about_image')
   const reachTitle = sectionTitle(settingsMap, 'reach_title', 'Where We Work')
   const regions = parseOrgRegions(settingsMap.org_regions)
 
@@ -116,13 +119,20 @@ export function HomePage() {
               subtitle={orgHeroSubtitle}
               primaryCta={orgHeroPrimaryCta}
               secondaryCta={orgHeroSecondaryCta}
+              imageUrl={orgHeroVisual.url}
+              imageAlt={orgHeroVisual.alt}
               onPrimaryClick={() => scrollToId('impact')}
             />
           </SectionErrorBoundary>
         ) : null}
         {show('about_visible') ? (
           <SectionErrorBoundary title={aboutTitle}>
-            <AboutSection title={aboutTitle} content={aboutContent} />
+            <AboutSection
+              title={aboutTitle}
+              content={aboutContent}
+              imageUrl={aboutVisual.url}
+              imageAlt={aboutVisual.alt}
+            />
           </SectionErrorBoundary>
         ) : null}
         {show('programs_visible') ? (

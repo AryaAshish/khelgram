@@ -381,3 +381,13 @@ For phases 7–11, enable E2E with `RUN_PHASE7_E2E=1` (etc.) after implementing 
 - [x] Hindi typography tokens (`:lang(hi)`) in design tokens
 - [x] E2E spec ready: `RUN_PHASE29_E2E=1 npm run verify:phase -- 29`
 - [x] `npm run typecheck`, `lint`, `test:coverage`, `build` all pass
+
+## Phase 30 checklist
+
+- [x] Migration `0019_hero_visual_cms.sql` — `org_hero_image`, `khel2026_hero_image`, `org_about_image`
+- [x] `heroVisuals.ts` resolver with fixture fallbacks + unit tests
+- [x] Admin Content tabs expose image picker fields (`type: 'image'`) with media library
+- [x] `HomePage`, `EventLandingSections`, and `AboutSection` prefer CMS URLs
+- [x] README design section documents brand lanes and image swap workflow
+- [x] E2E spec ready: `RUN_PHASE30_E2E=1 npm run verify:phase -- 30`
+- [x] `npm run typecheck`, `lint`, `test:coverage`, `build` all pass

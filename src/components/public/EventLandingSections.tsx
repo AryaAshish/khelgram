@@ -16,6 +16,7 @@ import { useRegistrationCount } from '@/hooks/useRegistration'
 import { useAllSettings } from '@/hooks/useSiteSettings'
 import { heroContent } from '@/fixtures/homePageFixtures'
 import { isSectionVisible, khel2026Sections, sectionTitle } from '@/lib/khel2026Sections'
+import { resolveHeroVisual } from '@/lib/heroVisuals'
 
 export function EventLandingSections() {
   const navigate = useNavigate()
@@ -31,6 +32,7 @@ export function EventLandingSections() {
     ? (settingsMap.khel2026_countdown_tba_text ?? 'To Be Announced')
     : (settingsMap.khel2026_hero_event_date ?? settingsMap.event_date ?? heroContent.eventDate)
   const countdownDate = isPreRegistration ? null : countdownTarget
+  const festivalHeroVisual = resolveHeroVisual(settingsMap, 'khel2026_hero_image')
 
   const show = (visibleKey: string) => isSectionVisible(settingsMap, visibleKey)
 
@@ -67,6 +69,8 @@ export function EventLandingSections() {
             eventDateLabel={settingsMap.khel2026_hero_event_date_label}
             eventDate={eventDate}
             registrationCount={registrationCount}
+            imageUrl={festivalHeroVisual.url}
+            imageAlt={festivalHeroVisual.alt}
             onPrimaryClick={() => navigate('/register')}
             onSecondaryClick={() => scrollToId('events')}
           />

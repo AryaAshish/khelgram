@@ -13,6 +13,9 @@ describe('contentSections', () => {
     const orgHero = contentGroups[0]?.sections.find((section) => section.id === 'org_hero')
     const eventHero = contentGroups[1]?.sections.find((section) => section.id === 'khel2026_hero')
     expect(orgHero?.fields.some((field) => field.key === 'org_hero_title')).toBe(true)
+    expect(
+      orgHero?.fields.some((field) => field.key === 'org_hero_image' && field.type === 'image'),
+    ).toBe(true)
     expect(eventHero?.fields.some((field) => field.key === 'khel2026_hero_title')).toBe(true)
   })
 
