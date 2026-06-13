@@ -1,3 +1,5 @@
+import { SectionShell } from '@/components/public/primitives/SectionShell'
+import { SectionHeading } from '@/components/public/primitives/SectionHeading'
 import type { Testimonial } from '@/types/app.types'
 
 export type TestimonialCarouselProps = {
@@ -7,9 +9,9 @@ export type TestimonialCarouselProps = {
 
 export function TestimonialCarousel({ title, testimonials }: TestimonialCarouselProps) {
   return (
-    <section className="testimonials-section" id="testimonials" style={{ padding: '4rem 0' }}>
+    <SectionShell id="testimonials" variant="default">
       <div className="container-custom">
-        <h2 style={{ fontSize: '2rem', marginBottom: '1rem' }}>{title}</h2>
+        <SectionHeading title={title} />
         <div
           style={{
             display: 'grid',
@@ -18,19 +20,11 @@ export function TestimonialCarousel({ title, testimonials }: TestimonialCarousel
           }}
         >
           {testimonials.map((testimonial) => (
-            <blockquote
-              key={testimonial.id}
-              style={{
-                margin: 0,
-                border: '1px solid #e5e7eb',
-                borderRadius: '0.75rem',
-                padding: '1rem',
-              }}
-            >
+            <blockquote key={testimonial.id} className="testimonial-card">
               <p style={{ margin: '0 0 0.75rem', fontStyle: 'italic' }}>
                 &ldquo;{testimonial.quote}&rdquo;
               </p>
-              <footer style={{ color: '#374151', fontWeight: 600 }}>
+              <footer style={{ color: 'var(--color-text-subtle)', fontWeight: 600 }}>
                 {testimonial.author}
                 {testimonial.relation ? ` — ${testimonial.relation}` : ''}
               </footer>
@@ -38,6 +32,6 @@ export function TestimonialCarousel({ title, testimonials }: TestimonialCarousel
           ))}
         </div>
       </div>
-    </section>
+    </SectionShell>
   )
 }

@@ -1,3 +1,5 @@
+import { SectionShell } from '@/components/public/primitives/SectionShell'
+import { SectionHeading } from '@/components/public/primitives/SectionHeading'
 import { Button } from '@/components/ui/button'
 import type { SupportContent } from '@/lib/supportContent'
 
@@ -7,12 +9,9 @@ export type SupportSectionProps = {
 
 export function SupportSection({ content }: SupportSectionProps) {
   return (
-    <section className="support-section" id="support" style={{ padding: '4rem 0' }}>
+    <SectionShell id="support" variant="warm">
       <div className="container-custom">
-        <h2 style={{ fontSize: '2rem', marginBottom: '0.75rem' }}>{content.title}</h2>
-        <p style={{ color: '#6b7280', maxWidth: '720px', marginBottom: '1.25rem' }}>
-          {content.description}
-        </p>
+        <SectionHeading title={content.title} subtitle={content.description} />
         <div
           style={{
             display: 'grid',
@@ -21,9 +20,9 @@ export function SupportSection({ content }: SupportSectionProps) {
             alignItems: 'start',
           }}
         >
-          <div>
+          <div className="card-elevated" style={{ padding: '1.25rem' }}>
             <h3 style={{ fontSize: '1.125rem', marginBottom: '0.5rem' }}>How funds are used</h3>
-            <ul style={{ margin: 0, paddingLeft: '1.25rem', color: '#374151' }}>
+            <ul style={{ margin: 0, paddingLeft: '1.25rem', color: 'var(--color-text-subtle)' }}>
               {content.fundsUsage.map((item) => (
                 <li key={item}>{item}</li>
               ))}
@@ -35,17 +34,17 @@ export function SupportSection({ content }: SupportSectionProps) {
             </div>
           </div>
           {content.donateQrImage ? (
-            <div>
+            <div className="card-elevated" style={{ padding: '1.25rem' }}>
               <h3 style={{ fontSize: '1.125rem', marginBottom: '0.5rem' }}>Scan to donate</h3>
               <img
                 src={content.donateQrImage}
                 alt="Donation QR code"
-                style={{ maxWidth: '220px', borderRadius: '0.5rem', border: '1px solid #e5e7eb' }}
+                style={{ maxWidth: '220px', borderRadius: 'var(--radius-md)' }}
               />
             </div>
           ) : null}
         </div>
       </div>
-    </section>
+    </SectionShell>
   )
 }

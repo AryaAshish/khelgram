@@ -1,11 +1,21 @@
+import { Handshake, Heart, School, Users } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { SectionShell } from '@/components/public/primitives/SectionShell'
+import { SectionHeading } from '@/components/public/primitives/SectionHeading'
 import { Button } from '@/components/ui/button'
 import type { GetInvolvedContent } from '@/lib/getInvolvedContent'
 
 export type GetInvolvedSectionProps = {
   content: GetInvolvedContent
   showExpandedLink?: boolean
+}
+
+const cardVisuals: Record<string, { icon: typeof Users; accent: string }> = {
+  parents: { icon: Users, accent: '#166534' },
+  schools: { icon: School, accent: '#1d4ed8' },
+  partners: { icon: Handshake, accent: '#b45309' },
+  volunteers: { icon: Heart, accent: '#be185d' },
 }
 
 function InvolvedCardLink({ buttonLabel, buttonUrl }: { buttonLabel: string; buttonUrl: string }) {
@@ -39,7 +49,7 @@ export function GetInvolvedSection({ content, showExpandedLink = false }: GetInv
   }
 
   return (
-    <section className="get-involved-section" id="get-involved" style={{ padding: '4rem 0' }}>
+    <SectionShell id="get-involved" variant="warm">
       <div className="container-custom">
         <div
           style={{
@@ -51,9 +61,9 @@ export function GetInvolvedSection({ content, showExpandedLink = false }: GetInv
             flexWrap: 'wrap',
           }}
         >
-          <h2 style={{ fontSize: '2rem', margin: 0 }}>{content.title}</h2>
+          <SectionHeading title={content.title} />
           {showExpandedLink ? (
-            <Link to="/get-involved" style={{ color: '#059669', fontWeight: 600 }}>
+            <Link to="/get-involved" style={{ color: 'var(--color-earth)', fontWeight: 600 }}>
               View all ways to help
             </Link>
           ) : null}
@@ -65,27 +75,28 @@ export function GetInvolvedSection({ content, showExpandedLink = false }: GetInv
             gap: '1rem',
           }}
         >
-          {content.cards.map((card) => (
-            <article
-              key={card.id}
-              style={{
-                border: '1px solid #e5e7eb',
-                borderRadius: '0.75rem',
-                padding: '1.25rem',
-                display: 'grid',
-                gap: '0.75rem',
-              }}
-            >
-              <h3 style={{ margin: 0, fontSize: '1.125rem' }}>{card.title}</h3>
-              <p style={{ margin: 0, color: '#6b7280' }}>{card.description}</p>
-              <InvolvedCardLink
-                buttonLabel={localizedButtonLabel(card.id, card.buttonLabel)}
-                buttonUrl={card.buttonUrl}
-              />
-            </article>
-          ))}
+          {content.cards.map((card) => {
+            const visual = cardVisuals[card.id] ?? cardVisuals.parents!
+            const Icon = visual.icon
+
+            return (
+              <article
+                key={card.id}
+                className="involved-card"
+                style={{ '--involved-accent': visual.accent } as React.CSSProperties}
+              >
+                <Icon className="involved-card__icon" size={24} aria-hidden />
+                <h3 style={{ margin: 0, fontSize: '1.125rem' }}>{card.title}</h3>
+                <p style={{ margin: 0, color: 'var(--color-text-muted)' }}>{card.description}</p>
+                <InvolvedCardLink
+                  buttonLabel={localizedButtonLabel(card.id, card.buttonLabel)}
+                  buttonUrl={card.buttonUrl}
+                />
+              </article>
+            )
+          })}
         </div>
       </div>
-    </section>
+    </SectionShell>
   )
 }

@@ -21,7 +21,7 @@ describe('SuccessStoriesSection', () => {
     )
 
     expect(screen.getByRole('heading', { name: 'Success Stories' })).toBeInTheDocument()
-    expect(screen.getByText('Village champion')).toBeInTheDocument()
+    expect(screen.getByText(/Grassroots scouting/)).toBeInTheDocument()
     expect(screen.getByText('Full story text')).toBeInTheDocument()
     expect(document.getElementById('success-stories')).toBeInTheDocument()
   })
@@ -48,5 +48,39 @@ describe('SuccessStoriesSection', () => {
       'src',
       'https://example.com/photo.jpg',
     )
+  })
+
+  it('renders featured story plus supporting grid', () => {
+    render(
+      <SuccessStoriesSection
+        title="Stories"
+        stories={[
+          {
+            id: 'story-1',
+            title: 'Featured',
+            summary: 'Lead quote',
+            story: 'Featured body',
+            published: true,
+            sortOrder: 1,
+          },
+          {
+            id: 'story-2',
+            title: 'Second',
+            summary: 'More',
+            story: 'Another body',
+            published: true,
+            sortOrder: 2,
+          },
+        ]}
+      />,
+    )
+
+    expect(screen.getByText('Second')).toBeInTheDocument()
+    expect(screen.getByText('More')).toBeInTheDocument()
+  })
+
+  it('returns null when there are no stories', () => {
+    const { container } = render(<SuccessStoriesSection title="Stories" stories={[]} />)
+    expect(container.firstChild).toBeNull()
   })
 })

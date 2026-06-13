@@ -1,3 +1,5 @@
+import { SectionShell } from '@/components/public/primitives/SectionShell'
+import { SectionHeading } from '@/components/public/primitives/SectionHeading'
 import type { TeamMember } from '@/types/app.types'
 
 export type TeamGridProps = {
@@ -7,9 +9,9 @@ export type TeamGridProps = {
 
 export function TeamGrid({ title, members }: TeamGridProps) {
   return (
-    <section className="team-section" id="team" style={{ padding: '4rem 0' }}>
+    <SectionShell id="team" variant="warm">
       <div className="container-custom">
-        <h2 style={{ fontSize: '2rem', marginBottom: '1rem' }}>{title}</h2>
+        <SectionHeading title={title} />
         <div
           style={{
             display: 'grid',
@@ -18,14 +20,7 @@ export function TeamGrid({ title, members }: TeamGridProps) {
           }}
         >
           {members.map((member) => (
-            <article
-              key={member.id}
-              style={{
-                border: '1px solid #e5e7eb',
-                borderRadius: '0.75rem',
-                padding: '1rem',
-              }}
-            >
+            <article key={member.id} className="card-elevated" style={{ padding: '1rem' }}>
               {member.photoUrl ? (
                 <img
                   src={member.photoUrl}
@@ -34,22 +29,24 @@ export function TeamGrid({ title, members }: TeamGridProps) {
                     width: '100%',
                     height: '180px',
                     objectFit: 'cover',
-                    borderRadius: '0.5rem',
+                    borderRadius: 'var(--radius-md)',
                     marginBottom: '0.75rem',
                   }}
                 />
               ) : null}
               <h3 style={{ margin: '0 0 0.25rem', fontSize: '1.125rem' }}>{member.name}</h3>
-              <p style={{ margin: '0 0 0.5rem', color: '#059669', fontWeight: 600 }}>
+              <p style={{ margin: '0 0 0.5rem', color: 'var(--color-earth)', fontWeight: 600 }}>
                 {member.role}
               </p>
               {member.bio ? (
-                <p style={{ margin: 0, color: '#6b7280', fontSize: '0.95rem' }}>{member.bio}</p>
+                <p style={{ margin: 0, color: 'var(--color-text-muted)', fontSize: '0.95rem' }}>
+                  {member.bio}
+                </p>
               ) : null}
             </article>
           ))}
         </div>
       </div>
-    </section>
+    </SectionShell>
   )
 }

@@ -1,3 +1,5 @@
+import { SectionShell } from '@/components/public/primitives/SectionShell'
+import { SectionHeading } from '@/components/public/primitives/SectionHeading'
 import type { Contributor } from '@/types/app.types'
 
 export type ContributorsGridProps = {
@@ -7,31 +9,26 @@ export type ContributorsGridProps = {
 
 export function ContributorsGrid({ title, contributors }: ContributorsGridProps) {
   return (
-    <section className="contributors-section" id="contributors" style={{ padding: '4rem 0' }}>
+    <SectionShell id="contributors" variant="default">
       <div className="container-custom">
-        <h2 style={{ fontSize: '2rem', marginBottom: '1rem' }}>{title}</h2>
+        <SectionHeading title={title} />
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-            gap: '0.75rem',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+            gap: '1rem',
           }}
         >
           {contributors.map((contributor) => (
-            <article
-              key={contributor.id}
-              style={{
-                border: '1px solid #e5e7eb',
-                borderRadius: '0.75rem',
-                padding: '1rem',
-              }}
-            >
-              <p style={{ margin: '0 0 0.25rem', fontWeight: 700 }}>{contributor.name}</p>
-              <p style={{ margin: 0, color: '#6b7280' }}>{contributor.contribution}</p>
+            <article key={contributor.id} className="card-elevated" style={{ padding: '1rem' }}>
+              <h3 style={{ margin: '0 0 0.35rem', fontSize: '1.125rem' }}>{contributor.name}</h3>
+              <p style={{ margin: 0, color: 'var(--color-text-muted)' }}>
+                {contributor.contribution}
+              </p>
             </article>
           ))}
         </div>
       </div>
-    </section>
+    </SectionShell>
   )
 }

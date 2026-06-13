@@ -79,4 +79,35 @@ describe('GetInvolvedSection', () => {
       'mailto:hello@khelgram.org',
     )
   })
+
+  it('renders partner and volunteer stakeholder cards', () => {
+    render(
+      <MemoryRouter>
+        <GetInvolvedSection
+          content={{
+            title: 'Get Involved',
+            cards: [
+              {
+                id: 'partners',
+                title: 'Partners',
+                description: 'Partner with us.',
+                buttonLabel: 'Partner',
+                buttonUrl: '/get-involved',
+              },
+              {
+                id: 'volunteers',
+                title: 'Volunteers',
+                description: 'Volunteer with us.',
+                buttonLabel: 'Volunteer',
+                buttonUrl: '/get-involved',
+              },
+            ],
+          }}
+        />
+      </MemoryRouter>,
+    )
+
+    expect(screen.getByText('Partners')).toBeInTheDocument()
+    expect(screen.getByText('Volunteers')).toBeInTheDocument()
+  })
 })

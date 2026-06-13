@@ -53,4 +53,68 @@ describe('ProgramsSection', () => {
     expect(screen.getByText('Training')).toBeInTheDocument()
     expect(screen.queryByRole('link')).not.toBeInTheDocument()
   })
+
+  it('renders all pillar variants with icons', () => {
+    render(
+      <ProgramsSection
+        title="Programs"
+        programs={[
+          {
+            id: 'p1',
+            title: 'Grassroots',
+            description: 'A',
+            pillar: 'grassroots_discovery',
+            published: true,
+            sortOrder: 1,
+          },
+          {
+            id: 'p2',
+            title: 'Training',
+            description: 'B',
+            pillar: 'training',
+            published: true,
+            sortOrder: 2,
+          },
+          {
+            id: 'p3',
+            title: 'Traditional',
+            description: 'C',
+            pillar: 'traditional_sports',
+            published: true,
+            sortOrder: 3,
+          },
+          {
+            id: 'p4',
+            title: 'Health',
+            description: 'D',
+            pillar: 'health',
+            published: true,
+            sortOrder: 4,
+          },
+          {
+            id: 'p5',
+            title: 'Scholarships',
+            description: 'E',
+            pillar: 'scholarships',
+            published: true,
+            sortOrder: 5,
+            ctaLabel: 'Apply',
+            ctaUrl: '/get-involved',
+          },
+          {
+            id: 'p6',
+            title: 'Girls',
+            description: 'F',
+            pillar: 'girls_inclusion',
+            published: true,
+            sortOrder: 6,
+          },
+        ]}
+      />,
+    )
+
+    expect(screen.getByRole('link', { name: 'Apply' })).toHaveAttribute('href', '/get-involved')
+    expect(screen.getByText('Traditional Sports')).toBeInTheDocument()
+    expect(screen.getByText('Girls & Inclusion')).toBeInTheDocument()
+  })
 })

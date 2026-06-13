@@ -3,22 +3,36 @@ import { describe, expect, it } from 'vitest'
 import { TestimonialCarousel } from './TestimonialCarousel'
 
 describe('TestimonialCarousel', () => {
-  it('renders testimonial quotes and attribution', () => {
+  it('renders testimonial cards with accent styling', () => {
     render(
       <TestimonialCarousel
         title="Testimonials"
         testimonials={[
           {
-            id: 'testimonial-1',
-            quote: 'My daughter gained confidence.',
-            author: 'Anita Mehta',
+            id: 't1',
+            quote: 'Great program',
+            author: 'Anita',
             relation: 'Parent',
             sortOrder: 0,
           },
+        ]}
+      />,
+    )
+
+    expect(screen.getByText(/Great program/)).toBeInTheDocument()
+    expect(screen.getByText(/Anita/)).toBeInTheDocument()
+    expect(document.getElementById('testimonials')).toHaveAttribute('data-variant', 'default')
+  })
+
+  it('omits relation when not provided', () => {
+    render(
+      <TestimonialCarousel
+        title="Voices"
+        testimonials={[
           {
-            id: 'testimonial-2',
-            quote: 'Well organized event.',
-            author: 'Coach Ravi',
+            id: 't2',
+            quote: 'Life changing',
+            author: 'Ravi',
             relation: '',
             sortOrder: 1,
           },
@@ -26,9 +40,7 @@ describe('TestimonialCarousel', () => {
       />,
     )
 
-    expect(screen.getByText('Testimonials')).toBeInTheDocument()
-    expect(screen.getByText(/My daughter gained confidence/)).toBeInTheDocument()
-    expect(screen.getByText('Anita Mehta — Parent')).toBeInTheDocument()
-    expect(screen.getByText('Coach Ravi')).toBeInTheDocument()
+    expect(screen.getByText('Ravi')).toBeInTheDocument()
+    expect(screen.queryByText(/—/)).not.toBeInTheDocument()
   })
 })

@@ -32,6 +32,15 @@ describe('SectionShell', () => {
     expect(screen.getByText('Festival').closest('section')).toHaveClass('section-shell--festival')
   })
 
+  it('applies impact band variant', () => {
+    render(
+      <SectionShell variant="impact-band">
+        <p>Impact</p>
+      </SectionShell>,
+    )
+    expect(screen.getByText('Impact').closest('section')).toHaveClass('section-shell--impact-band')
+  })
+
   it('applies hero offset class when requested', () => {
     render(
       <SectionShell heroOffset id="hero">

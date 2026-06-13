@@ -27,4 +27,11 @@ describe('SectionHeading', () => {
       'section-heading--center',
     )
   })
+
+  it('renders hero title as h1 with display class', () => {
+    render(<SectionHeading title="Hero title" as="h1" />)
+    expect(screen.getByRole('heading', { name: 'Hero title', level: 1 })).toHaveClass(
+      'heading-display',
+    )
+  })
 })

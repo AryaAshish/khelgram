@@ -3,18 +3,24 @@ import { describe, expect, it } from 'vitest'
 import { ContactSection } from './ContactSection'
 
 describe('ContactSection', () => {
-  it('renders contact details', () => {
+  it('renders contact details in a warm section shell', () => {
     render(
       <ContactSection
         title="Contact"
-        address="Address"
-        phone="+91 12345 67890"
-        email="hello@example.com"
+        address="Jaipur"
+        phone="+91 98765 43210"
+        email="hello@khelgram.org"
       />,
     )
 
-    expect(screen.getByText('Address')).toBeInTheDocument()
-    expect(screen.getByText('+91 12345 67890')).toBeInTheDocument()
-    expect(screen.getByText('hello@example.com')).toBeInTheDocument()
+    expect(document.getElementById('contact')).toHaveAttribute('data-variant', 'warm')
+    expect(screen.getByRole('link', { name: '+91 98765 43210' })).toHaveAttribute(
+      'href',
+      'tel:+919876543210',
+    )
+    expect(screen.getByRole('link', { name: 'hello@khelgram.org' })).toHaveAttribute(
+      'href',
+      'mailto:hello@khelgram.org',
+    )
   })
 })

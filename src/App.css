@@ -169,3 +169,226 @@
 .animate-count-up {
   animation: countUp 0.6s ease forwards;
 }
+
+/* NGO hero */
+.org-hero-grid {
+  display: grid;
+  gap: 2rem;
+  align-items: center;
+}
+
+@media (min-width: 900px) {
+  .org-hero-grid {
+    grid-template-columns: 1.1fr 0.9fr;
+  }
+}
+
+.org-hero-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.org-hero-media {
+  position: relative;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  min-height: 280px;
+  box-shadow: var(--shadow-lg);
+}
+
+.org-hero-image {
+  width: 100%;
+  height: 100%;
+  min-height: 280px;
+  object-fit: cover;
+  display: block;
+}
+
+.org-hero-media-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(22, 101, 52, 0.15), rgba(250, 246, 240, 0.05));
+  pointer-events: none;
+}
+
+/* Program cards */
+.program-card {
+  border: 1px solid var(--color-border);
+  border-left: 4px solid var(--pillar-border, var(--color-earth-light));
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  display: grid;
+  gap: 0.75rem;
+  background: var(--color-surface);
+  transition:
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.program-card:hover {
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-2px);
+}
+
+.program-card__header {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.program-card__icon {
+  color: var(--pillar-accent, var(--color-earth));
+  flex-shrink: 0;
+}
+
+.program-card__pillar {
+  margin: 0;
+  color: var(--pillar-accent, var(--color-earth));
+  font-weight: 600;
+  font-size: var(--text-small);
+}
+
+/* Get involved cards */
+.involved-card {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  display: grid;
+  gap: 0.75rem;
+  background: var(--color-surface);
+  border-top: 4px solid var(--involved-accent, var(--color-earth-light));
+}
+
+.involved-card__icon {
+  color: var(--involved-accent, var(--color-earth));
+}
+
+/* About layout */
+.about-grid {
+  display: grid;
+  gap: 2rem;
+}
+
+@media (min-width: 768px) {
+  .about-grid {
+    grid-template-columns: 1.2fr 0.8fr;
+    align-items: start;
+  }
+}
+
+.about-values {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.about-value-chip {
+  padding: 0.4rem 0.75rem;
+  border-radius: 999px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  font-weight: 600;
+  font-size: var(--text-small);
+}
+
+.about-image {
+  width: 100%;
+  border-radius: var(--radius-lg);
+  object-fit: cover;
+  min-height: 220px;
+  box-shadow: var(--shadow-md);
+}
+
+/* Success stories */
+.stories-layout {
+  display: grid;
+  gap: 1rem;
+}
+
+.story-featured {
+  display: grid;
+  gap: 1.25rem;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-md);
+}
+
+@media (min-width: 768px) {
+  .story-featured {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.story-featured__image {
+  width: 100%;
+  height: 100%;
+  min-height: 240px;
+  object-fit: cover;
+}
+
+.story-featured__body {
+  padding: 1.5rem;
+  display: grid;
+  gap: 0.75rem;
+  align-content: center;
+}
+
+.story-quote {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  line-height: var(--leading-relaxed);
+  color: var(--color-earth);
+}
+
+.stories-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+/* Reach badge */
+.reach-badge {
+  display: inline-block;
+  margin: 0 0 0.5rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: rgba(22, 101, 52, 0.1);
+  color: var(--color-earth);
+  font-weight: 700;
+  font-size: var(--text-small);
+}
+
+/* Testimonial quote bar */
+.testimonial-card {
+  margin: 0;
+  border: 1px solid var(--color-border);
+  border-left: 4px solid var(--color-earth-light);
+  border-radius: var(--radius-lg);
+  padding: 1rem 1rem 1rem 1.25rem;
+  background: var(--color-surface);
+}
+
+/* Impact grid on band */
+.impact-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.75rem;
+}
+
+.impact-stats-band .section-heading__title,
+.impact-stats-band .section-heading__subtitle,
+.impact-stats-band .section-heading__eyebrow {
+  color: var(--color-surface);
+}
+
+.impact-stats-band .section-heading__subtitle {
+  color: rgba(255, 255, 255, 0.85);
+}

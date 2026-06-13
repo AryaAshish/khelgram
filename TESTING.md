@@ -333,3 +333,15 @@ For phases 7–11, enable E2E with `RUN_PHASE7_E2E=1` (etc.) after implementing 
 - [x] `OrgHeroSection` wrapped in `SectionShell` with `heading-display`
 - [x] E2E spec ready: `RUN_PHASE25_E2E=1 npm run verify:phase -- 25`
 - [x] `npm run typecheck`, `lint`, `test:coverage`, `build` all pass
+
+## Phase 26 checklist
+
+- [x] `visualAssets.ts` curated placeholder URLs for NGO hero and about imagery
+- [x] `programPillars.ts` pillar icons and accent colors; program cards with hover lift
+- [x] `OrgHeroSection` 60/40 split hero with eyebrow and photography
+- [x] NGO sections use `SectionShell` rhythm (warm/default/impact-band alternation)
+- [x] `ImpactStatsBar` full-width band with `useCountUp` animation
+- [x] `SuccessStoriesSection` featured story layout + supporting grid
+- [x] Stakeholder icons on `GetInvolvedSection`; credibility sections use elevated cards
+- [x] E2E spec ready: `RUN_PHASE26_E2E=1 npm run verify:phase -- 26`
+- [x] `npm run typecheck`, `lint`, `test:coverage`, `build` all pass
