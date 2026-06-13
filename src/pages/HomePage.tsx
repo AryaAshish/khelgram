@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { SectionErrorBoundary } from '@/components/SectionErrorBoundary'
+import { ChampionsInspirationSection } from '@/components/public/ChampionsInspirationSection'
 import { AboutSection } from '@/components/public/AboutSection'
 import { ContactSection } from '@/components/public/ContactSection'
 import { ProgramsSection } from '@/components/public/ProgramsSection'
@@ -158,6 +159,9 @@ export function HomePage() {
             )}
           </SectionErrorBoundary>
         ) : null}
+        <SectionErrorBoundary title="Champions">
+          <ChampionsInspirationSection />
+        </SectionErrorBoundary>
         {show('success_stories_visible') ? (
           <SectionErrorBoundary title={successStoriesTitle}>
             {storiesLoading ? (

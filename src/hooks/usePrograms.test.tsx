@@ -58,14 +58,13 @@ describe('usePrograms', () => {
     expect(result.current.programs[0]?.id).toBe('program-db')
   })
 
-  it('returns fixture fallback when DB returns empty', async () => {
+  it('returns empty list when DB returns empty', async () => {
     vi.mocked(programsService.getPublishedPrograms).mockResolvedValue([])
 
     const { result } = renderHook(() => usePrograms(), { wrapper: createWrapper() })
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
 
-    expect(result.current.programs.length).toBeGreaterThan(0)
-    expect(result.current.programs[0]?.title).toBe('Grassroots Discovery')
+    expect(result.current.programs).toEqual([])
   })
 
   it('loads admin programs', async () => {

@@ -5,6 +5,7 @@ import {
   deleteContributor,
   getContributors,
   reorderContributors,
+  updateContributor,
 } from './contributors.service'
 
 const mockFrom = vi.fn()
@@ -29,6 +30,8 @@ function createQueryBuilder(result: { data: unknown; error: { message: string } 
     select: vi.fn().mockReturnThis(),
     order: vi.fn().mockResolvedValue(result),
     insert: vi.fn().mockReturnThis(),
+    update: vi.fn().mockReturnThis(),
+    eq: vi.fn().mockReturnThis(),
     single: vi.fn().mockResolvedValue(result),
   }
 }
@@ -123,6 +126,48 @@ describe('contributors.service', () => {
     await expect(
       addContributor({ name: 'Partner', contribution: 'Support' }),
     ).rejects.toBeInstanceOf(SettingsError)
+  })
+
+  it('updates a contributor', async () => {
+    const builder = createQueryBuilder({
+      data: {
+        id: 'contributor-1',
+        name: 'Updated School',
+        contribution: 'Updated support',
+        photo_url: null,
+        sort_order: 0,
+      },
+      error: null,
+    })
+    mockFrom.mockReturnValue(builder)
+
+    await expect(
+      updateContributor('contributor-1', {
+        name: 'Updated School',
+        contribution: 'Updated support',
+      }),
+    ).resolves.toEqual({
+      id: 'contributor-1',
+      name: 'Updated School',
+      contribution: 'Updated support',
+      photoUrl: undefined,
+      sortOrder: 0,
+    })
+
+    expect(builder.update).toHaveBeenCalledWith({
+      name: 'Updated School',
+      contribution: 'Updated support',
+    })
+    expect(builder.eq).toHaveBeenCalledWith('id', 'contributor-1')
+  })
+
+  it('throws SettingsError when update fails', async () => {
+    const builder = createQueryBuilder({ data: null, error: { message: 'update failed' } })
+    mockFrom.mockReturnValue(builder)
+
+    await expect(updateContributor('contributor-1', { name: 'Fail' })).rejects.toBeInstanceOf(
+      SettingsError,
+    )
   })
 
   it('delegates delete to credibility helper', async () => {

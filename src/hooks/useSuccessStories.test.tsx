@@ -55,11 +55,11 @@ describe('useSuccessStories', () => {
     expect(result.current.stories[0]?.id).toBe('story-db')
   })
 
-  it('returns fixture fallback when DB returns empty', async () => {
+  it('returns empty list when DB returns empty', async () => {
     vi.mocked(successStoriesService.getPublishedSuccessStories).mockResolvedValue([])
     const { result } = renderHook(() => useSuccessStories(), { wrapper: createWrapper() })
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
-    expect(result.current.stories[0]?.title).toBe('From village field to district finals')
+    expect(result.current.stories).toEqual([])
   })
 
   it('runs admin mutations with toasts', async () => {

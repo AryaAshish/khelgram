@@ -154,6 +154,37 @@ describe('SortableCredibilityAdmin', () => {
     expect(screen.getByRole('button', { name: 'Saving...' })).toBeDisabled()
   })
 
+  it('edits an existing item when onUpdate is provided', async () => {
+    const user = userEvent.setup()
+    const onUpdate = vi.fn().mockResolvedValue(undefined)
+    const items = [{ id: 'item-1', label: 'First' }]
+
+    render(
+      <SortableCredibilityAdmin<TestItem>
+        title="Test Admin"
+        items={items}
+        fields={fields}
+        addLabel="Add item"
+        isLoading={false}
+        isPending={false}
+        getItemSummary={(item) => item.label}
+        mapItemToFormValues={(item) => ({ label: item.label, published: true })}
+        onAdd={vi.fn()}
+        onUpdate={onUpdate}
+        onDelete={vi.fn()}
+        onReorder={vi.fn()}
+      />,
+    )
+
+    await user.click(screen.getByRole('button', { name: 'Edit' }))
+    await user.clear(screen.getByLabelText('Label'))
+    await user.type(screen.getByLabelText('Label'), 'Updated entry')
+    await user.click(screen.getByRole('button', { name: 'Save changes' }))
+
+    expect(onUpdate).toHaveBeenCalledWith('item-1', { label: 'Updated entry', published: true })
+    expect(screen.getByRole('button', { name: 'Add item' })).toBeInTheDocument()
+  })
+
   it('reorders and deletes items', async () => {
     const user = userEvent.setup()
     const onReorder = vi.fn().mockResolvedValue(undefined)

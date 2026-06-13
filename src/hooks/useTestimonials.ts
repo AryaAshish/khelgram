@@ -1,6 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import { testimonials as fallbackTestimonials } from '@/fixtures/credibilityFixtures'
 import * as testimonialsService from '@/services/testimonials.service'
 
 export const testimonialKeys = {
@@ -15,7 +14,7 @@ export function useTestimonials() {
 
   return {
     ...query,
-    testimonials: query.data?.length ? query.data : fallbackTestimonials,
+    testimonials: query.data ?? [],
   }
 }
 
@@ -34,6 +33,30 @@ export function useAddTestimonial() {
       invalidate()
     },
     onError: () => toast.error('Unable to add testimonial.'),
+  })
+}
+
+export function useAdminTestimonials() {
+  return useQuery({
+    queryKey: [...testimonialKeys.all, 'admin'] as const,
+    queryFn: testimonialsService.getTestimonials,
+  })
+}
+
+export function useUpdateTestimonial() {
+  const invalidate = useInvalidateTestimonials()
+
+  return useMutation({
+    mutationFn: ({
+      id,
+      ...input
+    }: { id: string } & Parameters<typeof testimonialsService.updateTestimonial>[1]) =>
+      testimonialsService.updateTestimonial(id, input),
+    onSuccess: () => {
+      toast.success('Testimonial updated.')
+      invalidate()
+    },
+    onError: () => toast.error('Unable to update testimonial.'),
   })
 }
 

@@ -5,9 +5,11 @@ import { describe, expect, it, vi } from 'vitest'
 import { toast } from 'sonner'
 import {
   useAddTestimonial,
+  useAdminTestimonials,
   useDeleteTestimonial,
   useReorderTestimonials,
   useTestimonials,
+  useUpdateTestimonial,
 } from './useTestimonials'
 import * as testimonialsService from '@/services/testimonials.service'
 
@@ -15,6 +17,7 @@ vi.mock('sonner', () => ({ toast: { success: vi.fn(), error: vi.fn() } }))
 vi.mock('@/services/testimonials.service', () => ({
   getTestimonials: vi.fn(),
   addTestimonial: vi.fn(),
+  updateTestimonial: vi.fn(),
   deleteTestimonial: vi.fn(),
   reorderTestimonials: vi.fn(),
 }))
@@ -39,6 +42,35 @@ describe('useTestimonials hooks', () => {
     const { result } = renderHook(() => useTestimonials(), { wrapper: createWrapper() })
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
     expect(result.current.testimonials[0]?.author).toBe('Parent')
+  })
+
+  it('loads admin testimonials', async () => {
+    vi.mocked(testimonialsService.getTestimonials).mockResolvedValue([
+      { id: 't-1', quote: 'Great', author: 'Parent', relation: 'Mom', sortOrder: 0 },
+    ])
+    const { result } = renderHook(() => useAdminTestimonials(), { wrapper: createWrapper() })
+    await waitFor(() => expect(result.current.isSuccess).toBe(true))
+    expect(result.current.data?.[0]?.author).toBe('Parent')
+  })
+
+  it('updates testimonial', async () => {
+    vi.mocked(testimonialsService.updateTestimonial).mockResolvedValue({
+      id: 't-1',
+      quote: 'Updated',
+      author: 'Parent',
+      relation: 'Mom',
+      sortOrder: 0,
+    })
+    const { result } = renderHook(() => useUpdateTestimonial(), { wrapper: createWrapper() })
+    await result.current.mutateAsync({ id: 't-1', quote: 'Updated' })
+    expect(toast.success).toHaveBeenCalled()
+  })
+
+  it('shows error toast when update fails', async () => {
+    vi.mocked(testimonialsService.updateTestimonial).mockRejectedValue(new Error('failed'))
+    const { result } = renderHook(() => useUpdateTestimonial(), { wrapper: createWrapper() })
+    await expect(result.current.mutateAsync({ id: 't-1', quote: 'Fail' })).rejects.toThrow('failed')
+    expect(toast.error).toHaveBeenCalled()
   })
 
   it('shows error toast when add fails', async () => {

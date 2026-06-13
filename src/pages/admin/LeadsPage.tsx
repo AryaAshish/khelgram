@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label'
 import { useAdminLeads, useExportLeads } from '@/hooks/useLeads'
 import type { InquiryLeadFilters, InquiryLeadStatus, InquiryLeadType } from '@/types/app.types'
 
-const typeOptions: Array<InquiryLeadType | ''> = ['', 'partner', 'volunteer']
+const typeOptions: Array<InquiryLeadType | ''> = ['', 'partner', 'volunteer', 'donate']
 const statusOptions: Array<InquiryLeadStatus | ''> = ['', 'new', 'contacted', 'closed']
 
 export function LeadsPage() {

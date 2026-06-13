@@ -8,6 +8,7 @@ const capture = vi.hoisted(() => ({
 
 const teamMocks = vi.hoisted(() => ({
   add: vi.fn(),
+  update: vi.fn(),
   delete: vi.fn(),
   reorder: vi.fn(),
   admin: vi.fn(),
@@ -15,6 +16,7 @@ const teamMocks = vi.hoisted(() => ({
 
 const contributorsMocks = vi.hoisted(() => ({
   add: vi.fn(),
+  update: vi.fn(),
   delete: vi.fn(),
   reorder: vi.fn(),
   list: vi.fn(),
@@ -22,6 +24,7 @@ const contributorsMocks = vi.hoisted(() => ({
 
 const sponsorsMocks = vi.hoisted(() => ({
   add: vi.fn(),
+  update: vi.fn(),
   delete: vi.fn(),
   reorder: vi.fn(),
   list: vi.fn(),
@@ -29,6 +32,7 @@ const sponsorsMocks = vi.hoisted(() => ({
 
 const testimonialsMocks = vi.hoisted(() => ({
   add: vi.fn(),
+  update: vi.fn(),
   delete: vi.fn(),
   reorder: vi.fn(),
   list: vi.fn(),
@@ -36,6 +40,7 @@ const testimonialsMocks = vi.hoisted(() => ({
 
 const faqMocks = vi.hoisted(() => ({
   add: vi.fn(),
+  update: vi.fn(),
   delete: vi.fn(),
   reorder: vi.fn(),
   list: vi.fn(),
@@ -60,34 +65,39 @@ vi.mock('@/components/admin/SortableCredibilityAdmin', () => ({
 vi.mock('@/hooks/useTeam', () => ({
   useAdminTeam: () => teamMocks.admin(),
   useAddTeamMember: () => ({ mutateAsync: teamMocks.add, isPending: false }),
+  useUpdateTeamMember: () => ({ mutateAsync: teamMocks.update, isPending: false }),
   useDeleteTeamMember: () => ({ mutateAsync: teamMocks.delete, isPending: false }),
   useReorderTeamMembers: () => ({ mutateAsync: teamMocks.reorder, isPending: false }),
 }))
 
 vi.mock('@/hooks/useContributors', () => ({
-  useContributors: () => contributorsMocks.list(),
+  useAdminContributors: () => contributorsMocks.list(),
   useAddContributor: () => ({ mutateAsync: contributorsMocks.add, isPending: false }),
+  useUpdateContributor: () => ({ mutateAsync: contributorsMocks.update, isPending: false }),
   useDeleteContributor: () => ({ mutateAsync: contributorsMocks.delete, isPending: false }),
   useReorderContributors: () => ({ mutateAsync: contributorsMocks.reorder, isPending: false }),
 }))
 
 vi.mock('@/hooks/useSponsors', () => ({
-  useSponsors: () => sponsorsMocks.list(),
+  useAdminSponsors: () => sponsorsMocks.list(),
   useAddSponsor: () => ({ mutateAsync: sponsorsMocks.add, isPending: false }),
+  useUpdateSponsor: () => ({ mutateAsync: sponsorsMocks.update, isPending: false }),
   useDeleteSponsor: () => ({ mutateAsync: sponsorsMocks.delete, isPending: false }),
   useReorderSponsors: () => ({ mutateAsync: sponsorsMocks.reorder, isPending: false }),
 }))
 
 vi.mock('@/hooks/useTestimonials', () => ({
-  useTestimonials: () => testimonialsMocks.list(),
+  useAdminTestimonials: () => testimonialsMocks.list(),
   useAddTestimonial: () => ({ mutateAsync: testimonialsMocks.add, isPending: false }),
+  useUpdateTestimonial: () => ({ mutateAsync: testimonialsMocks.update, isPending: false }),
   useDeleteTestimonial: () => ({ mutateAsync: testimonialsMocks.delete, isPending: false }),
   useReorderTestimonials: () => ({ mutateAsync: testimonialsMocks.reorder, isPending: false }),
 }))
 
 vi.mock('@/hooks/useFaq', () => ({
-  useFaq: () => faqMocks.list(),
+  useAdminFaq: () => faqMocks.list(),
   useAddFaqItem: () => ({ mutateAsync: faqMocks.add, isPending: false }),
+  useUpdateFaqItem: () => ({ mutateAsync: faqMocks.update, isPending: false }),
   useDeleteFaqItem: () => ({ mutateAsync: faqMocks.delete, isPending: false }),
   useReorderFaqItems: () => ({ mutateAsync: faqMocks.reorder, isPending: false }),
 }))
@@ -114,10 +124,10 @@ const emptyList = { isLoading: false }
 describe('credibility admin onAdd defaults', () => {
   beforeEach(() => {
     teamMocks.admin.mockReturnValue({ data: [], ...emptyList })
-    contributorsMocks.list.mockReturnValue({ contributors: [], ...emptyList })
-    sponsorsMocks.list.mockReturnValue({ sponsors: [], ...emptyList })
-    testimonialsMocks.list.mockReturnValue({ testimonials: [], ...emptyList })
-    faqMocks.list.mockReturnValue({ items: [], ...emptyList })
+    contributorsMocks.list.mockReturnValue({ data: [], ...emptyList })
+    sponsorsMocks.list.mockReturnValue({ data: [], ...emptyList })
+    testimonialsMocks.list.mockReturnValue({ data: [], ...emptyList })
+    faqMocks.list.mockReturnValue({ data: [], ...emptyList })
     impactMocks.list.mockReturnValue({ impactStats: [], ...emptyList })
 
     teamMocks.add.mockResolvedValue({})

@@ -9,6 +9,7 @@ import {
   useDeleteTeamMember,
   useReorderTeamMembers,
   useTeam,
+  useUpdateTeamMember,
 } from './useTeam'
 import * as teamService from '@/services/team.service'
 
@@ -17,6 +18,7 @@ vi.mock('@/services/team.service', () => ({
   getPublishedTeamMembers: vi.fn(),
   getAllTeamMembers: vi.fn(),
   addTeamMember: vi.fn(),
+  updateTeamMember: vi.fn(),
   deleteTeamMember: vi.fn(),
   reorderTeamMembers: vi.fn(),
 }))
@@ -56,14 +58,13 @@ describe('useTeam', () => {
     expect(result.current.members[0]?.id).toBe('team-db')
   })
 
-  it('returns fixture fallback when DB returns empty', async () => {
+  it('returns empty list when DB returns empty', async () => {
     vi.mocked(teamService.getPublishedTeamMembers).mockResolvedValue([])
 
     const { result } = renderHook(() => useTeam(), { wrapper: createWrapper() })
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
 
-    expect(result.current.members.length).toBeGreaterThan(0)
-    expect(result.current.members[0]?.name).toBe('Priya Sharma')
+    expect(result.current.members).toEqual([])
   })
 
   it('loads admin team members', async () => {
@@ -81,6 +82,20 @@ describe('useTeam', () => {
     const { result } = renderHook(() => useAdminTeam(), { wrapper: createWrapper() })
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
     expect(result.current.data?.[0]?.name).toBe('Admin Member')
+  })
+
+  it('updates team member', async () => {
+    vi.mocked(teamService.updateTeamMember).mockResolvedValue({
+      id: 'team-1',
+      name: 'Updated',
+      role: 'Director',
+      bio: '',
+      published: true,
+      sortOrder: 0,
+    })
+    const { result } = renderHook(() => useUpdateTeamMember(), { wrapper: createWrapper() })
+    await result.current.mutateAsync({ id: 'team-1', name: 'Updated' })
+    expect(toast.success).toHaveBeenCalled()
   })
 
   it('mutates team members', async () => {
@@ -110,6 +125,7 @@ describe('useTeam', () => {
 
   it('shows error toasts when mutations fail', async () => {
     vi.mocked(teamService.addTeamMember).mockRejectedValue(new Error('add failed'))
+    vi.mocked(teamService.updateTeamMember).mockRejectedValue(new Error('update failed'))
     vi.mocked(teamService.deleteTeamMember).mockRejectedValue(new Error('delete failed'))
     vi.mocked(teamService.reorderTeamMembers).mockRejectedValue(new Error('reorder failed'))
 
@@ -124,6 +140,13 @@ describe('useTeam', () => {
     ).rejects.toThrow('add failed')
 
     await expect(
+      renderHook(() => useUpdateTeamMember(), { wrapper }).result.current.mutateAsync({
+        id: 'team-1',
+        name: 'Fail',
+      }),
+    ).rejects.toThrow('update failed')
+
+    await expect(
       renderHook(() => useDeleteTeamMember(), { wrapper }).result.current.mutateAsync('team-1'),
     ).rejects.toThrow('delete failed')
 
@@ -131,6 +154,6 @@ describe('useTeam', () => {
       renderHook(() => useReorderTeamMembers(), { wrapper }).result.current.mutateAsync(['team-1']),
     ).rejects.toThrow('reorder failed')
 
-    expect(toast.error).toHaveBeenCalledTimes(3)
+    expect(toast.error).toHaveBeenCalledTimes(4)
   })
 })

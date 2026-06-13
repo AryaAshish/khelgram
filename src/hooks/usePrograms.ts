@@ -1,6 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import { programs as fallbackPrograms } from '@/fixtures/programsFixtures'
 import * as programsService from '@/services/programs.service'
 import type { ProgramPillar } from '@/types/app.types'
 
@@ -17,7 +16,7 @@ export function usePrograms() {
 
   return {
     ...query,
-    programs: query.data?.length ? query.data : fallbackPrograms,
+    programs: query.data ?? [],
   }
 }
 

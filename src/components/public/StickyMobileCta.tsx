@@ -35,6 +35,10 @@ export function StickyMobileCta({
     >
       Donate
     </a>
+  ) : donateHref.startsWith('/') && !donateHref.includes('#') ? (
+    <Link to={donateHref} className="sticky-mobile-cta__button sticky-mobile-cta__button--donate">
+      Donate
+    </Link>
   ) : (
     <a href={donateHref} className="sticky-mobile-cta__button sticky-mobile-cta__button--donate">
       Donate

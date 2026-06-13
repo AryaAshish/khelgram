@@ -6,7 +6,7 @@ describe('getSupportContent', () => {
     const content = getSupportContent({})
 
     expect(content.title).toBe('Support Our Mission')
-    expect(content.donateUrl).toBe('https://khelgram.org/donate')
+    expect(content.donateUrl).toBe('/donate')
     expect(content.fundsUsage).toHaveLength(3)
     expect(content.donateQrImage).toBeUndefined()
   })

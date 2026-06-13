@@ -6,6 +6,7 @@ import {
   getAllTeamMembers,
   getPublishedTeamMembers,
   reorderTeamMembers,
+  updateTeamMember,
 } from './team.service'
 
 const mockFrom = vi.fn()
@@ -32,6 +33,7 @@ function createQueryBuilder(result: { data: unknown; error: { message: string } 
     eq: vi.fn().mockReturnThis(),
     order,
     insert: vi.fn().mockReturnThis(),
+    update: vi.fn().mockReturnThis(),
     single: vi.fn().mockResolvedValue(result),
   }
 }
@@ -174,6 +176,64 @@ describe('team.service', () => {
     await expect(addTeamMember({ name: 'Fail', role: 'Role' })).rejects.toBeInstanceOf(
       SettingsError,
     )
+  })
+
+  it('updates a team member', async () => {
+    const builder = createQueryBuilder({
+      data: {
+        id: 'team-1',
+        name: 'Updated Name',
+        role: 'Director',
+        bio: 'Updated bio',
+        photo_url: null,
+        published: true,
+        sort_order: 0,
+      },
+      error: null,
+    })
+    mockFrom.mockReturnValue(builder)
+
+    await expect(
+      updateTeamMember('team-1', { name: 'Updated Name', bio: 'Updated bio' }),
+    ).resolves.toEqual({
+      id: 'team-1',
+      name: 'Updated Name',
+      role: 'Director',
+      bio: 'Updated bio',
+      photoUrl: undefined,
+      published: true,
+      sortOrder: 0,
+    })
+
+    expect(builder.update).toHaveBeenCalledWith({ name: 'Updated Name', bio: 'Updated bio' })
+    expect(builder.eq).toHaveBeenCalledWith('id', 'team-1')
+  })
+
+  it('throws SettingsError when update fails', async () => {
+    const builder = createQueryBuilder({ data: null, error: { message: 'update failed' } })
+    mockFrom.mockReturnValue(builder)
+
+    await expect(updateTeamMember('team-1', { name: 'Fail' })).rejects.toBeInstanceOf(SettingsError)
+  })
+
+  it('clears optional fields when updating team member', async () => {
+    const builder = createQueryBuilder({
+      data: {
+        id: 'team-1',
+        name: 'Updated',
+        role: 'Director',
+        bio: '',
+        photo_url: null,
+        published: false,
+        sort_order: 0,
+      },
+      error: null,
+    })
+    mockFrom.mockReturnValue(builder)
+
+    await updateTeamMember('team-1', { photoUrl: '', published: false })
+
+    expect(builder.update).toHaveBeenCalledWith({ photo_url: null, published: false })
   })
 
   it('delegates delete to credibility helper', async () => {

@@ -35,23 +35,12 @@ describe('useGallery', () => {
     expect(result.current.images[0]?.id).toBe('gallery-1')
   })
 
-  it('returns empty list without fallback when configured', async () => {
-    vi.mocked(galleryService.getGalleryImages).mockResolvedValue([])
-
-    const { result } = renderHook(() => useGallery({ withFallback: false }), {
-      wrapper: createWrapper(),
-    })
-    await waitFor(() => expect(result.current.isSuccess).toBe(true))
-
-    expect(result.current.images).toEqual([])
-  })
-
-  it('returns fixture fallback when DB returns empty', async () => {
+  it('returns empty list when DB returns empty', async () => {
     vi.mocked(galleryService.getGalleryImages).mockResolvedValue([])
 
     const { result } = renderHook(() => useGallery(), { wrapper: createWrapper() })
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
 
-    expect(result.current.images.length).toBeGreaterThan(0)
+    expect(result.current.images).toEqual([])
   })
 })

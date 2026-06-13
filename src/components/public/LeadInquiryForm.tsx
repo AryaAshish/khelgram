@@ -8,7 +8,7 @@ import { SectionShell } from '@/components/public/primitives/SectionShell'
 import type { InquiryLeadType } from '@/types/app.types'
 
 export type LeadInquiryFormProps = {
-  type: InquiryLeadType
+  type: Extract<InquiryLeadType, 'partner' | 'volunteer'>
   title: string
   description: string
   showOrganization?: boolean
@@ -23,7 +23,7 @@ const emptyForm = {
 }
 
 const formMeta: Record<
-  InquiryLeadType,
+  Extract<InquiryLeadType, 'partner' | 'volunteer'>,
   { icon: typeof Handshake; accent: string; bullets: string[] }
 > = {
   partner: {

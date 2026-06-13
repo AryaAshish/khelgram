@@ -186,7 +186,7 @@ export type RegistrationFilters = {
   status?: RegistrationStatus | ''
 }
 
-export type InquiryLeadType = 'partner' | 'volunteer'
+export type InquiryLeadType = 'partner' | 'volunteer' | 'donate'
 
 export type InquiryLeadStatus = 'new' | 'contacted' | 'closed'
 

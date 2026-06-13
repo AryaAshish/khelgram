@@ -1,9 +1,10 @@
 import { SortableCredibilityAdmin } from '@/components/admin/SortableCredibilityAdmin'
 import {
   useAddContributor,
-  useContributors,
+  useAdminContributors,
   useDeleteContributor,
   useReorderContributors,
+  useUpdateContributor,
 } from '@/hooks/useContributors'
 import type { Contributor } from '@/types/app.types'
 
@@ -14,12 +15,16 @@ const fields = [
 ]
 
 export function ContributorsPage() {
-  const { contributors, isLoading } = useContributors()
+  const { data: contributors = [], isLoading } = useAdminContributors()
   const addContributor = useAddContributor()
+  const updateContributor = useUpdateContributor()
   const deleteContributor = useDeleteContributor()
   const reorderContributors = useReorderContributors()
   const isPending =
-    addContributor.isPending || deleteContributor.isPending || reorderContributors.isPending
+    addContributor.isPending ||
+    updateContributor.isPending ||
+    deleteContributor.isPending ||
+    reorderContributors.isPending
 
   return (
     <SortableCredibilityAdmin<Contributor>
@@ -30,8 +35,21 @@ export function ContributorsPage() {
       isLoading={isLoading}
       isPending={isPending}
       getItemSummary={(contributor) => `${contributor.name} — ${contributor.contribution}`}
+      mapItemToFormValues={(contributor) => ({
+        name: contributor.name,
+        contribution: contributor.contribution,
+        photoUrl: contributor.photoUrl ?? '',
+      })}
       onAdd={async (values) => {
         await addContributor.mutateAsync({
+          name: String(values.name ?? ''),
+          contribution: String(values.contribution ?? ''),
+          photoUrl: String(values.photoUrl ?? '') || undefined,
+        })
+      }}
+      onUpdate={async (id, values) => {
+        await updateContributor.mutateAsync({
+          id,
           name: String(values.name ?? ''),
           contribution: String(values.contribution ?? ''),
           photoUrl: String(values.photoUrl ?? '') || undefined,

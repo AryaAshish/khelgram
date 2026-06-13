@@ -171,7 +171,7 @@ describe('HomePage', () => {
 
     renderHomePage()
 
-    expect(screen.getByRole('img', { name: /Children celebrating/ })).toHaveAttribute(
+    expect(screen.getByRole('img', { name: /Indian children playing kho-kho/i })).toHaveAttribute(
       'src',
       'https://cms.example/custom-hero.jpg',
     )

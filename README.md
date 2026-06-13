@@ -39,6 +39,12 @@ npm run verify:phase -- 6
 
 Pre-commit hooks run typecheck, coverage, and build automatically. Phase completion uses `verify:phase` (unit + RLS + E2E).
 
+## Deployment
+
+GitHub Actions CI runs on `main` and `dev`. Merges to `main` deploy production on Vercel; merges to `dev` deploy the dev environment.
+
+See [docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md) for GitHub + Vercel setup (two projects, secrets, env vars).
+
 ## Design system
 
 Khelgram uses a **hybrid brand** with two visual lanes:

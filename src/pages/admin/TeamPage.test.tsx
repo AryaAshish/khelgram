@@ -6,6 +6,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { TeamPage } from './TeamPage'
 
 const mockAdd = vi.fn()
+const mockUpdate = vi.fn()
 const mockDelete = vi.fn()
 const mockReorder = vi.fn()
 const mockUseAdminTeam = vi.fn()
@@ -14,6 +15,10 @@ vi.mock('@/hooks/useTeam', () => ({
   useAdminTeam: () => mockUseAdminTeam(),
   useAddTeamMember: () => ({
     mutateAsync: mockAdd,
+    isPending: false,
+  }),
+  useUpdateTeamMember: () => ({
+    mutateAsync: mockUpdate,
     isPending: false,
   }),
   useDeleteTeamMember: () => ({
@@ -36,6 +41,7 @@ function createWrapper() {
 describe('TeamPage', () => {
   beforeEach(() => {
     mockAdd.mockReset()
+    mockUpdate.mockReset()
     mockDelete.mockReset()
     mockReorder.mockReset()
     mockUseAdminTeam.mockReturnValue({
@@ -59,6 +65,7 @@ describe('TeamPage', () => {
       isLoading: false,
     })
     mockAdd.mockResolvedValue({})
+    mockUpdate.mockResolvedValue({})
     mockDelete.mockResolvedValue(undefined)
     mockReorder.mockResolvedValue(undefined)
   })
@@ -100,6 +107,25 @@ describe('TeamPage', () => {
       name: 'New Member',
       role: 'Coach',
       bio: 'Bio text',
+      photoUrl: undefined,
+      published: true,
+    })
+  })
+
+  it('updates a team member when edit form is submitted', async () => {
+    const user = userEvent.setup()
+    render(<TeamPage />, { wrapper: createWrapper() })
+
+    await user.click(screen.getAllByRole('button', { name: 'Edit' })[0]!)
+    await user.clear(screen.getByLabelText('Role'))
+    await user.type(screen.getByLabelText('Role'), 'Program Director')
+    await user.click(screen.getByRole('button', { name: 'Save changes' }))
+
+    expect(mockUpdate).toHaveBeenCalledWith({
+      id: 'team-1',
+      name: 'Priya Sharma',
+      role: 'Program Director',
+      bio: 'Bio',
       photoUrl: undefined,
       published: true,
     })

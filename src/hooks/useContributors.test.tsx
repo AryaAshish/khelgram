@@ -5,9 +5,11 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { toast } from 'sonner'
 import {
   useAddContributor,
+  useAdminContributors,
   useContributors,
   useDeleteContributor,
   useReorderContributors,
+  useUpdateContributor,
 } from './useContributors'
 import * as contributorsService from '@/services/contributors.service'
 
@@ -15,6 +17,7 @@ vi.mock('sonner', () => ({ toast: { success: vi.fn(), error: vi.fn() } }))
 vi.mock('@/services/contributors.service', () => ({
   getContributors: vi.fn(),
   addContributor: vi.fn(),
+  updateContributor: vi.fn(),
   deleteContributor: vi.fn(),
   reorderContributors: vi.fn(),
 }))
@@ -58,6 +61,33 @@ describe('useContributors hooks', () => {
     const { result } = renderHook(() => useDeleteContributor(), { wrapper: createWrapper() })
     await result.current.mutateAsync('c-1')
     expect(toast.success).toHaveBeenCalled()
+  })
+
+  it('loads admin contributors', async () => {
+    const { result } = renderHook(() => useAdminContributors(), { wrapper: createWrapper() })
+    await waitFor(() => expect(result.current.isSuccess).toBe(true))
+    expect(result.current.data?.[0]?.name).toBe('School')
+  })
+
+  it('updates contributor', async () => {
+    vi.mocked(contributorsService.updateContributor).mockResolvedValue({
+      id: 'c-1',
+      name: 'Updated',
+      contribution: 'Support',
+      sortOrder: 0,
+    })
+    const { result } = renderHook(() => useUpdateContributor(), { wrapper: createWrapper() })
+    await result.current.mutateAsync({ id: 'c-1', name: 'Updated' })
+    expect(toast.success).toHaveBeenCalled()
+  })
+
+  it('shows error toast when update fails', async () => {
+    vi.mocked(contributorsService.updateContributor).mockRejectedValue(new Error('failed'))
+    const { result } = renderHook(() => useUpdateContributor(), { wrapper: createWrapper() })
+    await expect(result.current.mutateAsync({ id: 'c-1', name: 'Updated' })).rejects.toThrow(
+      'failed',
+    )
+    expect(toast.error).toHaveBeenCalled()
   })
 
   it('shows error toast when add fails', async () => {

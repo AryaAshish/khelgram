@@ -1,6 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import { successStories as fallbackStories } from '@/fixtures/successStoriesFixtures'
 import * as successStoriesService from '@/services/successStories.service'
 
 export const successStoryKeys = {
@@ -16,7 +15,7 @@ export function useSuccessStories() {
 
   return {
     ...query,
-    stories: query.data?.length ? query.data : fallbackStories,
+    stories: query.data ?? [],
   }
 }
 

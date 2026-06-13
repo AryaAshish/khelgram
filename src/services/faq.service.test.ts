@@ -1,6 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { SettingsError } from '@/lib/errors'
-import { addFaqItem, deleteFaqItem, getFaqItems, reorderFaqItems } from './faq.service'
+import {
+  addFaqItem,
+  deleteFaqItem,
+  getFaqItems,
+  reorderFaqItems,
+  updateFaqItem,
+} from './faq.service'
 
 const mockFrom = vi.fn()
 const mockGetNextSortOrder = vi.fn()
@@ -24,6 +30,8 @@ function createQueryBuilder(result: { data: unknown; error: { message: string } 
     select: vi.fn().mockReturnThis(),
     order: vi.fn().mockResolvedValue(result),
     insert: vi.fn().mockReturnThis(),
+    update: vi.fn().mockReturnThis(),
+    eq: vi.fn().mockReturnThis(),
     single: vi.fn().mockResolvedValue(result),
   }
 }
@@ -116,6 +124,35 @@ describe('faq.service', () => {
     )
 
     await expect(addFaqItem({ question: 'Q?', answer: 'A' })).rejects.toBeInstanceOf(SettingsError)
+  })
+
+  it('updates a FAQ item', async () => {
+    const builder = createQueryBuilder({
+      data: {
+        id: 'faq-1',
+        question: 'Updated?',
+        answer: 'Updated answer',
+        sort_order: 0,
+      },
+      error: null,
+    })
+    mockFrom.mockReturnValue(builder)
+
+    await expect(
+      updateFaqItem('faq-1', { question: 'Updated?', answer: 'Updated answer' }),
+    ).resolves.toEqual({
+      id: 'faq-1',
+      question: 'Updated?',
+      answer: 'Updated answer',
+      sortOrder: 0,
+    })
+  })
+
+  it('throws SettingsError when update fails', async () => {
+    const builder = createQueryBuilder({ data: null, error: { message: 'update failed' } })
+    mockFrom.mockReturnValue(builder)
+
+    await expect(updateFaqItem('faq-1', { question: 'Fail' })).rejects.toBeInstanceOf(SettingsError)
   })
 
   it('delegates reorder to credibility helper', async () => {

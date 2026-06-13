@@ -1,5 +1,4 @@
 import { useQuery } from '@tanstack/react-query'
-import { games as fallbackGames } from '@/fixtures/homePageFixtures'
 import * as gamesService from '@/services/games.service'
 
 export const gamesKeys = {
@@ -14,6 +13,6 @@ export function useGames() {
 
   return {
     ...query,
-    games: query.data?.length ? query.data : fallbackGames,
+    games: query.data ?? [],
   }
 }

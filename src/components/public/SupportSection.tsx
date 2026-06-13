@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { SectionShell } from '@/components/public/primitives/SectionShell'
 import { SectionHeading } from '@/components/public/primitives/SectionHeading'
 import { Button } from '@/components/ui/button'
@@ -5,6 +6,30 @@ import type { SupportContent } from '@/lib/supportContent'
 
 export type SupportSectionProps = {
   content: SupportContent
+}
+
+function DonateButton({ href }: { href: string }) {
+  if (href.startsWith('http')) {
+    return (
+      <a href={href} target="_blank" rel="noreferrer">
+        <Button>Donate now</Button>
+      </a>
+    )
+  }
+
+  if (href.startsWith('/') && !href.includes('#')) {
+    return (
+      <Link to={href}>
+        <Button>Donate now</Button>
+      </Link>
+    )
+  }
+
+  return (
+    <a href={href}>
+      <Button>Donate now</Button>
+    </a>
+  )
 }
 
 export function SupportSection({ content }: SupportSectionProps) {
@@ -28,9 +53,7 @@ export function SupportSection({ content }: SupportSectionProps) {
               ))}
             </ul>
             <div style={{ marginTop: '1rem' }}>
-              <a href={content.donateUrl} target="_blank" rel="noreferrer">
-                <Button>Donate now</Button>
-              </a>
+              <DonateButton href={content.donateUrl} />
             </div>
           </div>
           {content.donateQrImage ? (

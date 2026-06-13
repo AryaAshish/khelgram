@@ -6,6 +6,7 @@ import {
   getSponsors,
   reorderSponsors,
   sortSponsors,
+  updateSponsor,
 } from './sponsors.service'
 
 const mockFrom = vi.fn()
@@ -30,6 +31,8 @@ function createQueryBuilder(result: { data: unknown; error: { message: string } 
     select: vi.fn().mockReturnThis(),
     order: vi.fn().mockResolvedValue(result),
     insert: vi.fn().mockReturnThis(),
+    update: vi.fn().mockReturnThis(),
+    eq: vi.fn().mockReturnThis(),
     single: vi.fn().mockResolvedValue(result),
   }
 }
@@ -153,6 +156,39 @@ describe('sponsors.service', () => {
     await expect(addSponsor({ name: 'Sponsor', tier: 'gold' })).rejects.toBeInstanceOf(
       SettingsError,
     )
+  })
+
+  it('updates a sponsor', async () => {
+    const builder = createQueryBuilder({
+      data: {
+        id: 'sponsor-1',
+        name: 'Updated Sponsor',
+        tier: 'platinum',
+        logo_url: null,
+        website: 'https://updated.example',
+        sort_order: 0,
+      },
+      error: null,
+    })
+    mockFrom.mockReturnValue(builder)
+
+    await expect(
+      updateSponsor('sponsor-1', { name: 'Updated Sponsor', website: 'https://updated.example' }),
+    ).resolves.toEqual({
+      id: 'sponsor-1',
+      name: 'Updated Sponsor',
+      tier: 'platinum',
+      logoUrl: undefined,
+      website: 'https://updated.example',
+      sortOrder: 0,
+    })
+  })
+
+  it('throws SettingsError when update fails', async () => {
+    const builder = createQueryBuilder({ data: null, error: { message: 'update failed' } })
+    mockFrom.mockReturnValue(builder)
+
+    await expect(updateSponsor('sponsor-1', { name: 'Fail' })).rejects.toBeInstanceOf(SettingsError)
   })
 
   it('delegates delete to credibility helper', async () => {

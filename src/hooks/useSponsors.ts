@@ -1,6 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import { sponsors as fallbackSponsors } from '@/fixtures/credibilityFixtures'
 import * as sponsorsService from '@/services/sponsors.service'
 
 export const sponsorKeys = {
@@ -15,7 +14,7 @@ export function useSponsors() {
 
   return {
     ...query,
-    sponsors: query.data?.length ? query.data : fallbackSponsors,
+    sponsors: query.data ?? [],
   }
 }
 
@@ -34,6 +33,30 @@ export function useAddSponsor() {
       invalidate()
     },
     onError: () => toast.error('Unable to add sponsor.'),
+  })
+}
+
+export function useAdminSponsors() {
+  return useQuery({
+    queryKey: [...sponsorKeys.all, 'admin'] as const,
+    queryFn: sponsorsService.getSponsors,
+  })
+}
+
+export function useUpdateSponsor() {
+  const invalidate = useInvalidateSponsors()
+
+  return useMutation({
+    mutationFn: ({
+      id,
+      ...input
+    }: { id: string } & Parameters<typeof sponsorsService.updateSponsor>[1]) =>
+      sponsorsService.updateSponsor(id, input),
+    onSuccess: () => {
+      toast.success('Sponsor updated.')
+      invalidate()
+    },
+    onError: () => toast.error('Unable to update sponsor.'),
   })
 }
 

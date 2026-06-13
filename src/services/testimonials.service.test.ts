@@ -5,6 +5,7 @@ import {
   deleteTestimonial,
   getTestimonials,
   reorderTestimonials,
+  updateTestimonial,
 } from './testimonials.service'
 
 const mockFrom = vi.fn()
@@ -29,6 +30,8 @@ function createQueryBuilder(result: { data: unknown; error: { message: string } 
     select: vi.fn().mockReturnThis(),
     order: vi.fn().mockResolvedValue(result),
     insert: vi.fn().mockReturnThis(),
+    update: vi.fn().mockReturnThis(),
+    eq: vi.fn().mockReturnThis(),
     single: vi.fn().mockResolvedValue(result),
   }
 }
@@ -116,6 +119,60 @@ describe('testimonials.service', () => {
     await expect(addTestimonial({ quote: 'Great', author: 'Parent' })).rejects.toBeInstanceOf(
       SettingsError,
     )
+  })
+
+  it('updates a testimonial', async () => {
+    const builder = createQueryBuilder({
+      data: {
+        id: 'testimonial-1',
+        quote: 'Updated quote',
+        author: 'Updated author',
+        relation: 'Coach',
+        photo_url: null,
+        sort_order: 0,
+      },
+      error: null,
+    })
+    mockFrom.mockReturnValue(builder)
+
+    await expect(
+      updateTestimonial('testimonial-1', { quote: 'Updated quote', author: 'Updated author' }),
+    ).resolves.toEqual({
+      id: 'testimonial-1',
+      quote: 'Updated quote',
+      author: 'Updated author',
+      relation: 'Coach',
+      photoUrl: undefined,
+      sortOrder: 0,
+    })
+  })
+
+  it('throws SettingsError when update fails', async () => {
+    const builder = createQueryBuilder({ data: null, error: { message: 'update failed' } })
+    mockFrom.mockReturnValue(builder)
+
+    await expect(updateTestimonial('testimonial-1', { quote: 'Fail' })).rejects.toBeInstanceOf(
+      SettingsError,
+    )
+  })
+
+  it('clears photo URL when updating testimonial', async () => {
+    const builder = createQueryBuilder({
+      data: {
+        id: 'testimonial-1',
+        quote: 'Quote',
+        author: 'Author',
+        relation: '',
+        photo_url: null,
+        sort_order: 0,
+      },
+      error: null,
+    })
+    mockFrom.mockReturnValue(builder)
+
+    await updateTestimonial('testimonial-1', { photoUrl: '', relation: 'Coach' })
+
+    expect(builder.update).toHaveBeenCalledWith({ photo_url: null, relation: 'Coach' })
   })
 
   it('delegates delete to credibility helper', async () => {

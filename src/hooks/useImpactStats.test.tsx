@@ -37,21 +37,21 @@ describe('useImpactStats', () => {
     expect(impactStatsService.getImpactStats).toHaveBeenCalledWith('org')
   })
 
-  it('returns event fixture fallback when DB returns empty', async () => {
+  it('returns empty list when DB returns empty for event scope', async () => {
     vi.mocked(impactStatsService.getImpactStats).mockResolvedValue([])
 
     const { result } = renderHook(() => useImpactStats('event'), { wrapper: createWrapper() })
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
 
-    expect(result.current.impactStats[0]?.label).toBe('Children Participating')
+    expect(result.current.impactStats).toEqual([])
   })
 
-  it('returns org fixture fallback when DB returns empty', async () => {
+  it('returns empty list when DB returns empty for org scope', async () => {
     vi.mocked(impactStatsService.getImpactStats).mockResolvedValue([])
 
     const { result } = renderHook(() => useImpactStats('org'), { wrapper: createWrapper() })
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
 
-    expect(result.current.impactStats[0]?.label).toBe('Villages Reached')
+    expect(result.current.impactStats).toEqual([])
   })
 })

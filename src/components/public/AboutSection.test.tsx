@@ -14,7 +14,9 @@ describe('AboutSection', () => {
     expect(screen.getByText('Mission text')).toBeInTheDocument()
     expect(screen.getByText('Vision text')).toBeInTheDocument()
     expect(screen.getByText('Value One')).toBeInTheDocument()
-    expect(screen.getByRole('img', { name: /Coach guiding children/i })).toBeInTheDocument()
+    expect(
+      screen.getByRole('img', { name: /Indian coach guiding children during football/i }),
+    ).toBeInTheDocument()
     expect(document.getElementById('about')).toHaveAttribute('data-variant', 'warm')
   })
 })

@@ -47,6 +47,32 @@ export async function addFaqItem(input: { question: string; answer: string }): P
   return mapFaqItem(data)
 }
 
+export async function updateFaqItem(
+  id: string,
+  input: {
+    question?: string
+    answer?: string
+  },
+): Promise<FaqItem> {
+  const updates: Database['public']['Tables']['faq_items']['Update'] = {}
+
+  if (input.question !== undefined) updates.question = input.question
+  if (input.answer !== undefined) updates.answer = input.answer
+
+  const { data, error } = await supabase
+    .from('faq_items')
+    .update(updates)
+    .eq('id', id)
+    .select('*')
+    .single()
+
+  if (error) {
+    throw new SettingsError(error.message)
+  }
+
+  return mapFaqItem(data)
+}
+
 export async function deleteFaqItem(id: string): Promise<void> {
   await deleteRow('faq_items', id)
 }

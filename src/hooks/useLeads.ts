@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import { partnerLeadSchema, volunteerLeadSchema } from '@/lib/lead.schema'
-import type { PartnerLeadInput } from '@/lib/lead.schema'
+import { partnerLeadSchema, volunteerLeadSchema, donateLeadSchema } from '@/lib/lead.schema'
+import type { DonateLeadInput, PartnerLeadInput } from '@/lib/lead.schema'
 import { SettingsError } from '@/lib/errors'
 import { downloadCsv } from '@/lib/exportCsv'
 import * as leadsService from '@/services/leads.service'
@@ -13,7 +13,12 @@ export const leadKeys = {
 }
 
 export function useSubmitLead(type: InquiryLeadType) {
-  const schema = type === 'partner' ? partnerLeadSchema : volunteerLeadSchema
+  const schema =
+    type === 'partner'
+      ? partnerLeadSchema
+      : type === 'volunteer'
+        ? volunteerLeadSchema
+        : donateLeadSchema
 
   return useMutation({
     mutationFn: async (input: Record<string, string>) => {
@@ -25,6 +30,17 @@ export function useSubmitLead(type: InquiryLeadType) {
 
       const data = parsed.data
 
+      if (type === 'donate') {
+        const donateData = data as DonateLeadInput
+        return leadsService.submitLead({
+          type,
+          name: donateData.name || 'Interested donor',
+          email: donateData.email || undefined,
+          phone: donateData.phone || undefined,
+          message: donateData.message,
+        })
+      }
+
       return leadsService.submitLead({
         type,
         name: data.name,
@@ -35,7 +51,11 @@ export function useSubmitLead(type: InquiryLeadType) {
       })
     },
     onSuccess: () => {
-      toast.success('Thank you! We received your inquiry.')
+      toast.success(
+        type === 'donate'
+          ? "Thank you! We'll call or email you within 2–3 working days."
+          : 'Thank you! We received your inquiry.',
+      )
     },
     onError: (error: Error) => {
       toast.error(error.message)

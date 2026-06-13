@@ -56,6 +56,36 @@ export async function addTestimonial(input: {
   return mapTestimonial(data)
 }
 
+export async function updateTestimonial(
+  id: string,
+  input: {
+    quote?: string
+    author?: string
+    relation?: string
+    photoUrl?: string
+  },
+): Promise<Testimonial> {
+  const updates: Database['public']['Tables']['testimonials']['Update'] = {}
+
+  if (input.quote !== undefined) updates.quote = input.quote
+  if (input.author !== undefined) updates.author = input.author
+  if (input.relation !== undefined) updates.relation = input.relation
+  if (input.photoUrl !== undefined) updates.photo_url = input.photoUrl || null
+
+  const { data, error } = await supabase
+    .from('testimonials')
+    .update(updates)
+    .eq('id', id)
+    .select('*')
+    .single()
+
+  if (error) {
+    throw new SettingsError(error.message)
+  }
+
+  return mapTestimonial(data)
+}
+
 export async function deleteTestimonial(id: string): Promise<void> {
   await deleteRow('testimonials', id)
 }

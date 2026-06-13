@@ -30,7 +30,9 @@ describe('OrgHeroSection', () => {
     expect(screen.getByRole('heading', { name: 'Building sporting futures' })).toBeInTheDocument()
     expect(screen.getByText('120+ villages reached')).toBeInTheDocument()
     expect(screen.getByText('Grassroots NGO mission')).toBeInTheDocument()
-    expect(screen.getByRole('img', { name: /Children celebrating/i })).toBeInTheDocument()
+    expect(
+      screen.getByRole('img', { name: /Indian children playing kho-kho/i }),
+    ).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Our impact' }))
     expect(onPrimaryClick).toHaveBeenCalled()
     expect(screen.getByRole('link', { name: 'Khel 2026' })).toHaveAttribute('href', '/khel2026')

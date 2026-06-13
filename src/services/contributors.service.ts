@@ -53,6 +53,34 @@ export async function addContributor(input: {
   return mapContributor(data)
 }
 
+export async function updateContributor(
+  id: string,
+  input: {
+    name?: string
+    contribution?: string
+    photoUrl?: string
+  },
+): Promise<Contributor> {
+  const updates: Database['public']['Tables']['contributors']['Update'] = {}
+
+  if (input.name !== undefined) updates.name = input.name
+  if (input.contribution !== undefined) updates.contribution = input.contribution
+  if (input.photoUrl !== undefined) updates.photo_url = input.photoUrl || null
+
+  const { data, error } = await supabase
+    .from('contributors')
+    .update(updates)
+    .eq('id', id)
+    .select('*')
+    .single()
+
+  if (error) {
+    throw new SettingsError(error.message)
+  }
+
+  return mapContributor(data)
+}
+
 export async function deleteContributor(id: string): Promise<void> {
   await deleteRow('contributors', id)
 }

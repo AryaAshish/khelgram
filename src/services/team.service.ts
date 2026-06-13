@@ -73,6 +73,38 @@ export async function addTeamMember(input: {
   return mapTeamMember(data)
 }
 
+export async function updateTeamMember(
+  id: string,
+  input: {
+    name?: string
+    role?: string
+    bio?: string
+    photoUrl?: string
+    published?: boolean
+  },
+): Promise<TeamMember> {
+  const updates: Database['public']['Tables']['team_members']['Update'] = {}
+
+  if (input.name !== undefined) updates.name = input.name
+  if (input.role !== undefined) updates.role = input.role
+  if (input.bio !== undefined) updates.bio = input.bio
+  if (input.photoUrl !== undefined) updates.photo_url = input.photoUrl || null
+  if (input.published !== undefined) updates.published = input.published
+
+  const { data, error } = await supabase
+    .from('team_members')
+    .update(updates)
+    .eq('id', id)
+    .select('*')
+    .single()
+
+  if (error) {
+    throw new SettingsError(error.message)
+  }
+
+  return mapTeamMember(data)
+}
+
 export async function deleteTeamMember(id: string): Promise<void> {
   await deleteRow('team_members', id)
 }

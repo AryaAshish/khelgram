@@ -12,10 +12,10 @@ describe('SiteHeader', () => {
       </MemoryRouter>,
     )
     expect(screen.getByText('Khelgram Foundation')).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'About' })).toHaveAttribute('href', '#about')
-    expect(screen.getByRole('link', { name: 'Programs' })).toHaveAttribute('href', '#programs')
-    expect(screen.getByRole('link', { name: 'Impact' })).toHaveAttribute('href', '#impact')
-    expect(screen.getByRole('link', { name: 'Contact' })).toHaveAttribute('href', '#contact')
+    expect(screen.getByRole('link', { name: 'About' })).toHaveAttribute('href', '/#about')
+    expect(screen.getByRole('link', { name: 'Programs' })).toHaveAttribute('href', '/#programs')
+    expect(screen.getByRole('link', { name: 'Impact' })).toHaveAttribute('href', '/#impact')
+    expect(screen.getByRole('link', { name: 'Contact' })).toHaveAttribute('href', '/#contact')
     expect(screen.getByRole('link', { name: 'Get Involved' })).toHaveAttribute(
       'href',
       '/get-involved',

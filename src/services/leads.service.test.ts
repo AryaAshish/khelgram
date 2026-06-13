@@ -65,6 +65,46 @@ describe('leads.service', () => {
     })
   })
 
+  it('submits donate lead with phone only', async () => {
+    const builder = createQueryBuilder({
+      data: {
+        id: 'lead-id',
+        type: 'donate',
+        name: 'Interested donor',
+        email: null,
+        phone: '9876543210',
+        organization: null,
+        message: 'Monthly gift',
+        status: 'new',
+        created_at: '2026-01-01T00:00:00.000Z',
+      },
+      error: null,
+    })
+    mockFrom.mockReturnValue(builder)
+
+    await expect(
+      submitLead({
+        type: 'donate',
+        name: 'Interested donor',
+        phone: '9876543210',
+        message: 'Monthly gift',
+      }),
+    ).resolves.toMatchObject({
+      type: 'donate',
+      email: '',
+      phone: '9876543210',
+      message: 'Monthly gift',
+    })
+
+    expect(builder.insert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: 'donate',
+        email: null,
+        phone: '9876543210',
+      }),
+    )
+  })
+
   it('throws SettingsError when submit fails', async () => {
     const builder = createQueryBuilder({ data: null, error: { message: 'Insert failed' } })
     mockFrom.mockReturnValue(builder)

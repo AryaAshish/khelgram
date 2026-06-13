@@ -38,12 +38,12 @@ describe('useGames', () => {
     expect(result.current.games[0]?.name).toBe('Sack Race')
   })
 
-  it('returns fixture fallback when DB returns empty', async () => {
+  it('returns empty list when DB returns empty', async () => {
     vi.mocked(gamesService.getGames).mockResolvedValue([])
 
     const { result } = renderHook(() => useGames(), { wrapper: createWrapper() })
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
 
-    expect(result.current.games.length).toBeGreaterThan(0)
+    expect(result.current.games).toEqual([])
   })
 })

@@ -15,10 +15,10 @@ const navItems: Array<{
   href: string
   route?: boolean
 }> = [
-  { key: 'about', labelKey: 'about', href: '#about' },
-  { key: 'programs', labelKey: 'programs', href: '#programs' },
-  { key: 'impact', labelKey: 'impact', href: '#impact' },
-  { key: 'contact', labelKey: 'contact', href: '#contact' },
+  { key: 'about', labelKey: 'about', href: '/#about' },
+  { key: 'programs', labelKey: 'programs', href: '/#programs' },
+  { key: 'impact', labelKey: 'impact', href: '/#impact' },
+  { key: 'contact', labelKey: 'contact', href: '/#contact' },
 ]
 
 export function SiteHeader({ siteName }: SiteHeaderProps) {
@@ -32,7 +32,6 @@ export function SiteHeader({ siteName }: SiteHeaderProps) {
       <div className="container-custom">
         <div className="header-content">
           <Link to="/" className="logo-section" onClick={closeMobile}>
-            <img src="/brand/wordmark.svg" alt="" className="logo-wordmark" aria-hidden="true" />
             <span className="logo-text">{siteName}</span>
           </Link>
 

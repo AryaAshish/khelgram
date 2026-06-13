@@ -73,6 +73,36 @@ export async function addSponsor(input: {
   return mapSponsor(data)
 }
 
+export async function updateSponsor(
+  id: string,
+  input: {
+    name?: string
+    tier?: SponsorTier
+    logoUrl?: string
+    website?: string
+  },
+): Promise<Sponsor> {
+  const updates: Database['public']['Tables']['sponsors']['Update'] = {}
+
+  if (input.name !== undefined) updates.name = input.name
+  if (input.tier !== undefined) updates.tier = input.tier
+  if (input.logoUrl !== undefined) updates.logo_url = input.logoUrl || null
+  if (input.website !== undefined) updates.website = input.website || null
+
+  const { data, error } = await supabase
+    .from('sponsors')
+    .update(updates)
+    .eq('id', id)
+    .select('*')
+    .single()
+
+  if (error) {
+    throw new SettingsError(error.message)
+  }
+
+  return mapSponsor(data)
+}
+
 export async function deleteSponsor(id: string): Promise<void> {
   await deleteRow('sponsors', id)
 }

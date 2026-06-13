@@ -1,9 +1,10 @@
 import { SortableCredibilityAdmin } from '@/components/admin/SortableCredibilityAdmin'
 import {
   useAddTestimonial,
+  useAdminTestimonials,
   useDeleteTestimonial,
   useReorderTestimonials,
-  useTestimonials,
+  useUpdateTestimonial,
 } from '@/hooks/useTestimonials'
 import type { Testimonial } from '@/types/app.types'
 
@@ -15,12 +16,16 @@ const fields = [
 ]
 
 export function TestimonialsPage() {
-  const { testimonials, isLoading } = useTestimonials()
+  const { data: testimonials = [], isLoading } = useAdminTestimonials()
   const addTestimonial = useAddTestimonial()
+  const updateTestimonial = useUpdateTestimonial()
   const deleteTestimonial = useDeleteTestimonial()
   const reorderTestimonials = useReorderTestimonials()
   const isPending =
-    addTestimonial.isPending || deleteTestimonial.isPending || reorderTestimonials.isPending
+    addTestimonial.isPending ||
+    updateTestimonial.isPending ||
+    deleteTestimonial.isPending ||
+    reorderTestimonials.isPending
 
   return (
     <SortableCredibilityAdmin<Testimonial>
@@ -31,8 +36,23 @@ export function TestimonialsPage() {
       isLoading={isLoading}
       isPending={isPending}
       getItemSummary={(testimonial) => `${testimonial.author}: ${testimonial.quote}`}
+      mapItemToFormValues={(testimonial) => ({
+        quote: testimonial.quote,
+        author: testimonial.author,
+        relation: testimonial.relation ?? '',
+        photoUrl: testimonial.photoUrl ?? '',
+      })}
       onAdd={async (values) => {
         await addTestimonial.mutateAsync({
+          quote: String(values.quote ?? ''),
+          author: String(values.author ?? ''),
+          relation: String(values.relation ?? ''),
+          photoUrl: String(values.photoUrl ?? '') || undefined,
+        })
+      }}
+      onUpdate={async (id, values) => {
+        await updateTestimonial.mutateAsync({
+          id,
           quote: String(values.quote ?? ''),
           author: String(values.author ?? ''),
           relation: String(values.relation ?? ''),

@@ -1,6 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import { faqItems as fallbackFaqItems } from '@/fixtures/credibilityFixtures'
 import * as faqService from '@/services/faq.service'
 
 export const faqKeys = {
@@ -15,7 +14,7 @@ export function useFaq() {
 
   return {
     ...query,
-    items: query.data?.length ? query.data : fallbackFaqItems,
+    items: query.data ?? [],
   }
 }
 
@@ -34,6 +33,30 @@ export function useAddFaqItem() {
       invalidate()
     },
     onError: () => toast.error('Unable to add FAQ item.'),
+  })
+}
+
+export function useAdminFaq() {
+  return useQuery({
+    queryKey: [...faqKeys.all, 'admin'] as const,
+    queryFn: faqService.getFaqItems,
+  })
+}
+
+export function useUpdateFaqItem() {
+  const invalidate = useInvalidateFaq()
+
+  return useMutation({
+    mutationFn: ({
+      id,
+      ...input
+    }: { id: string } & Parameters<typeof faqService.updateFaqItem>[1]) =>
+      faqService.updateFaqItem(id, input),
+    onSuccess: () => {
+      toast.success('FAQ item updated.')
+      invalidate()
+    },
+    onError: () => toast.error('Unable to update FAQ item.'),
   })
 }
 

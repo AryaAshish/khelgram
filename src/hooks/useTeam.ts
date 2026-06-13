@@ -1,6 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import { teamMembers as fallbackTeamMembers } from '@/fixtures/credibilityFixtures'
 import * as teamService from '@/services/team.service'
 
 export const teamKeys = {
@@ -16,7 +15,7 @@ export function useTeam() {
 
   return {
     ...query,
-    members: query.data?.length ? query.data : fallbackTeamMembers,
+    members: query.data ?? [],
   }
 }
 
@@ -42,6 +41,23 @@ export function useAddTeamMember() {
       invalidate()
     },
     onError: () => toast.error('Unable to add team member.'),
+  })
+}
+
+export function useUpdateTeamMember() {
+  const invalidate = useInvalidateTeam()
+
+  return useMutation({
+    mutationFn: ({
+      id,
+      ...input
+    }: { id: string } & Parameters<typeof teamService.updateTeamMember>[1]) =>
+      teamService.updateTeamMember(id, input),
+    onSuccess: () => {
+      toast.success('Team member updated.')
+      invalidate()
+    },
+    onError: () => toast.error('Unable to update team member.'),
   })
 }
 

@@ -63,7 +63,7 @@ const fallbackAllSettings: Record<string, string> = {
   support_title: 'Support Our Mission',
   support_description:
     'Your contribution helps us run grassroots sports programs, training camps, and inclusive events across rural communities.',
-  donate_url: 'https://khelgram.org/donate',
+  donate_url: '/donate',
   donate_qr_image: '',
   support_funds_usage:
     'Equipment and coaching\nVillage outreach camps\nScholarships for talented athletes',

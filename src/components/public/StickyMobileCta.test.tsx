@@ -33,6 +33,18 @@ describe('StickyMobileCta', () => {
     expect(screen.getByRole('link', { name: 'Khel 2026' })).toHaveAttribute('href', '/khel2026')
   })
 
+  it('uses internal route for donate page', () => {
+    Object.defineProperty(window, 'scrollY', { value: 500, writable: true })
+
+    render(
+      <MemoryRouter>
+        <StickyMobileCta donateHref="/donate" />
+      </MemoryRouter>,
+    )
+
+    expect(screen.getByRole('link', { name: 'Donate' })).toHaveAttribute('href', '/donate')
+  })
+
   it('uses hash donate link for internal paths', () => {
     Object.defineProperty(window, 'scrollY', { value: 500, writable: true })
 

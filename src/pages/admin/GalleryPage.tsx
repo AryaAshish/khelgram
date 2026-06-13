@@ -169,7 +169,7 @@ function GalleryEditor({
 }
 
 export function GalleryPage() {
-  const { images, isLoading, isSuccess } = useGallery({ withFallback: false })
+  const { images, isLoading, isSuccess } = useGallery()
   const { data: assets = [], isLoading: assetsLoading } = useMediaLibrary()
   const saveGallery = useSaveGallery()
   const editorKey = isSuccess ? images.map((image) => image.id).join('|') : 'loading'

@@ -10,7 +10,7 @@ const defaultSupport: SupportContent = {
   title: 'Support Our Mission',
   description:
     'Your contribution helps us run grassroots sports programs, training camps, and inclusive events across rural communities.',
-  donateUrl: 'https://khelgram.org/donate',
+  donateUrl: '/donate',
   fundsUsage: [
     'Equipment and coaching',
     'Village outreach camps',

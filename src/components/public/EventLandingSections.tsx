@@ -1,25 +1,26 @@
-import { useMemo } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { SectionErrorBoundary } from '@/components/SectionErrorBoundary'
 import { CountdownSection } from '@/components/public/CountdownSection'
-import { EventRegisterCta } from '@/components/public/EventRegisterCta'
 import { EventsSection } from '@/components/public/EventsSection'
 import { FAQAccordion } from '@/components/public/FAQAccordion'
 import { GallerySection } from '@/components/public/GallerySection'
 import { HeroSection } from '@/components/public/HeroSection'
 import { PreRegBanner } from '@/components/public/PreRegBanner'
+import { RegistrationFormWithI18n } from '@/components/public/RegistrationForm'
 import { SectionSkeleton } from '@/components/public/SectionSkeleton'
 import { useFaq } from '@/hooks/useFaq'
 import { useGames } from '@/hooks/useGames'
 import { useGallery } from '@/hooks/useGallery'
-import { useRegistrationCount } from '@/hooks/useRegistration'
+import { useCreateRegistration, useRegistrationCount } from '@/hooks/useRegistration'
 import { useAllSettings } from '@/hooks/useSiteSettings'
 import { heroContent } from '@/fixtures/homePageFixtures'
 import { isSectionVisible, khel2026Sections, sectionTitle } from '@/lib/khel2026Sections'
 import { resolveHeroVisual } from '@/lib/heroVisuals'
+import { getRegistrationShareUrl } from '@/lib/shareUrl'
+import type { RegistrationInput } from '@/types/app.types'
 
 export function EventLandingSections() {
-  const navigate = useNavigate()
   const { games, isLoading: gamesLoading } = useGames()
   const { images: galleryImages, isLoading: galleryLoading } = useGallery()
   const { items: faqItems, isLoading: faqLoading } = useFaq()
@@ -28,6 +29,14 @@ export function EventLandingSections() {
 
   const eventStatus = settingsMap.event_status ?? 'registration_open'
   const isPreRegistration = eventStatus === 'pre_registration'
+  const registrationOpen = eventStatus === 'registration_open' || eventStatus === 'pre_registration'
+  const createRegistration = useCreateRegistration(eventStatus)
+  const [showSuccessBanner, setShowSuccessBanner] = useState(false)
+  const shareUrl = useMemo(() => getRegistrationShareUrl(), [])
+  const registerTitle = settingsMap.khel2026_register_title
+  const registerPreMessage = settingsMap.khel2026_register_pre_message
+  const registerSubmitLabel = settingsMap.khel2026_register_submit_label
+  const eventOptions = games.map((game) => game.name)
   const eventDate = isPreRegistration
     ? (settingsMap.khel2026_countdown_tba_text ?? 'To Be Announced')
     : (settingsMap.khel2026_hero_event_date ?? settingsMap.event_date ?? heroContent.eventDate)
@@ -54,6 +63,14 @@ export function EventLandingSections() {
     }
   }
 
+  const handleRegistrationSubmit = (input: RegistrationInput) => {
+    createRegistration.mutate(input, {
+      onSuccess: () => {
+        setShowSuccessBanner(true)
+      },
+    })
+  }
+
   return (
     <>
       {isPreRegistration ? (
@@ -71,7 +88,7 @@ export function EventLandingSections() {
             registrationCount={registrationCount}
             imageUrl={festivalHeroVisual.url}
             imageAlt={festivalHeroVisual.alt}
-            onPrimaryClick={() => navigate('/register')}
+            onPrimaryClick={() => scrollToId('register-form')}
             onSecondaryClick={() => scrollToId('events')}
           />
         </SectionErrorBoundary>
@@ -102,11 +119,40 @@ export function EventLandingSections() {
         </SectionErrorBoundary>
       ) : null}
       {show('khel2026_register_cta_visible') ? (
-        <EventRegisterCta
-          title={titles.registerCta}
-          description={settingsMap.khel2026_register_pre_message}
-          buttonLabel={settingsMap.khel2026_register_submit_label}
-        />
+        <SectionErrorBoundary title={titles.registerCta}>
+          {!registrationOpen ? (
+            <section
+              id="register-form"
+              style={{ padding: '4rem 1.5rem', textAlign: 'center' }}
+              aria-labelledby="register-unavailable-heading"
+            >
+              <h2
+                id="register-unavailable-heading"
+                style={{ fontSize: '1.75rem', marginBottom: '0.75rem' }}
+              >
+                Registration unavailable
+              </h2>
+              <p style={{ color: '#6b7280' }}>
+                Registration is not open on the public site right now. Please check back later.
+              </p>
+            </section>
+          ) : gamesLoading ? (
+            <SectionSkeleton title={titles.registerCta} />
+          ) : (
+            <RegistrationFormWithI18n
+              title={registerTitle}
+              eventOptions={eventOptions}
+              games={games}
+              preRegistrationMessage={registerPreMessage}
+              submitLabel={registerSubmitLabel}
+              isPreRegistration={isPreRegistration}
+              isSubmitting={createRegistration.isPending}
+              shareUrl={shareUrl}
+              showSuccessBanner={showSuccessBanner}
+              onSubmit={handleRegistrationSubmit}
+            />
+          )}
+        </SectionErrorBoundary>
       ) : null}
       {show('khel2026_faq_visible') ? (
         <SectionErrorBoundary title={titles.faq}>

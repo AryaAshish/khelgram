@@ -303,7 +303,7 @@ export type Database = {
       inquiry_leads: {
         Row: {
           created_at: string
-          email: string
+          email: string | null
           id: string
           message: string
           name: string
@@ -314,7 +314,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
-          email: string
+          email?: string | null
           id: string
           message?: string
           name: string

@@ -4,6 +4,7 @@ import {
   useAdminTeam,
   useDeleteTeamMember,
   useReorderTeamMembers,
+  useUpdateTeamMember,
 } from '@/hooks/useTeam'
 import type { TeamMember } from '@/types/app.types'
 
@@ -18,9 +19,14 @@ const fields = [
 export function TeamPage() {
   const { data: members = [], isLoading } = useAdminTeam()
   const addMember = useAddTeamMember()
+  const updateMember = useUpdateTeamMember()
   const deleteMember = useDeleteTeamMember()
   const reorderMembers = useReorderTeamMembers()
-  const isPending = addMember.isPending || deleteMember.isPending || reorderMembers.isPending
+  const isPending =
+    addMember.isPending ||
+    updateMember.isPending ||
+    deleteMember.isPending ||
+    reorderMembers.isPending
 
   return (
     <SortableCredibilityAdmin<TeamMember>
@@ -33,8 +39,25 @@ export function TeamPage() {
       getItemSummary={(member) =>
         `${member.name} — ${member.role}${member.published ? '' : ' (draft)'}`
       }
+      mapItemToFormValues={(member) => ({
+        name: member.name,
+        role: member.role,
+        bio: member.bio ?? '',
+        photoUrl: member.photoUrl ?? '',
+        published: member.published,
+      })}
       onAdd={async (values) => {
         await addMember.mutateAsync({
+          name: String(values.name ?? ''),
+          role: String(values.role ?? ''),
+          bio: String(values.bio ?? ''),
+          photoUrl: String(values.photoUrl ?? '') || undefined,
+          published: Boolean(values.published),
+        })
+      }}
+      onUpdate={async (id, values) => {
+        await updateMember.mutateAsync({
+          id,
           name: String(values.name ?? ''),
           role: String(values.role ?? ''),
           bio: String(values.bio ?? ''),

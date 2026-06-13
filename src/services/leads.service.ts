@@ -15,7 +15,7 @@ function mapLead(row: InquiryLeadRow): InquiryLead {
     id: row.id,
     type: row.type as InquiryLeadType,
     name: row.name,
-    email: row.email,
+    email: row.email ?? '',
     phone: row.phone ?? undefined,
     organization: row.organization ?? undefined,
     message: row.message,
@@ -27,10 +27,10 @@ function mapLead(row: InquiryLeadRow): InquiryLead {
 export async function submitLead(input: {
   type: InquiryLeadType
   name: string
-  email: string
+  email?: string
   phone?: string
   organization?: string
-  message: string
+  message?: string
 }): Promise<InquiryLead> {
   const id = crypto.randomUUID()
 
@@ -40,10 +40,10 @@ export async function submitLead(input: {
       id,
       type: input.type,
       name: input.name,
-      email: input.email,
+      email: input.email ?? null,
       phone: input.phone ?? null,
       organization: input.organization ?? null,
-      message: input.message,
+      message: input.message ?? '',
     })
     .select('*')
     .single()

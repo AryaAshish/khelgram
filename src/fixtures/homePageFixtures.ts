@@ -61,33 +61,33 @@ export const games: Game[] = [
 export const galleryImages: GalleryImage[] = [
   {
     id: 'gallery-1',
-    url: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=1200&q=80',
-    alt: 'Children running during school sports day',
+    url: '/images/grassroots/g1.png',
+    alt: 'Indian schoolgirls sprinting barefoot during a rural sports day race',
   },
   {
     id: 'gallery-2',
-    url: 'https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=1200&q=80',
-    alt: 'Kids celebrating a race win together',
+    url: '/images/grassroots/g2.png',
+    alt: 'Indian girls celebrating together after winning a village race',
   },
   {
     id: 'gallery-3',
-    url: 'https://images.unsplash.com/photo-1526232761682-d26e03ac148e?auto=format&fit=crop&w=1200&q=80',
-    alt: 'Children practicing relay handoff',
+    url: '/images/grassroots/g3.png',
+    alt: 'Indian children practicing relay baton handoff with coach cheering on a village field',
   },
   {
     id: 'gallery-4',
-    url: 'https://images.pexels.com/photos/296301/pexels-photo-296301.jpeg?auto=compress&cs=tinysrgb&w=1200',
-    alt: 'Young athletes warming up outdoors',
+    url: '/images/grassroots/g4.png',
+    alt: 'Indian children warming up together before village games at a rural school',
   },
   {
     id: 'gallery-5',
-    url: 'https://images.pexels.com/photos/8613089/pexels-photo-8613089.jpeg?auto=compress&cs=tinysrgb&w=1200',
-    alt: 'Group of children participating in games',
+    url: '/images/grassroots/g5.png',
+    alt: 'Indian children playing kho-kho during a village sports day',
   },
   {
     id: 'gallery-6',
-    url: 'https://images.unsplash.com/photo-1544717302-de2939b7ef71?auto=format&fit=crop&w=1200&q=80',
-    alt: 'Parents cheering from the sidelines',
+    url: '/images/grassroots/g6.png',
+    alt: 'Indian families cheering children at a village sports field',
   },
   {
     id: 'gallery-7',
@@ -96,8 +96,8 @@ export const galleryImages: GalleryImage[] = [
   },
   {
     id: 'gallery-8',
-    url: 'https://images.unsplash.com/photo-1508609349937-5ec4ae374ebf?auto=format&fit=crop&w=1200&q=80',
-    alt: 'Children having fun in team activities',
+    url: '/images/grassroots/g8.png',
+    alt: 'Indian children having fun in a wheelbarrow race at a school sports festival',
   },
 ]
 

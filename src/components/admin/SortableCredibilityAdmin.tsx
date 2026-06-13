@@ -16,10 +16,13 @@ export type SortableCredibilityAdminProps<TItem extends { id: string }> = {
   items: TItem[]
   fields: CredibilityField[]
   addLabel: string
+  saveLabel?: string
   isLoading: boolean
   isPending: boolean
   getItemSummary: (item: TItem) => string
+  mapItemToFormValues?: (item: TItem) => Record<string, string | boolean>
   onAdd: (values: Record<string, string | boolean>) => Promise<void>
+  onUpdate?: (id: string, values: Record<string, string | boolean>) => Promise<void>
   onDelete: (id: string) => Promise<void>
   onReorder: (ids: string[]) => Promise<void>
 }
@@ -36,24 +39,47 @@ export function SortableCredibilityAdmin<TItem extends { id: string }>({
   items,
   fields,
   addLabel,
+  saveLabel = 'Save changes',
   isLoading,
   isPending,
   getItemSummary,
+  mapItemToFormValues,
   onAdd,
+  onUpdate,
   onDelete,
   onReorder,
 }: SortableCredibilityAdminProps<TItem>) {
   const [formValues, setFormValues] = useState(() => createInitialForm(fields))
+  const [editingId, setEditingId] = useState<string | null>(null)
 
-  const handleAdd = async () => {
-    await onAdd(formValues)
+  const resetForm = () => {
     setFormValues(createInitialForm(fields))
+    setEditingId(null)
+  }
+
+  const handleSubmit = async () => {
+    if (editingId && onUpdate) {
+      await onUpdate(editingId, formValues)
+    } else {
+      await onAdd(formValues)
+    }
+    resetForm()
+  }
+
+  const handleEdit = (item: TItem) => {
+    if (!mapItemToFormValues) {
+      return
+    }
+    setEditingId(item.id)
+    setFormValues(mapItemToFormValues(item))
   }
 
   const handleMove = async (index: number, direction: -1 | 1) => {
     const reordered = moveListItem(items, index, direction)
     await onReorder(reordered.map((item) => item.id))
   }
+
+  const submitLabel = editingId ? saveLabel : addLabel
 
   return (
     <section aria-label={title}>
@@ -67,6 +93,9 @@ export function SortableCredibilityAdmin<TItem extends { id: string }>({
           maxWidth: '720px',
         }}
       >
+        {editingId ? (
+          <p style={{ margin: 0, color: '#6b7280', fontWeight: 600 }}>Editing selected entry</p>
+        ) : null}
         {fields.map((field) => (
           <div key={field.key}>
             <Label htmlFor={`${title}-${field.key}`}>{field.label}</Label>
@@ -131,9 +160,16 @@ export function SortableCredibilityAdmin<TItem extends { id: string }>({
             )}
           </div>
         ))}
-        <Button onClick={() => void handleAdd()} disabled={isPending}>
-          {isPending ? 'Saving...' : addLabel}
-        </Button>
+        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+          <Button onClick={() => void handleSubmit()} disabled={isPending}>
+            {isPending ? 'Saving...' : submitLabel}
+          </Button>
+          {editingId ? (
+            <Button variant="outline" onClick={resetForm} disabled={isPending}>
+              Cancel
+            </Button>
+          ) : null}
+        </div>
       </div>
 
       {isLoading ? <p>Loading...</p> : null}
@@ -150,13 +186,22 @@ export function SortableCredibilityAdmin<TItem extends { id: string }>({
               justifyContent: 'space-between',
               gap: '1rem',
               alignItems: 'center',
-              border: '1px solid #e5e7eb',
+              border: editingId === item.id ? '2px solid #22c55e' : '1px solid #e5e7eb',
               borderRadius: '0.75rem',
               padding: '1rem',
             }}
           >
             <p style={{ margin: 0 }}>{getItemSummary(item)}</p>
             <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+              {onUpdate && mapItemToFormValues ? (
+                <Button
+                  variant="outline"
+                  onClick={() => handleEdit(item)}
+                  disabled={isPending || editingId === item.id}
+                >
+                  Edit
+                </Button>
+              ) : null}
               <Button
                 variant="outline"
                 onClick={() => void handleMove(index, -1)}

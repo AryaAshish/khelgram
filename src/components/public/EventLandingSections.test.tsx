@@ -1,6 +1,8 @@
-import { render, screen } from '@testing-library/react'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
+import type { ReactNode } from 'react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { aboutContent, countdownTarget } from '@/fixtures/homePageFixtures'
 import { EventLandingSections } from './EventLandingSections'
@@ -10,7 +12,7 @@ const mockUseGallery = vi.fn()
 const mockUseFaq = vi.fn()
 const mockUseAllSettings = vi.fn()
 const mockUseRegistrationCount = vi.fn()
-const mockNavigate = vi.fn()
+const mockUseCreateRegistration = vi.fn()
 
 vi.mock('@/hooks/useGames', () => ({
   useGames: () => mockUseGames(),
@@ -30,22 +32,22 @@ vi.mock('@/hooks/useSiteSettings', () => ({
 
 vi.mock('@/hooks/useRegistration', () => ({
   useRegistrationCount: () => mockUseRegistrationCount(),
+  useCreateRegistration: () => mockUseCreateRegistration(),
 }))
 
-vi.mock('react-router-dom', async () => {
-  const actual = await vi.importActual<typeof import('react-router-dom')>('react-router-dom')
-  return {
-    ...actual,
-    useNavigate: () => mockNavigate,
+function createWrapper() {
+  const queryClient = new QueryClient()
+  return function Wrapper({ children }: { children: ReactNode }) {
+    return (
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>{children}</MemoryRouter>
+      </QueryClientProvider>
+    )
   }
-})
+}
 
 function renderEventLanding() {
-  return render(
-    <MemoryRouter>
-      <EventLandingSections />
-    </MemoryRouter>,
-  )
+  return render(<EventLandingSections />, { wrapper: createWrapper() })
 }
 
 function setDefaultHookMocks() {
@@ -70,6 +72,10 @@ function setDefaultHookMocks() {
     isLoading: false,
   })
   mockUseRegistrationCount.mockReturnValue({ data: 12 })
+  mockUseCreateRegistration.mockReturnValue({
+    mutate: vi.fn(),
+    isPending: false,
+  })
   mockUseAllSettings.mockReturnValue({
     settingsMap: {
       event_status: 'registration_open',
@@ -105,7 +111,7 @@ describe('EventLandingSections', () => {
     mockUseFaq.mockReset()
     mockUseAllSettings.mockReset()
     mockUseRegistrationCount.mockReset()
-    mockNavigate.mockReset()
+    mockUseCreateRegistration.mockReset()
   })
 
   it('renders festival sections on the event landing page', () => {
@@ -121,20 +127,29 @@ describe('EventLandingSections', () => {
     expect(screen.getByText('FAQ')).toBeInTheDocument()
   })
 
-  it('navigates to /register when hero primary CTA is clicked', async () => {
+  it('scrolls to register form when hero primary CTA is clicked', async () => {
     setDefaultHookMocks()
+    const scrollIntoView = vi.fn()
+    const element = document.createElement('div')
+    element.id = 'register-form'
+    element.scrollIntoView = scrollIntoView
+    document.body.appendChild(element)
+
     const user = userEvent.setup()
     renderEventLanding()
 
     await user.click(screen.getAllByRole('button', { name: 'Register Now' })[0]!)
-    expect(mockNavigate).toHaveBeenCalledWith('/register')
+    expect(scrollIntoView).toHaveBeenCalled()
+    element.remove()
   })
 
-  it('links register CTA section to /register', () => {
+  it('renders embedded registration form on the event landing page', () => {
     setDefaultHookMocks()
     renderEventLanding()
 
-    expect(screen.getByRole('link', { name: 'Register Now' })).toHaveAttribute('href', '/register')
+    const form = screen.getByRole('form', { name: 'Registration form' })
+    expect(form).toBeInTheDocument()
+    expect(form.querySelector('button[type="submit"]')).toHaveTextContent('Register Now')
   })
 
   it('shows pre-registration banner when event status is pre_registration', () => {
@@ -197,6 +212,7 @@ describe('EventLandingSections', () => {
     expect(screen.getByLabelText('Festival Events loading')).toBeInTheDocument()
     expect(screen.getByLabelText('Gallery loading')).toBeInTheDocument()
     expect(screen.getByLabelText('FAQ loading')).toBeInTheDocument()
+    expect(screen.getByLabelText('Register Your Child loading')).toBeInTheDocument()
   })
 
   it('scrolls to events when hero secondary CTA is clicked', async () => {
@@ -377,7 +393,7 @@ describe('EventLandingSections', () => {
     renderEventLanding()
 
     expect(screen.getByRole('heading', { name: 'Sign Up' })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Register Now' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Register Now' })).toBeInTheDocument()
   })
 
   it('shows custom FAQ title on loading skeleton', () => {
@@ -399,6 +415,29 @@ describe('EventLandingSections', () => {
     renderEventLanding()
 
     expect(screen.getByLabelText('Event FAQ loading')).toBeInTheDocument()
+  })
+
+  it('shows success banner after registration mutation succeeds', async () => {
+    setDefaultHookMocks()
+    const mutate = vi.fn((_input: unknown, options?: { onSuccess?: () => void }) => {
+      options?.onSuccess?.()
+    })
+    mockUseCreateRegistration.mockReturnValue({ mutate, isPending: false })
+
+    const user = userEvent.setup()
+    renderEventLanding()
+
+    await user.type(screen.getByLabelText('Child Name'), 'Aarav')
+    await user.type(screen.getByLabelText('Age'), '8')
+    await user.type(screen.getByLabelText('Parent Name'), 'Neha')
+    await user.type(screen.getByLabelText('Email'), 'neha@example.com')
+    await user.type(screen.getByLabelText('Phone'), '9999999999')
+    await user.click(screen.getByLabelText('Sack Race'))
+    const form = screen.getByRole('form', { name: 'Registration form' })
+    await user.click(within(form).getByRole('button', { name: 'Register Now' }))
+
+    expect(mutate).toHaveBeenCalled()
+    expect(screen.getByRole('status')).toBeInTheDocument()
   })
 
   it('shows link back to NGO homepage', () => {

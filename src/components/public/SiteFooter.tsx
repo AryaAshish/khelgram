@@ -9,7 +9,7 @@ const quickLinks = [
   { label: 'Programs', href: '/#programs' },
   { label: 'Get Involved', href: '/get-involved' },
   { label: 'Khel 2026', href: '/khel2026' },
-  { label: 'Donate', href: '/#support' },
+  { label: 'Donate', href: '/donate' },
 ]
 
 export function SiteFooter({ description, copyright }: SiteFooterProps) {

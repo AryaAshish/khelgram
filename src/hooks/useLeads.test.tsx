@@ -137,6 +137,38 @@ describe('useLeads', () => {
     )
   })
 
+  it('submits donate lead with phone only', async () => {
+    vi.mocked(leadsService.submitLead).mockResolvedValue({
+      id: 'lead-3',
+      type: 'donate',
+      name: 'Interested donor',
+      email: '',
+      phone: '9876543210',
+      message: 'Equipment',
+      status: 'new',
+      createdAt: '2026-01-01T00:00:00.000Z',
+    })
+
+    const { result } = renderHook(() => useSubmitLead('donate'), { wrapper: createWrapper() })
+    await result.current.mutateAsync({
+      name: '',
+      email: '',
+      phone: '9876543210',
+      message: 'Equipment',
+    })
+
+    expect(leadsService.submitLead).toHaveBeenCalledWith({
+      type: 'donate',
+      name: 'Interested donor',
+      email: undefined,
+      phone: '9876543210',
+      message: 'Equipment',
+    })
+    expect(toast.success).toHaveBeenCalledWith(
+      "Thank you! We'll call or email you within 2–3 working days.",
+    )
+  })
+
   it('exports filtered leads to CSV', async () => {
     const leads = [
       {

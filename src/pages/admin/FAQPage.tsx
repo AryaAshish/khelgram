@@ -1,5 +1,11 @@
 import { SortableCredibilityAdmin } from '@/components/admin/SortableCredibilityAdmin'
-import { useAddFaqItem, useDeleteFaqItem, useFaq, useReorderFaqItems } from '@/hooks/useFaq'
+import {
+  useAddFaqItem,
+  useAdminFaq,
+  useDeleteFaqItem,
+  useReorderFaqItems,
+  useUpdateFaqItem,
+} from '@/hooks/useFaq'
 import type { FaqItem } from '@/types/app.types'
 
 const fields = [
@@ -8,11 +14,13 @@ const fields = [
 ]
 
 export function FAQPage() {
-  const { items, isLoading } = useFaq()
+  const { data: items = [], isLoading } = useAdminFaq()
   const addItem = useAddFaqItem()
+  const updateItem = useUpdateFaqItem()
   const deleteItem = useDeleteFaqItem()
   const reorderItems = useReorderFaqItems()
-  const isPending = addItem.isPending || deleteItem.isPending || reorderItems.isPending
+  const isPending =
+    addItem.isPending || updateItem.isPending || deleteItem.isPending || reorderItems.isPending
 
   return (
     <SortableCredibilityAdmin<FaqItem>
@@ -23,8 +31,19 @@ export function FAQPage() {
       isLoading={isLoading}
       isPending={isPending}
       getItemSummary={(item) => item.question}
+      mapItemToFormValues={(item) => ({
+        question: item.question,
+        answer: item.answer,
+      })}
       onAdd={async (values) => {
         await addItem.mutateAsync({
+          question: String(values.question ?? ''),
+          answer: String(values.answer ?? ''),
+        })
+      }}
+      onUpdate={async (id, values) => {
+        await updateItem.mutateAsync({
+          id,
           question: String(values.question ?? ''),
           answer: String(values.answer ?? ''),
         })
